@@ -8,53 +8,28 @@
  * @format
  */
 
-import React from 'react';
-import { StyleSheet } from 'react-native';
-import { Colors } from 'react-native/Libraries/NewAppScreen';
+import { createAppContainer } from 'react-navigation';
+import { createStackNavigator } from 'react-navigation-stack';
 import { Home } from './src/containers/Home';
+import { Onboarding } from './src/containers/Onboarding';
+import { Register } from './src/containers/Register';
+import { ScreenKeys } from './src/screens';
 
-
-const App = () => {
-  return <Home />;
-};
-
-const styles = StyleSheet.create({
-  scrollView: {
-    backgroundColor: Colors.lighter
+const AppNavigator = createStackNavigator(
+  {
+    [ScreenKeys.Home]: {
+      screen: Home
+    },
+    [ScreenKeys.Onboarding]: {
+      screen: Onboarding
+    },
+    [ScreenKeys.Register]: {
+      screen: Register
+    }
   },
-  engine: {
-    position: 'absolute',
-    right: 0
-  },
-  body: {
-    backgroundColor: Colors.white
-  },
-  sectionContainer: {
-    marginTop: 32,
-    paddingHorizontal: 24
-  },
-  sectionTitle: {
-    fontSize: 24,
-    fontWeight: '600',
-    color: Colors.black
-  },
-  sectionDescription: {
-    marginTop: 8,
-    fontSize: 18,
-    fontWeight: '400',
-    color: Colors.dark
-  },
-  highlight: {
-    fontWeight: '700'
-  },
-  footer: {
-    color: Colors.dark,
-    fontSize: 12,
-    fontWeight: '600',
-    padding: 4,
-    paddingRight: 12,
-    textAlign: 'right'
+  {
+    initialRouteName: ScreenKeys.Onboarding
   }
-});
+);
 
-export default App;
+export default createAppContainer(AppNavigator);
