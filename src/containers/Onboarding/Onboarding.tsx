@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react';
-import { Button, PermissionsAndroid, StyleSheet, Text, View } from 'react-native';
+import { Button, StyleSheet, Text, View } from 'react-native';
 import { material } from 'react-native-typography';
 import { NavigationParams, NavigationScreenProp, NavigationState } from 'react-navigation';
 import { setupI18nConfig, translate } from '../../localization/locale';
@@ -39,20 +39,3 @@ const styles = StyleSheet.create({
     alignItems: 'center'
   }
 });
-
-async function requestFineLocationPermission(): Promise<boolean> {
-  try {
-    const granted = await PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION, {
-      title: 'help',
-      message: 'plz',
-      buttonPositive: 'Si'
-    });
-    if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-      return Promise.resolve(true);
-    } else {
-      return Promise.resolve(false);
-    }
-  } catch (err) {
-    return Promise.resolve(false);
-  }
-}
