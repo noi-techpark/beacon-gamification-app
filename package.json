@@ -9,6 +9,9 @@
     "test": "jest"
   },
   "dependencies": {
+    "appcenter": "2.3.0",
+    "appcenter-analytics": "2.3.0",
+    "appcenter-crashes": "2.3.0",
     "await-to-js": "^2.1.1",
     "babel-plugin-transform-remove-console": "^6.9.4",
     "i18n-js": "^3.3.0",
