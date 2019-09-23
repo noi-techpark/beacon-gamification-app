@@ -1,4 +1,4 @@
-package com.beaconadventure;
+package com.belkadigital.beaconadventure;
 
 import android.app.Application;
 
