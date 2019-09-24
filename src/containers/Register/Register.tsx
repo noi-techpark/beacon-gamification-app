@@ -18,7 +18,7 @@ const Register = () => {
   async function onSignInPressed() {
     Keyboard.dismiss();
 
-    const token = await getAuthToken('rizzo', 'rizzorizzorizzo');
+    const { token } = await getAuthToken('rizzo', 'rizzorizzorizzo');
     const [err, user] = await to<User, ApiError>(postCreateUser(token, username));
 
     if (err && isUsernameAlreadyExisiting(err)) {
@@ -48,7 +48,7 @@ const Register = () => {
       contentContainerStyle={{ alignItems: 'center' }}
     >
       <Avatar username={username} />
-      <Text style={material.headline}>{translate('insert_username')}</Text>
+      <Text style={{ ...material.headlineObject, marginTop: 8 }}>{translate('insert_username')}</Text>
       <TextInput
         onChangeText={username => setUsername(username)}
         value={username}

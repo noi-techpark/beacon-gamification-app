@@ -23,8 +23,7 @@ const styles = StyleSheet.create({
     borderRadius: 28,
     backgroundColor: Colors.BLUE_500,
     justifyContent: 'center',
-    alignItems: 'center',
-    marginBottom: 8
+    alignItems: 'center'
   }
 });
 

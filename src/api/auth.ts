@@ -1,8 +1,8 @@
 import to from "await-to-js";
-import { User } from "../models/user";
+import { User, UserDetail } from "../models/user";
 import { hashCode } from "../utils/stringUtils";
 import { API_SERVER_URL, fetchBeaconsApi } from "./apiFetcher";
-import { MessageReponse } from "./responses";
+import { MessageReponse, TokenResponse } from "./responses";
 
 export async function postCreateUser(token: string, username: string): Promise<User> {
     const [error, user] = await to(
@@ -46,8 +46,8 @@ export async function postAddUserToGroup(token: string, userId: number): Promise
     return !!response.Message;
 }
 
-export async function getAuthToken(username: string, password: string): Promise<any> {
-    const [error, response] = await to(
+export async function getAuthToken(username: string, password: string): Promise<TokenResponse> {
+    const [error, response] = await to<TokenResponse>(
         fetchBeaconsApi(`${API_SERVER_URL}/api-token-auth/`, {
             method: 'POST',
             headers: {
@@ -64,5 +64,23 @@ export async function getAuthToken(username: string, password: string): Promise<
         throw error;
     }
 
-    return response.token;
+    return response;
+}
+
+export async function getUserDetail(token: string, userId: number): Promise<UserDetail> {
+    const [error, userDetail] = await to<UserDetail>(
+        fetchBeaconsApi(`${API_SERVER_URL}/users/${userId}`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization: `Token ${token}`
+            }
+        })
+    );
+
+    if (!userDetail) {
+        throw error;
+    }
+
+    return userDetail;
 }

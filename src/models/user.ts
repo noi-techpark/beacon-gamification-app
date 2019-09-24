@@ -5,19 +5,8 @@ export type User = {
 }
 
 export type UserDetail = {
-    id: number;
-    date_joined: string;
-    email: string;
-    first_name: string;
-    groups: Group[]
-    is_active: boolean;
-    is_staff: boolean;
-    is_superuser: boolean;
-    last_login?: string;
-    last_name: string;
-    password: string;
-    user_permissions: []
     username: string;
+    points?: number;
 }
 
 export type Group = {
