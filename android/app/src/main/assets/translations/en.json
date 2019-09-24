@@ -1,3 +1,8 @@
 {
-  "welcome": "Welcome!"
+  "welcome": "Welcome!",
+  "start": "Go",
+  "onboarding": "Happy to see you here! Let's start this beautiful Adventure, you'll learn a lot of things and also meet new person 😉",
+  "ask_permission": "PS: we're gonna ask you to give us access to your position, otherwise it wont't be possible for us to deliver a proper experience",
+  "insert_username": "Insert your username",
+  "signin": "Signin"
 }

@@ -1,41 +1,42 @@
-import React, { PureComponent } from 'react';
+import React from 'react';
 import { Button, StyleSheet, Text, View } from 'react-native';
 import { material } from 'react-native-typography';
-import { NavigationParams, NavigationScreenProp, NavigationState } from 'react-navigation';
-import { setupI18nConfig, translate } from '../../localization/locale';
+import { useNavigation } from 'react-navigation-hooks';
+import { translate } from '../../localization/locale';
 import { ScreenKeys } from '../../screens';
+import { requestFineLocationPermission } from '../../utils/permissions';
 
-export interface IOnboardingProps {
-  navigation: NavigationScreenProp<NavigationState, NavigationParams>;
-}
+const Onboarding = () => {
+  const navigation = useNavigation();
 
-export default class Onboarding extends PureComponent<IOnboardingProps> {
-  constructor(props: IOnboardingProps) {
-    super(props);
-    setupI18nConfig();
+  async function onStartOnboardingPressed() {
+    const hasPermissions = await requestFineLocationPermission();
+
+    if (hasPermissions) {
+      navigation.navigate(ScreenKeys.Register);
+    }
   }
 
-  render() {
-    return (
-      <View style={styles.root}>
-        <Text style={material.display3}>{translate('welcome')}</Text>
-        <View style={{ marginBottom: 12 }}>
-          <Button onPress={this.onStartOnboardingPressed} title={translate('start')} />
-        </View>
+  return (
+    <View style={styles.root}>
+      <Text style={{ ...material.display2Object, marginBottom: 32 }}>{translate('welcome')}</Text>
+      <View style={{ flex: 1, justifyContent: 'space-between' }}>
+        <>
+          <Text style={material.headline}>{translate('onboarding')}</Text>
+          <Text style={material.subheading}>{translate('ask_permission')}</Text>
+        </>
+        <Button onPress={onStartOnboardingPressed} title={translate('start')} />
       </View>
-    );
-  }
-
-  private onStartOnboardingPressed = () => {
-    this.props.navigation.navigate(ScreenKeys.Register);
-  };
-}
+    </View>
+  );
+};
 
 const styles = StyleSheet.create({
   root: {
     flex: 1,
-    padding: 16,
-    justifyContent: 'space-between',
+    padding: 20,
     alignItems: 'center'
   }
 });
+
+export default Onboarding;

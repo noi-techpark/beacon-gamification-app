@@ -13,6 +13,7 @@ import { createStackNavigator } from 'react-navigation-stack';
 import { Home } from './src/containers/Home';
 import { Onboarding } from './src/containers/Onboarding';
 import { Register } from './src/containers/Register';
+import { setupI18nConfig } from './src/localization/locale';
 import { ScreenKeys } from './src/screens';
 
 const AppNavigator = createStackNavigator(
@@ -31,5 +32,7 @@ const AppNavigator = createStackNavigator(
     initialRouteName: ScreenKeys.Onboarding
   }
 );
+
+setupI18nConfig();
 
 export default createAppContainer(AppNavigator);

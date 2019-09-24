@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Button, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
 import { material } from 'react-native-typography';
 import { useNavigation } from 'react-navigation-hooks';
+import { translate } from '../../localization/locale';
 import { ScreenKeys } from '../../screens';
 import { Colors } from '../../styles/colors';
 import { firstLetter } from '../../utils/stringUtils';
@@ -27,16 +28,17 @@ const Register = () => {
       contentContainerStyle={{ alignItems: 'center' }}
     >
       <View style={styles.avatarContainer}>{!!username && <Text style={material.display1White}>{firstLetter(username)}</Text>}</View>
-      <Text style={material.headline}>Inserisci il tuo nome utente</Text>
+      <Text style={material.headline}>{translate("insert_username")}</Text>
       <TextInput
         onChangeText={text => setUsername(text)}
         value={username}
         style={styles.usernameInput}
         selectionColor={Colors.BLUE_500}
         underlineColorAndroid={Colors.BLUE_500}
+        autoFocus={true}
         placeholder="mario.rossi@test.com"
       />
-      <Button title="Accedi" onPress={onSignInPressed} />
+      <Button title={translate("signin")} onPress={onSignInPressed} />
     </ScrollView>
   );
 };

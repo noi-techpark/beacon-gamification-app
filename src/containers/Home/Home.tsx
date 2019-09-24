@@ -2,13 +2,14 @@ import to from 'await-to-js';
 import filter from 'lodash.filter';
 import unionBy from 'lodash.unionby';
 import React, { PureComponent } from 'react';
-import { ActivityIndicator, Button, DeviceEventEmitter, EmitterSubscription, FlatList, PermissionsAndroid, StyleSheet, Text, View } from 'react-native';
+import { ActivityIndicator, Button, DeviceEventEmitter, EmitterSubscription, FlatList, StyleSheet, Text, View } from 'react-native';
 import NearbyBeacons from 'react-native-beacon-suedtirol-mobile-sdk';
 import { getAuthToken } from '../../api/auth';
 import { getQuestFinder, getQuests } from '../../api/quests';
 import PlatformTouchable from '../../common/PlatformTouchable/PlatformTouchable';
 import { Beacon } from '../../models/beacon';
 import { Quest, QuestFinder, QuestStep } from '../../models/quest';
+import { requestFineLocationPermission } from '../../utils/permissions';
 
 const IBEACON_DISCOVERED = 'beaconDiscovered';
 const IBEACON_LOST = 'beaconLost';
@@ -180,20 +181,3 @@ const styles = StyleSheet.create({
     alignItems: 'center'
   }
 });
-
-async function requestFineLocationPermission(): Promise<boolean> {
-  try {
-      const granted = await PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION, {
-          title: 'help',
-          message: 'plz',
-          buttonPositive: 'Si'
-      });
-      if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-          return Promise.resolve(true);
-      } else {
-          return Promise.resolve(false);
-      }
-  } catch (err) {
-      return Promise.resolve(false);
-  }
-}
