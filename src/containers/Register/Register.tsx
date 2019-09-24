@@ -1,24 +1,44 @@
-import React, { useEffect, useState } from 'react';
-import { Button, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
+import to from 'await-to-js';
+import React, { useState } from 'react';
+import { Button, Keyboard, ScrollView, StyleSheet, Text, TextInput } from 'react-native';
 import { material } from 'react-native-typography';
 import { useNavigation } from 'react-navigation-hooks';
+import { getAuthToken, postAddUserToGroup, postCreateUser } from '../../api/auth';
+import { Avatar } from '../../components/Avatar';
 import { translate } from '../../localization/locale';
+import { ApiError, isUsernameAlreadyExisiting } from '../../models/error';
+import { User } from '../../models/user';
 import { ScreenKeys } from '../../screens';
 import { Colors } from '../../styles/colors';
-import { firstLetter } from '../../utils/stringUtils';
 
 const Register = () => {
   const navigation = useNavigation();
-  const [username, setUsername] = useState('');
+  const [username, setUsername] = useState('marmo@gmail.com');
 
-  useEffect(() => {
-    if (username) {
-      setUsername(username);
+  async function onSignInPressed() {
+    Keyboard.dismiss();
+
+    const token = await getAuthToken('rizzo', 'rizzorizzorizzo');
+    const [err, user] = await to<User, ApiError>(postCreateUser(token, username));
+
+    if (err && isUsernameAlreadyExisiting(err)) {
+      // check if already registered user
+      navigation.navigate(ScreenKeys.Home, {
+        username
+      });
     }
-  }, [username]);
 
-  function onSignInPressed() {
-    navigation.navigate(ScreenKeys.Home, { text: 'Hi!' });
+    if (user) {
+      const isAdded = await postAddUserToGroup(token, user.id);
+
+      if (isAdded) {
+        navigation.navigate(ScreenKeys.Home, {
+          username: user.username
+        });
+      }
+    } else {
+      // show notification error
+    }
   }
 
   return (
@@ -27,18 +47,20 @@ const Register = () => {
       keyboardShouldPersistTaps="handled"
       contentContainerStyle={{ alignItems: 'center' }}
     >
-      <View style={styles.avatarContainer}>{!!username && <Text style={material.display1White}>{firstLetter(username)}</Text>}</View>
-      <Text style={material.headline}>{translate("insert_username")}</Text>
+      <Avatar username={username} />
+      <Text style={material.headline}>{translate('insert_username')}</Text>
       <TextInput
-        onChangeText={text => setUsername(text)}
+        onChangeText={username => setUsername(username)}
         value={username}
+        autoCapitalize="none"
+        keyboardType="email-address"
         style={styles.usernameInput}
         selectionColor={Colors.BLUE_500}
         underlineColorAndroid={Colors.BLUE_500}
         autoFocus={true}
         placeholder="mario.rossi@test.com"
       />
-      <Button title={translate("signin")} onPress={onSignInPressed} />
+      <Button title={translate('signin')} onPress={onSignInPressed} />
     </ScrollView>
   );
 };
@@ -58,15 +80,6 @@ const styles = StyleSheet.create({
     width: '100%',
     paddingHorizontal: 6,
     marginVertical: 16
-  },
-  avatarContainer: {
-    width: 56,
-    height: 56,
-    borderRadius: 28,
-    backgroundColor: Colors.BLUE_500,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginBottom: 8
   }
 });
 

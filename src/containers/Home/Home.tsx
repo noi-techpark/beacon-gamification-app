@@ -1,183 +1,78 @@
 import to from 'await-to-js';
-import filter from 'lodash.filter';
-import unionBy from 'lodash.unionby';
-import React, { PureComponent } from 'react';
-import { ActivityIndicator, Button, DeviceEventEmitter, EmitterSubscription, FlatList, StyleSheet, Text, View } from 'react-native';
-import NearbyBeacons from 'react-native-beacon-suedtirol-mobile-sdk';
+import React, { useEffect, useState } from 'react';
+import { FlatList, StyleSheet, Text, View } from 'react-native';
+import { useNavigationParam } from 'react-navigation-hooks';
 import { getAuthToken } from '../../api/auth';
-import { getQuestFinder, getQuests } from '../../api/quests';
-import PlatformTouchable from '../../common/PlatformTouchable/PlatformTouchable';
-import { Beacon } from '../../models/beacon';
-import { Quest, QuestFinder, QuestStep } from '../../models/quest';
-import { requestFineLocationPermission } from '../../utils/permissions';
+import { getQuests } from '../../api/quests';
+import { PlatformTouchable } from '../../common/PlatformTouchable';
+import { Avatar } from '../../components/Avatar';
+import { Quest } from '../../models/quest';
+import { Colors } from '../../styles/colors';
+import { hashCode } from '../../utils/stringUtils';
 
-const IBEACON_DISCOVERED = 'beaconDiscovered';
-const IBEACON_LOST = 'beaconLost';
+const Home = () => {
+  const username: string = useNavigationParam('username');
+  const [quests, setQuests] = useState([]);
 
-export interface IHomeProps {}
+  useEffect(() => {
+    const fetchQuests = async () => {
+      const [e, token] = await to(getAuthToken(username, hashCode(username)));
+      //   const [e, token] = await to(getAuthToken(username, 'rizzorizzorizzo'));
 
-interface IState {
-  isScanning: boolean;
-  discoveredBeacons: Beacon[];
-  quests: Quest[];
-  token?: string;
-  ongoingQuest?: Quest;
-  beaconsToFind: QuestFinder[];
-}
+      if (token) {
+        const [e, quests] = await to(getQuests(token));
 
-export default class Home extends PureComponent<IHomeProps, IState> {
-  private subscriptions: EmitterSubscription[];
-
-  constructor(props: IHomeProps) {
-    super(props);
-    this.state = {
-      isScanning: false,
-      discoveredBeacons: [],
-      quests: [],
-      beaconsToFind: []
+        setQuests(quests);
+      }
     };
-  }
 
-  async componentDidMount() {
-    this.subscriptions = [
-      DeviceEventEmitter.addListener(IBEACON_DISCOVERED, async beacon => {
-        // console.log('discovered');
-        // console.log(beacon);
-        this.setState({
-          discoveredBeacons: unionBy(this.state.discoveredBeacons, [beacon], b => b.id)
-        });
+    fetchQuests();
+  }, []);
 
-        const [e, found] = await to(getQuestFinder(this.state.token!, beacon.id));
+  return (
+    <View style={styles.root}>
+      <FlatList<Quest>
+        data={quests}
+        keyExtractor={item => String(item.id)}
+        // style={{ width: '100%', marginTop: 12 }}
+        style={{ flex: 1 }}
+        ListHeaderComponent={AvatarRecap(username)}
+        renderItem={({ item }) => {
+          return (
+            <PlatformTouchable style={styles.questContainer} onPress={() => this.onStartQuestPressed(item)}>
+              <Text>{item.name}</Text>
+            </PlatformTouchable>
+          );
+        }}
+      />
+    </View>
+  );
+};
 
-        if (found) {
-          this.setState({
-            beaconsToFind: unionBy(this.state.beaconsToFind || [], [found], found => found.beacon.id)
-          });
-        }
-      }),
-      DeviceEventEmitter.addListener(IBEACON_LOST, beacon => {
-        console.log('lost');
-        console.log(beacon);
-        this.setState({
-          discoveredBeacons: filter(this.state.discoveredBeacons, b => b.id !== beacon.id),
-          beaconsToFind: filter(this.state.beaconsToFind, b => b.beacon.beacon_id !== beacon.id)
-        });
-      })
-    ];
-
-    const hasPermission = await requestFineLocationPermission();
-
-    if (!hasPermission) {
-        // user has denied access to storage, show modal
-        return Promise.reject('Permission denied');
-    }
-
-    const [e, r] = await to(getAuthToken('rizzo', 'rizzorizzorizzo'));
-
-    if (r && r.token) {
-      const [e, quests] = await to(getQuests(r.token));
-
-      this.setState({
-        quests,
-        token: r.token
-      });
-    }
-  }
-
-  componentWillUnmount() {
-    this.subscriptions.forEach(sub => sub.remove());
-  }
-
-  render() {
-    const { isScanning, quests, ongoingQuest, beaconsToFind } = this.state;
-
-    return (
-      <View style={styles.container}>
-        {!ongoingQuest ? (
-          <>
-            <Text style={{ marginTop: 28 }}>🚀 Seleziona la tua avventura 🚀</Text>
-            <FlatList<Quest>
-              data={quests}
-              keyExtractor={item => String(item.id)}
-              style={{ width: '100%', marginTop: 12 }}
-              renderItem={({ item }) => {
-                return (
-                  <PlatformTouchable
-                    style={{ width: '100%', paddingHorizontal: 16, paddingVertical: 12 }}
-                    onPress={() => this.onStartQuestPressed(item)}
-                  >
-                    <Text>{item.name}</Text>
-                  </PlatformTouchable>
-                );
-              }}
-            />
-          </>
-        ) : (
-          <>
-            <View style={{ marginTop: 28, flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
-              <Text style={{ marginEnd: 16 }}>🚀 {ongoingQuest.name} 🚀</Text>
-              {isScanning && <ActivityIndicator size="small" />}
-              <Button title={isScanning ? 'Stop' : 'Scan'} onPress={this.onToggleScanningPressed} />
-            </View>
-            <FlatList<QuestStep>
-              data={ongoingQuest.steps}
-              keyExtractor={item => String(item.id)}
-              style={{ width: '100%', marginTop: 12 }}
-              renderItem={({ item }) => {
-                return (
-                  <PlatformTouchable
-                    style={{ width: '100%', paddingHorizontal: 16, paddingVertical: 12 }}
-                    onPress={() => this.onReachedStepPressed(item)}
-                    disabled={!beaconsToFind.find(qf => qf.beacon.id === item.beacon)}
-                  >
-                    <>
-                      <Text>{item.name}</Text>
-                      {!!beaconsToFind.find(qf => qf.beacon.id === item.beacon) && <Text>TROVATO!</Text>}
-                    </>
-                  </PlatformTouchable>
-                );
-              }}
-            />
-          </>
-        )}
-      </View>
-    );
-  }
-
-  private onToggleScanningPressed = async () => {
-    if (!this.state.isScanning) {
-      NearbyBeacons.startScanning(() => {
-        this.setState({
-          discoveredBeacons: [],
-          isScanning: true
-        });
-      });
-    } else {
-      NearbyBeacons.stopScanning(() => {
-        this.setState({
-          isScanning: false
-        });
-      });
-    }
-  };
-
-  private onStartQuestPressed = async (quest: Quest) => {
-    await this.onToggleScanningPressed();
-
-    this.setState({
-      ongoingQuest: quest
-    });
-  };
-
-  private onReachedStepPressed = async (step: QuestStep) => {
-    alert(step.instructions);
-  };
-}
+const AvatarRecap = (username: string) => {
+  return (
+    <View style={{ flexDirection: 'row', marginHorizontal: 16, height: 64, borderRadius: 8 }}>
+      <Avatar username={username} />
+    </View>
+  );
+};
 
 const styles = StyleSheet.create({
-  container: {
+  root: {
     flex: 1,
-    justifyContent: 'flex-start',
     alignItems: 'center'
+  },
+  questContainer: {
+    height: 180,
+    elevation: 3,
+    backgroundColor: Colors.WHITE,
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: 'black',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginVertical: 8
   }
 });
+
+export default Home;

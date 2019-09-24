@@ -1,4 +1,5 @@
 import { to } from 'await-to-js';
+import { ApiError } from '../models/error';
 
 export const API_SERVER_URL = "http://157.230.18.122/api/v1";
 
@@ -9,10 +10,17 @@ export async function fetchBeaconsApi<T>(input: RequestInfo, init?: RequestInit)
         throw error;
     }
 
-    const [parseError, parsedResponse] = await to(httpResponse.json());
+    const parsedResponse = await httpResponse.json();
+
+    if (httpResponse.status >= 400 && httpResponse.status < 600) {
+        console.log(httpResponse);
+        console.log(parsedResponse);
+
+        throw new ApiError(httpResponse.status, httpResponse.statusText, parsedResponse);
+    }
 
     if (!parsedResponse) {
-        throw parseError;
+        throw error;
     }
 
     return parsedResponse;
