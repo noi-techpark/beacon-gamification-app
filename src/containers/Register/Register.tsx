@@ -13,7 +13,7 @@ import { Colors } from '../../styles/colors';
 
 const Register = () => {
   const navigation = useNavigation();
-  const [username, setUsername] = useState('marmo@gmail.com');
+  const [username, setUsername] = useState('');
 
   async function onSignInPressed() {
     Keyboard.dismiss();
