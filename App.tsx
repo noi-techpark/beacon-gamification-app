@@ -15,10 +15,13 @@ import { TransitionProps } from 'react-navigation-stack/lib/typescript/types';
 import { Home } from './src/containers/Home';
 import { Onboarding } from './src/containers/Onboarding';
 import { QuestPreview } from './src/containers/quest/QuestPreview';
+import { QuestStepCompleted } from './src/containers/quest/QuestStepCompleted';
+import { QuestStepViewer } from './src/containers/quest/QuestStepViewer';
 import { Register } from './src/containers/Register';
 import { setupI18nConfig } from './src/localization/locale';
 import { ScreenKeys } from './src/screens';
-import { springyFadeIn } from './src/utils/animations';
+import { Colors } from './src/styles/colors';
+import { forVertical, springyFadeIn } from './src/utils/animations';
 
 const AppNavigator = createSharedElementStackNavigator(
   createStackNavigator,
@@ -34,6 +37,9 @@ const AppNavigator = createSharedElementStackNavigator(
     },
     [ScreenKeys.QuestPreview]: {
       screen: QuestPreview
+    },
+    [ScreenKeys.QuestStepViewer]: {
+      screen: QuestStepViewer
     }
   },
   {
@@ -52,6 +58,27 @@ const AppNavigator = createSharedElementStackNavigator(
   }
 );
 
+const ModalNavigator = createStackNavigator(
+  {
+    Main: {
+      screen: AppNavigator
+    },
+    QuestStepCompleted: {
+      screen: QuestStepCompleted
+    }
+  },
+  {
+    mode: 'modal',
+    headerMode: 'none',
+    cardStyle: {
+      backgroundColor: Colors.BLACK_040,
+      opacity: 1
+    },
+    transparentCard: true,
+    transitionConfig: () => forVertical()
+  }
+);
+
 setupI18nConfig();
 
-export default createAppContainer(AppNavigator);
+export default createAppContainer(ModalNavigator);

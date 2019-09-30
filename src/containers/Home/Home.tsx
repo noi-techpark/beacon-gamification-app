@@ -21,6 +21,7 @@ const Home = () => {
   const navigation = useNavigation();
   const username: string = useNavigationParam('username');
   const [user, setUser] = useState<UserDetail>({ username });
+  const [token, setToken] = useState('');
   const [quests, setQuests] = useState([]);
 
   useEffect(() => {
@@ -29,6 +30,8 @@ const Home = () => {
 
       if (tokenResponse) {
         const { token, id } = tokenResponse;
+
+        setToken(token);
 
         const user = await getUserDetail(token, id);
         const [e, quests] = await to(getQuests(token));
@@ -49,7 +52,7 @@ const Home = () => {
         style={{ paddingTop: 16 }}
         contentContainerStyle={{ flexGrow: 1 }}
         ListHeaderComponent={<AvatarRecap username={username} points={user.points} />}
-        renderItem={({ item }) => renderItem(item, navigation)}
+        renderItem={({ item }) => renderItem(item, token, navigation)}
       />
     </View>
   );
@@ -67,11 +70,13 @@ const AvatarRecap = ({ username, points }) => (
 
 const renderItem = (
   quest: Quest,
+  token: string,
   navigation: NavigationScreenProp<NavigationRoute<NavigationParams>, NavigationParams>
 ) => {
   async function onOpenQuestPressed() {
     navigation.navigate(ScreenKeys.QuestPreview, {
-      quest
+      quest,
+      token
     });
   }
 

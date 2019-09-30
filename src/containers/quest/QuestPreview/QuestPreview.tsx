@@ -2,16 +2,23 @@ import React from 'react';
 import { Button, StyleSheet, Text, View } from 'react-native';
 import FastImage from 'react-native-fast-image';
 import { material } from 'react-native-typography';
-import { useNavigationParam } from 'react-navigation-hooks';
+import { useNavigation, useNavigationParam } from 'react-navigation-hooks';
 import { SharedElement } from 'react-navigation-shared-element';
 import { translate } from '../../../localization/locale';
 import { Quest } from '../../../models/quest';
+import { ScreenKeys } from '../../../screens';
 
 const QuestPreview = () => {
+  const navigation = useNavigation();
   const quest: Quest = useNavigationParam('quest');
+  const token = useNavigationParam('token');
 
   async function onStartQuestPressed() {
-    console.log(quest);
+    navigation.navigate(ScreenKeys.QuestStepViewer, {
+      quest,
+      stepId: 1,
+      token
+    });
   }
 
   return (
@@ -49,7 +56,7 @@ const styles = StyleSheet.create({
   root: {
     flex: 1,
     padding: 20,
-    justifyContent: 'space-between',
+    justifyContent: 'space-between'
     // alignItems: 'center'
   }
 });

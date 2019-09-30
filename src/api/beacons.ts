@@ -1,5 +1,5 @@
 import to from "await-to-js";
-import { Beacon } from "../models/beacon";
+import { BeaconMedata } from "../models/beacon";
 import { API_SERVER_URL, fetchBeaconsApi } from "./apiFetcher";
 
 export async function getBeacons(token: string): Promise<any> {
@@ -20,7 +20,7 @@ export async function getBeacons(token: string): Promise<any> {
     return response;
 }
 
-export async function getBeaconById(token: string, beaconId: number): Promise<Beacon> {
+export async function getBeaconMetadataById(token: string, beaconId: number): Promise<BeaconMedata> {
     const [error, response] = await to(
         fetchBeaconsApi(`${API_SERVER_URL}/beacons/${beaconId}`, {
             method: 'GET',
