@@ -9,14 +9,19 @@
  */
 
 import { createAppContainer } from 'react-navigation';
+import { createSharedElementStackNavigator } from 'react-navigation-shared-element';
 import { createStackNavigator } from 'react-navigation-stack';
+import { TransitionProps } from 'react-navigation-stack/lib/typescript/types';
 import { Home } from './src/containers/Home';
 import { Onboarding } from './src/containers/Onboarding';
+import { QuestPreview } from './src/containers/quest/QuestPreview';
 import { Register } from './src/containers/Register';
 import { setupI18nConfig } from './src/localization/locale';
 import { ScreenKeys } from './src/screens';
+import { springyFadeIn } from './src/utils/animations';
 
-const AppNavigator = createStackNavigator(
+const AppNavigator = createSharedElementStackNavigator(
+  createStackNavigator,
   {
     [ScreenKeys.Home]: {
       screen: Home
@@ -26,10 +31,24 @@ const AppNavigator = createStackNavigator(
     },
     [ScreenKeys.Register]: {
       screen: Register
+    },
+    [ScreenKeys.QuestPreview]: {
+      screen: QuestPreview
     }
   },
   {
-    initialRouteName: ScreenKeys.Onboarding
+    initialRouteName: ScreenKeys.Onboarding,
+    transitionConfig: (toProps: TransitionProps, fromProps: TransitionProps) => {
+      if (
+        fromProps &&
+        ((fromProps.scene.route.routeName === ScreenKeys.Home &&
+          toProps.scene.route.routeName === ScreenKeys.QuestPreview) ||
+          (fromProps.scene.route.routeName === ScreenKeys.QuestPreview &&
+            toProps.scene.route.routeName === ScreenKeys.Home))
+      ) {
+        return springyFadeIn();
+      }
+    }
   }
 );
 

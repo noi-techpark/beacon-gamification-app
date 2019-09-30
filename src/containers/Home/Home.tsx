@@ -5,6 +5,7 @@ import FastImage from 'react-native-fast-image';
 import { material } from 'react-native-typography';
 import { NavigationParams, NavigationRoute, NavigationScreenProp } from 'react-navigation';
 import { useNavigation, useNavigationParam } from 'react-navigation-hooks';
+import { SharedElement } from 'react-navigation-shared-element';
 import { getAuthToken, getUserDetail } from '../../api/auth';
 import { getQuests } from '../../api/quests';
 import { PlatformTouchable } from '../../common/PlatformTouchable';
@@ -76,23 +77,27 @@ const renderItem = (
 
   return (
     <PlatformTouchable style={styles.questContainer} onPress={onOpenQuestPressed}>
-      <FastImage
-        source={
-          quest.id === 1
-            ? {
-                uri:
-                  'https://trento.impacthub.net/wp-content/uploads/sites/61/2015/10/hubtn_facciata02_low1-e1528807995616.jpg'
-              }
-            : {
-                uri:
-                  'https://images.unsplash.com/photo-1509803874385-db7c23652552?ixlib=rb-1.2.1&auto=format&fit=crop&w=3300&q=80'
-              }
-        }
-        style={{ height: 150, width: '100%' }}
-        resizeMode="cover"
-      />
-      <View style={{ paddingHorizontal: 16, justifyContent: 'center', height: 50 }}>
-        <Text>{quest.name}</Text>
+      <SharedElement id="image">
+        <FastImage
+          source={
+            quest.id === 1
+              ? {
+                  uri:
+                    'https://trento.impacthub.net/wp-content/uploads/sites/61/2015/10/hubtn_facciata02_low1-e1528807995616.jpg'
+                }
+              : {
+                  uri:
+                    'https://images.unsplash.com/photo-1509803874385-db7c23652552?ixlib=rb-1.2.1&auto=format&fit=crop&w=3300&q=80'
+                }
+          }
+          style={{ height: 150, width: '100%' }}
+          resizeMode="cover"
+        />
+      </SharedElement>
+      <View style={styles.dataContainer}>
+        <SharedElement id="name">
+          <Text style={material.body1}>{quest.name}</Text>
+        </SharedElement>
       </View>
     </PlatformTouchable>
   );
@@ -125,7 +130,8 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: Colors.BLACK_008,
     backgroundColor: Colors.WHITE
-  }
+  },
+  dataContainer: { paddingHorizontal: 16, justifyContent: 'center', height: 50 }
 });
 
 export default Home;

@@ -5127,17 +5127,24 @@ react-native-safe-area-view@^0.14.1:
   dependencies:
     hoist-non-react-statics "^2.3.1"
 
-react-native-screen@^0.0.1:
-  version "0.0.1"
-  resolved "https://registry.yarnpkg.com/react-native-screen/-/react-native-screen-0.0.1.tgz#10a5f8615c3a763d1d7144ff90c0c82f330886e5"
-  integrity sha1-EKX4YVw6dj0dcUT/kMDILzMIhuU=
-
 "react-native-screens@^1.0.0 || ^1.0.0-alpha":
   version "1.0.0-alpha.23"
   resolved "https://registry.yarnpkg.com/react-native-screens/-/react-native-screens-1.0.0-alpha.23.tgz#25d7ea4d11bda4fcde2d1da7ae50271c6aa636e0"
   integrity sha512-tOxHGQUN83MTmQB4ghoQkibqOdGiX4JQEmeyEv96MKWO/x8T2PJv84ECUos9hD3blPRQwVwSpAid1PPPhrVEaw==
   dependencies:
     debounce "^1.2.0"
+
+react-native-screens@^2.0.0-alpha.3:
+  version "2.0.0-alpha.3"
+  resolved "https://registry.yarnpkg.com/react-native-screens/-/react-native-screens-2.0.0-alpha.3.tgz#af86f265b2fb4293b626cf4396db7743de5a54af"
+  integrity sha512-SA3uGrc3UM1V9y6gfVU1UPf1a3dMyQCj3p5J7y6g81Of8rV5Pc34s6fWzOKNAWgOiviAktZB1z7Jngdl7+acZg==
+  dependencies:
+    debounce "^1.2.0"
+
+react-native-shared-element@^0.5.1:
+  version "0.5.1"
+  resolved "https://registry.yarnpkg.com/react-native-shared-element/-/react-native-shared-element-0.5.1.tgz#d6210c3c9e116b8f03692c4144b2d11e660bc49c"
+  integrity sha512-s4KiuNBHaVwjpezvtU2QaQ6c++XOWIcDrJHKSrVkEj9b0e5tQbJuDkqnrVH80o+y2vODV15jzu1yOZCo7ItIBA==
 
 react-native-typography@^1.4.1:
   version "1.4.1"
@@ -5182,6 +5189,13 @@ react-navigation-hooks@^1.0.3:
   version "1.0.3"
   resolved "https://registry.yarnpkg.com/react-navigation-hooks/-/react-navigation-hooks-1.0.3.tgz#8c203c1a4eff453d2cc07b33667abdd2a6417ab8"
   integrity sha512-w9H7hVJGS2rhonpnih4LgJ6Elrg2Xc41njvmwlI7ZwEo0JDJt/D4sulYvJcvrxhslmVNbu14F8KwgeCTwTWXjg==
+
+react-navigation-shared-element@^0.5.0:
+  version "0.5.0"
+  resolved "https://registry.yarnpkg.com/react-navigation-shared-element/-/react-navigation-shared-element-0.5.0.tgz#b384dbf323dc2491c3e58b3aae1bb82054096ae0"
+  integrity sha512-RNIxqEGFYTKTR65FGHz+wP6DrdynbQHooy48irQBjygzPYgr1qBw48zJu6UV/STmFy1Iu/279JPZ+dm+hH36lg==
+  dependencies:
+    hoist-non-react-statics "^3.3.0"
 
 react-navigation-stack@^1.8.0:
   version "1.8.0"
