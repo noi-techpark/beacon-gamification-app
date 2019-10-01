@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Button, StyleSheet, Text, TextInput } from 'react-native';
+import { Button, Keyboard, StyleSheet, Text, TextInput } from 'react-native';
 import { translate } from '../../localization/locale';
 import { Colors } from '../../styles/colors';
 
@@ -7,6 +7,7 @@ const QuestStepQuestion = ({ step, onCorrectAnswer }) => {
   const [answer, setAnswer] = useState('');
 
   function onAnswerPressed() {
+    Keyboard.dismiss();
     if (answer === JSON.parse(step.properties).r) {
       onCorrectAnswer(step);
     }

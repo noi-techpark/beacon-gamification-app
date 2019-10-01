@@ -5329,6 +5329,11 @@ react-is@^16.7.0, react-is@^16.8.1, react-is@^16.8.4, react-is@^16.8.6:
   version "1.0.0"
   resolved "git://github.com/BelkaLab/react-native-beacon-suedtirol-mobile-sdk#ed72f39b7a997b63fdc6a21b0c3fa6a68839b4c3"
 
+react-native-connectivity-status@^1.5.1:
+  version "1.5.1"
+  resolved "https://registry.yarnpkg.com/react-native-connectivity-status/-/react-native-connectivity-status-1.5.1.tgz#d19ea5bb7da581ed64ee07905b9ffac52e055fdb"
+  integrity sha512-q+nMyV9uxcZw7Fpm1hDw9RscIIa3AubuPTYDDmCujOsqod/lRZ+WG98HWUjPS+4RPZyTmgXJbBvbnklCRLRQuw==
+
 react-native-fast-image@^7.0.2:
   version "7.0.2"
   resolved "https://registry.yarnpkg.com/react-native-fast-image/-/react-native-fast-image-7.0.2.tgz#e06b21f42f4a9786eaa86f3db35d919070fb8403"

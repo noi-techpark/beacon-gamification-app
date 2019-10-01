@@ -44,6 +44,9 @@ const AppNavigator = createSharedElementStackNavigator(
   },
   {
     initialRouteName: ScreenKeys.Onboarding,
+    cardStyle: {
+      opacity: 1
+    },
     transitionConfig: (toProps: TransitionProps, fromProps: TransitionProps) => {
       if (
         fromProps &&

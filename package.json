@@ -25,6 +25,7 @@
     "react": "16.8.6",
     "react-native": "0.60.5",
     "react-native-beacon-suedtirol-mobile-sdk": "git://github.com/BelkaLab/react-native-beacon-suedtirol-mobile-sdk",
+    "react-native-connectivity-status": "^1.5.1",
     "react-native-fast-image": "^7.0.2",
     "react-native-gesture-handler": "^1.4.1",
     "react-native-localize": "^1.2.1",

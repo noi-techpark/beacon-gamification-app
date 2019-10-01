@@ -2,7 +2,7 @@ import to from 'await-to-js';
 import filter from 'lodash.filter';
 import unionBy from 'lodash.unionby';
 import React, { useEffect, useRef, useState } from 'react';
-import { DeviceEventEmitter, ScrollView, StyleSheet, Text } from 'react-native';
+import { DeviceEventEmitter, ScrollView, StyleSheet, Text, View } from 'react-native';
 import NearbyBeacons from 'react-native-beacon-suedtirol-mobile-sdk';
 import { Transition, Transitioning, TransitioningView } from 'react-native-reanimated';
 import { useNavigation, useNavigationParam } from 'react-navigation-hooks';
@@ -12,6 +12,7 @@ import { QuestStepQuestion } from '../../../components/QuestStepQuestion';
 import { Beacon, BeaconMedata } from '../../../models/beacon';
 import { Quest, QuestStep } from '../../../models/quest';
 import { ScreenKeys } from '../../../screens';
+import { Colors } from '../../../styles/colors';
 
 const IBEACON_DISCOVERED = 'beaconDiscovered';
 const IBEACON_LOST = 'beaconLost';
@@ -81,6 +82,8 @@ const QuestStepViewer = () => {
         stepId: step.quest_index + 1,
         token
       });
+    } else {
+      navigation.goBack();
     }
   }
 
@@ -122,5 +125,24 @@ const styles = StyleSheet.create({
     padding: 40
   }
 });
+
+QuestStepViewer.navigationOptions = props => {
+  const quest = props.navigation.getParam('quest');
+  const stepId = props.navigation.getParam('stepId');
+
+  const step = quest.steps.find(s => s.id === stepId);
+  const percentage = (step.value_points / 1300) * 100;
+
+  return {
+    headerTitle: (
+      <View style={{ width: '90%' }}>
+        <Text>{quest.name}</Text>
+        <View style={{ height: 10, width: '100%', borderColor: Colors.BLACK, borderWidth: 1 }}>
+          <View style={{ height: '100%', width: `${percentage}%`, backgroundColor: Colors.BLUE_500 }} />
+        </View>
+      </View>
+    )
+  };
+};
 
 export default QuestStepViewer;
