@@ -1,9 +1,11 @@
 {
   "welcome": "Wilkommen!",
   "start": "",
+  "proceed": "",
   "onboarding": "",
   "ask_permission": "",
   "insert_username": "",
   "signin": "",
-  "points": ""
+  "points": "",
+  "gained": ""
 }

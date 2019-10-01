@@ -70,6 +70,7 @@ const ModalNavigator = createStackNavigator(
   {
     mode: 'modal',
     headerMode: 'none',
+    gesturesEnabled: false,
     cardStyle: {
       backgroundColor: Colors.BLACK_040,
       opacity: 1

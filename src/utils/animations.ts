@@ -41,8 +41,14 @@ export function forVertical() {
                 outputRange: [height, 0, 0]
             });
 
-            return { transform: [{ translateY }] };
-        }
+            const opacity = position.interpolate({
+                inputRange: [index - 1, index, index + 1],
+                outputRange: [1, 1, 0.5],
+            });
 
+            opacity.set
+
+            return { opacity, transform: [{ translateY }] };
+        }
     }
 }

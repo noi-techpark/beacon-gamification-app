@@ -53,7 +53,7 @@ const QuestStepViewer = () => {
           NearbyBeacons.stopScanning(() => {});
 
           if (step.type === 'info') {
-            navigation.navigate('QuestStepCompleted');
+            navigation.navigate('QuestStepCompleted', { step });
           }
         }
       }),
