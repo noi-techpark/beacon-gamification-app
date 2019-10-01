@@ -12,6 +12,7 @@ const QuestStepCompleted = () => {
 
   async function onStepCompleted() {
     navigation.goBack();
+    navigation.state.params.onStepCompleted(step);
   }
 
   return (

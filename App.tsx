@@ -63,7 +63,7 @@ const ModalNavigator = createStackNavigator(
     Main: {
       screen: AppNavigator
     },
-    QuestStepCompleted: {
+    [ScreenKeys.QuestStepCompleted]: {
       screen: QuestStepCompleted
     }
   },
