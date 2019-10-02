@@ -1,8 +1,9 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Button, StyleSheet, Text, View } from 'react-native';
+import NearbyBeacons from 'react-native-beacon-suedtirol-mobile-sdk';
 import FastImage from 'react-native-fast-image';
 import { material } from 'react-native-typography';
-import { useNavigation, useNavigationParam } from 'react-navigation-hooks';
+import { useFocusState, useNavigation, useNavigationParam } from 'react-navigation-hooks';
 import { SharedElement } from 'react-navigation-shared-element';
 import { translate } from '../../../localization/locale';
 import { Quest } from '../../../models/quest';
@@ -12,14 +13,27 @@ const QuestPreview = () => {
   const navigation = useNavigation();
   const quest: Quest = useNavigationParam('quest');
   const token = useNavigationParam('token');
+  const focusState = useFocusState();
 
-  async function onStartQuestPressed() {
+  useEffect(() => {
+    if (focusState.isFocused) {
+      NearbyBeacons.stopScanning(() => {
+        console.log('stopped scanning');
+      });
+    }
+  }, [focusState]);
+
+  const onStartQuestPressed = () => {
+    NearbyBeacons.startScanning(() => {
+      console.log('started scanning');
+    });
+
     navigation.navigate(ScreenKeys.QuestStepViewer, {
       quest,
       stepId: 1,
       token
     });
-  }
+  };
 
   return (
     <View style={styles.root}>

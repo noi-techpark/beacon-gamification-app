@@ -3,11 +3,10 @@ import filter from 'lodash.filter';
 import unionBy from 'lodash.unionby';
 import React, { useEffect, useRef, useState } from 'react';
 import { DeviceEventEmitter, ScrollView, StyleSheet, Text, View } from 'react-native';
-import NearbyBeacons from 'react-native-beacon-suedtirol-mobile-sdk';
 import { Transition, Transitioning, TransitioningView } from 'react-native-reanimated';
 import { useNavigation, useNavigationParam } from 'react-navigation-hooks';
 import { getBeaconMetadataById } from '../../../api/beacons';
-import { QuestStepFounder } from '../../../components/QuestStepFounder';
+import { QuestStepFinder } from '../../../components/QuestStepFinder';
 import { QuestStepQuestion } from '../../../components/QuestStepQuestion';
 import { Beacon, BeaconMedata } from '../../../models/beacon';
 import { Quest, QuestStep } from '../../../models/quest';
@@ -38,7 +37,17 @@ const QuestStepViewer = () => {
       if (beaconToReach) {
         setBeaconToReach(beaconToReach);
 
-        NearbyBeacons.startScanning(() => {});
+        console.log(discoveredBeacons);
+
+        const alreadyFound = discoveredBeacons.find(b => b.id === beaconToReach.beacon_id);
+        if (alreadyFound) {
+          if (step.type === 'info') {
+            navigation.navigate(ScreenKeys.QuestStepCompleted, { step, onStepCompleted });
+          } else {
+            ref.current.animateNextTransition();
+            setBeaconFound(true);
+          }
+        }
       }
     };
 
@@ -49,11 +58,8 @@ const QuestStepViewer = () => {
     const subscriptions = [
       DeviceEventEmitter.addListener(IBEACON_DISCOVERED, async (beacon: Beacon) => {
         setDiscoveredBeacons(unionBy(discoveredBeacons, [beacon], b => b.id));
-        console.log(beacon);
 
         if (beaconToReach && beaconToReach.beacon_id === beacon.id) {
-          NearbyBeacons.stopScanning(() => {});
-
           if (step.type === 'info') {
             navigation.navigate(ScreenKeys.QuestStepCompleted, { step, onStepCompleted });
           } else {
@@ -63,20 +69,18 @@ const QuestStepViewer = () => {
         }
       }),
       DeviceEventEmitter.addListener(IBEACON_LOST, beacon => {
-        setDiscoveredBeacons(filter(this.state.discoveredBeacons, b => b.id !== beacon.id));
+        setDiscoveredBeacons(filter(discoveredBeacons, b => b.id !== beacon.id));
       })
     ];
 
     return () => {
       subscriptions.forEach(s => s.remove());
     };
-  }, [beaconToReach]);
+  }, [beaconToReach, discoveredBeacons]);
 
   function onStepCompleted(step: QuestStep) {
     // update topbar points
     if (step.quest_index < quest.steps.length) {
-      NearbyBeacons.stopScanning(() => {});
-
       navigation.navigate(ScreenKeys.QuestStepViewer, {
         quest,
         stepId: step.quest_index + 1,
@@ -84,6 +88,7 @@ const QuestStepViewer = () => {
       });
     } else {
       navigation.goBack();
+      // navigation.state.params.onQuestCompleted(quest);
     }
   }
 
@@ -110,7 +115,7 @@ const QuestStepViewer = () => {
       <Text>{step.name}</Text>
       <Transitioning.View ref={ref} transition={transition} style={{ flexGrow: 1, width: '100%', marginTop: 24 }}>
         {!isBeaconFound ? (
-          <QuestStepFounder step={step} />
+          <QuestStepFinder step={step} />
         ) : (
           <QuestStepQuestion step={step} onCorrectAnswer={onCorrectAnswer} />
         )}

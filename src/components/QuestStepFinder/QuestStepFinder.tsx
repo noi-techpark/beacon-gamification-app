@@ -2,7 +2,7 @@ import React from 'react';
 import { ActivityIndicator, StyleSheet, Text, View } from 'react-native';
 import { Colors } from '../../styles/colors';
 
-const QuestStepFounder = ({ step }) => {
+const QuestStepFinder = ({ step }) => {
   return (
     <View style={styles.founderContainer}>
       <ActivityIndicator size="large" color={Colors.BLUE_500} />
@@ -24,4 +24,4 @@ const styles = StyleSheet.create({
   }
 });
 
-export default QuestStepFounder;
+export default QuestStepFinder;

@@ -5327,7 +5327,7 @@ react-is@^16.7.0, react-is@^16.8.1, react-is@^16.8.4, react-is@^16.8.6:
 
 "react-native-beacon-suedtirol-mobile-sdk@git://github.com/BelkaLab/react-native-beacon-suedtirol-mobile-sdk":
   version "1.0.0"
-  resolved "git://github.com/BelkaLab/react-native-beacon-suedtirol-mobile-sdk#ed72f39b7a997b63fdc6a21b0c3fa6a68839b4c3"
+  resolved "git://github.com/BelkaLab/react-native-beacon-suedtirol-mobile-sdk#110535049d1b3dcb5f69c3b068e5117beb580310"
 
 react-native-connectivity-status@^1.5.1:
   version "1.5.1"
