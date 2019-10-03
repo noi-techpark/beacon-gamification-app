@@ -1,6 +1,5 @@
 import React from 'react';
 import { Button, StyleSheet, Text, View } from 'react-native';
-import ConnectivityManager from 'react-native-connectivity-status';
 import { material } from 'react-native-typography';
 import { useNavigation } from 'react-navigation-hooks';
 import { translate } from '../../localization/locale';
@@ -12,13 +11,8 @@ const Onboarding = () => {
 
   async function onStartOnboardingPressed() {
     const hasPermissions = await requestFineLocationPermission();
-    const bluetoothIsOn = await ConnectivityManager.isBluetoothEnabled();
 
-    if (!bluetoothIsOn) {
-      alert('Turn on the bluetooth!');
-    }
-
-    if (hasPermissions && bluetoothIsOn) {
+    if (hasPermissions) {
       navigation.navigate(ScreenKeys.Register);
     }
   }
