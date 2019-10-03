@@ -5,8 +5,10 @@ import unionBy from 'lodash.unionby';
 import React, { useEffect, useRef, useState } from 'react';
 import { DeviceEventEmitter, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { Transition, Transitioning, TransitioningView } from 'react-native-reanimated';
+import { material } from 'react-native-typography';
 import { useNavigation, useNavigationParam } from 'react-navigation-hooks';
 import { getBeaconMetadataById } from '../../../api/beacons';
+import PlatformTouchable from '../../../common/PlatformTouchable/PlatformTouchable';
 import { QuestStepFinder } from '../../../components/QuestStepFinder';
 import { QuestStepQuestion } from '../../../components/QuestStepQuestion';
 import { Beacon, BeaconMedata } from '../../../models/beacon';
@@ -96,6 +98,19 @@ const QuestStepViewer = () => {
     }
   }
 
+  const onSkipStepPressed = (step: QuestStep) => {
+    if (step.quest_index < quest.steps.length) {
+      navigation.navigate(ScreenKeys.QuestStepViewer, {
+        quest,
+        stepId: step.quest_index + 1,
+        token
+      });
+    } else {
+      navigation.goBack();
+      // navigation.state.params.onQuestCompleted(quest);
+    }
+  };
+
   function onCorrectAnswer(step: QuestStep) {
     navigation.navigate(ScreenKeys.QuestStepCompleted, { step, onStepCompleted });
   }
@@ -124,6 +139,12 @@ const QuestStepViewer = () => {
           <QuestStepQuestion step={step} onCorrectAnswer={onCorrectAnswer} />
         )}
       </Transitioning.View>
+      <PlatformTouchable
+        onPress={() => onSkipStepPressed(step)}
+        style={{ marginTop: 24, height: 20, alignItems: 'center', justifyContent: 'center' }}
+      >
+        <Text style={{ ...material.body1Object, color: Colors.BLUE_500 }}>Salta passo</Text>
+      </PlatformTouchable>
     </ScrollView>
   );
 };
