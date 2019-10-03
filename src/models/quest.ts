@@ -11,7 +11,7 @@ export type QuestStep = {
     beacon: number;
     instructions: string;
     name: string;
-    properties: string
+    properties: string;
     quest: number;
     quest_index: number;
     type: 'info' | 'question' | 'media';
@@ -25,4 +25,10 @@ export type QuestFinder = {
         beacon_id: string;
     };
     quests: Quest[];
+}
+
+export type Question = {
+    q: string;
+    r: string;
+    kind: 'text' | 'number' | 'multiple'
 }
