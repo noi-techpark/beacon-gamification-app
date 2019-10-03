@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { Button, Keyboard, StyleSheet, Text, TextInput } from 'react-native';
+import { Keyboard, StyleSheet, Text, TextInput } from 'react-native';
+import { Button } from 'react-native-paper';
 import { translate } from '../../localization/locale';
 import { Question } from '../../models/quest';
 import { Colors } from '../../styles/colors';
@@ -34,7 +35,9 @@ const QuestStepQuestion = ({ step, onCorrectAnswer }) => {
             selectionColor={Colors.BLUE_500}
             underlineColorAndroid={Colors.BLUE_500}
           />
-          <Button title={translate('answer')} onPress={onAnswerPressed} />
+          <Button onPress={onAnswerPressed} mode="contained">
+            {translate('answer')}
+          </Button>
         </>
       );
     case 'number':
@@ -49,7 +52,9 @@ const QuestStepQuestion = ({ step, onCorrectAnswer }) => {
             selectionColor={Colors.BLUE_500}
             underlineColorAndroid={Colors.BLUE_500}
           />
-          <Button title={translate('answer')} onPress={onAnswerPressed} />
+          <Button onPress={onAnswerPressed} mode="contained">
+            {translate('answer')}
+          </Button>
         </>
       );
   }

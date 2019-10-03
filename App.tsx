@@ -8,6 +8,7 @@
  * @format
  */
 
+import { StatusBar } from 'react-native';
 import { createAppContainer } from 'react-navigation';
 import { createSharedElementStackNavigator } from 'react-navigation-shared-element';
 import { createStackNavigator } from 'react-navigation-stack';
@@ -20,8 +21,10 @@ import { QuestStepViewer } from './src/containers/quest/QuestStepViewer';
 import { Register } from './src/containers/Register';
 import { setupI18nConfig } from './src/localization/locale';
 import { ScreenKeys } from './src/screens';
-import { Colors } from './src/styles/colors';
 import { forVertical, springyFadeIn } from './src/utils/animations';
+
+StatusBar.setTranslucent(true);
+StatusBar.setBackgroundColor('transparent');
 
 const AppNavigator = createSharedElementStackNavigator(
   createStackNavigator,
@@ -44,8 +47,12 @@ const AppNavigator = createSharedElementStackNavigator(
   },
   {
     initialRouteName: ScreenKeys.Onboarding,
-    cardStyle: {
-      opacity: 1
+    defaultNavigationOptions: {
+      headerStyle: {
+        elevation: 0,
+        backgroundColor: 'transparent',
+        marginTop: StatusBar.currentHeight
+      }
     },
     transitionConfig: (toProps: TransitionProps, fromProps: TransitionProps) => {
       if (
@@ -74,10 +81,6 @@ const ModalNavigator = createStackNavigator(
     mode: 'modal',
     headerMode: 'none',
     gesturesEnabled: false,
-    cardStyle: {
-      backgroundColor: Colors.BLACK_040,
-      opacity: 1
-    },
     transparentCard: true,
     transitionConfig: () => forVertical()
   }

@@ -1,10 +1,10 @@
 import to from 'await-to-js';
 import React, { useState } from 'react';
-import { Button, Keyboard, ScrollView, StyleSheet, Text, TextInput } from 'react-native';
+import { Button, Keyboard, ScrollView, StatusBar, StyleSheet, Text, TextInput } from 'react-native';
 import { material } from 'react-native-typography';
 import { useNavigation } from 'react-navigation-hooks';
 import { getAuthToken, postAddUserToGroup, postCreateUser } from '../../api/auth';
-import { Avatar } from '../../components/Avatar';
+import { CircleAvatar } from '../../components/CircleAvatar';
 import { translate } from '../../localization/locale';
 import { ApiError, isUsernameAlreadyExisiting } from '../../models/error';
 import { User } from '../../models/user';
@@ -47,7 +47,7 @@ const Register = () => {
       keyboardShouldPersistTaps="handled"
       contentContainerStyle={{ alignItems: 'center' }}
     >
-      <Avatar username={username} />
+      <CircleAvatar username={username} />
       <Text style={{ ...material.headlineObject, marginTop: 8 }}>{translate('insert_username')}</Text>
       <TextInput
         onChangeText={username => setUsername(username)}
@@ -66,7 +66,13 @@ const Register = () => {
 };
 
 Register.navigationOptions = {
-  title: ''
+  headerStyle: {
+    // backgroundColor: Colors.WHITE,
+    elevation: 0,
+    marginTop: StatusBar.currentHeight,
+    // height: 
+  },
+  // headerTransparent: true,
 };
 
 const styles = StyleSheet.create({

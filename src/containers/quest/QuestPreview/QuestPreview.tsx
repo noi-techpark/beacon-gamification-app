@@ -1,7 +1,6 @@
 import React, { useEffect } from 'react';
-import { Button, StyleSheet, Text, View } from 'react-native';
+import { Button, Image, StyleSheet, Text, View } from 'react-native';
 import NearbyBeacons from 'react-native-beacon-suedtirol-mobile-sdk';
-import FastImage from 'react-native-fast-image';
 import { material } from 'react-native-typography';
 import { useFocusState, useNavigation, useNavigationParam } from 'react-navigation-hooks';
 import { SharedElement } from 'react-navigation-shared-element';
@@ -42,7 +41,7 @@ const QuestPreview = () => {
           <Text style={material.headline}>{quest.name}</Text>
         </SharedElement>
         <SharedElement id="image" style={{ height: 150, width: '100%', marginTop: 12 }}>
-          <FastImage
+          <Image
             source={
               quest.id === 1
                 ? {
@@ -63,8 +62,6 @@ const QuestPreview = () => {
     </View>
   );
 };
-
-QuestPreview.sharedElements = () => [{ id: 'image' }, { id: 'name', animation: 'fade', resize: 'clip' }];
 
 const styles = StyleSheet.create({
   root: {

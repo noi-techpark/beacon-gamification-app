@@ -1,4 +1,5 @@
 import { Animated, Easing } from 'react-native';
+import { Colors } from '../styles/colors';
 
 export function springyFadeIn() {
     const transitionSpec = {
@@ -24,7 +25,7 @@ export function springyFadeIn() {
 
 export function forVertical() {
     const transitionSpec = {
-        duration: 750,
+        duration: 500,
         easing: Easing.out(Easing.poly(4)),
         timing: Animated.timing,
         useNativeDriver: true
@@ -32,6 +33,9 @@ export function forVertical() {
 
     return {
         transitionSpec,
+        containerStyle: {
+            backgroundColor: Colors.BLACK
+        },
         screenInterpolator: ({ layout, position, scene }) => {
             const { index } = scene;
 
@@ -43,10 +47,8 @@ export function forVertical() {
 
             const opacity = position.interpolate({
                 inputRange: [index - 1, index, index + 1],
-                outputRange: [1, 1, 0.5],
+                outputRange: [1, 1, 0.1],
             });
-
-            opacity.set
 
             return { opacity, transform: [{ translateY }] };
         }

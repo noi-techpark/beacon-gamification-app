@@ -9,7 +9,7 @@ import { SharedElement } from 'react-navigation-shared-element';
 import { getAuthToken, getUserDetail } from '../../api/auth';
 import { getQuests } from '../../api/quests';
 import { PlatformTouchable } from '../../common/PlatformTouchable';
-import { Avatar } from '../../components/Avatar';
+import { CircleAvatar } from '../../components/CircleAvatar';
 import { translate } from '../../localization/locale';
 import { Quest } from '../../models/quest';
 import { UserDetail } from '../../models/user';
@@ -60,7 +60,7 @@ const Home = () => {
 
 const AvatarRecap = ({ username, points }) => (
   <View style={styles.avatarRecapContainer}>
-    <Avatar username={username} />
+    <CircleAvatar username={username} />
     <View style={styles.userInfoContainer}>
       <Text style={material.subheading}>{username}</Text>
       <Text style={material.body1}>{`${points || 0} ${translate('points')}`}</Text>
@@ -138,5 +138,13 @@ const styles = StyleSheet.create({
   },
   dataContainer: { paddingHorizontal: 16, justifyContent: 'center', height: 50 }
 });
+
+Home.navigationOptions = {
+  cardStyle: {
+    backgroundColor: Colors.WHITE
+  }
+};
+
+Home.sharedElements = () => [{ id: 'image' }, { id: 'name', animation: 'fade', resize: 'clip' }];
 
 export default Home;
