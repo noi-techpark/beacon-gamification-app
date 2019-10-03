@@ -23,7 +23,7 @@ platform :android do
 
   desc "Submit a new Beta Build to Appcenter Beta"
   lane :beta do
-    # sh("cd ../..; npx jetify")
+    sh("cd ../..; npx jetify")
     gradle(task: "clean assembleRelease")
     appcenter_upload(
       api_token: "d690c220ad318f9adab2bb83b227d25c61d8ebef",
