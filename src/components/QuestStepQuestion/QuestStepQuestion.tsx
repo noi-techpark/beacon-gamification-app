@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Keyboard, StyleSheet, Text, TextInput } from 'react-native';
+import { useKeyboard } from 'react-native-hooks';
 import { Button } from 'react-native-paper';
 import { translate } from '../../localization/locale';
 import { Question } from '../../models/quest';
@@ -7,6 +8,7 @@ import { Colors } from '../../styles/colors';
 
 const QuestStepQuestion = ({ step, onCorrectAnswer }) => {
   const [answer, setAnswer] = useState('');
+  const { isKeyboardShow } = useKeyboard();
 
   if (step.type !== 'question') {
     return <></>;
@@ -14,10 +16,16 @@ const QuestStepQuestion = ({ step, onCorrectAnswer }) => {
 
   const question: Question = JSON.parse(step.properties);
 
-  const onAnswerPressed = () => {
-    Keyboard.dismiss();
+  useEffect(() => {
+    if (!isKeyboardShow && answer === question.r) {
+      onCorrectAnswer(step);
+    }
+  }, [isKeyboardShow]);
 
-    if (answer === question.r) {
+  const onAnswerPressed = () => {
+    if (isKeyboardShow) {
+      Keyboard.dismiss();
+    } else {
       onCorrectAnswer(step);
     }
   };
