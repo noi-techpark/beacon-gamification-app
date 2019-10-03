@@ -1,5 +1,6 @@
 import to from 'await-to-js';
 import filter from 'lodash.filter';
+import sumBy from 'lodash.sumby';
 import unionBy from 'lodash.unionby';
 import React, { useEffect, useRef, useState } from 'react';
 import { DeviceEventEmitter, ScrollView, StyleSheet, Text, View } from 'react-native';
@@ -21,6 +22,7 @@ const QuestStepViewer = () => {
   const quest: Quest = useNavigationParam('quest');
   const stepId: number = useNavigationParam('stepId');
   const token: string = useNavigationParam('token');
+  const points: number = useNavigationParam('points') || 0;
   const [discoveredBeacons, setDiscoveredBeacons] = useState<Beacon[]>([]);
   const [beaconToReach, setBeaconToReach] = useState<BeaconMedata>();
   const [isBeaconFound, setBeaconFound] = useState(false);
@@ -78,13 +80,15 @@ const QuestStepViewer = () => {
     };
   }, [beaconToReach, discoveredBeacons]);
 
-  function onStepCompleted(step: QuestStep) {
-    // update topbar points
+  async function onStepCompleted(step: QuestStep) {
+    // await postAddPoints(token, step.value_points);
+
     if (step.quest_index < quest.steps.length) {
       navigation.navigate(ScreenKeys.QuestStepViewer, {
         quest,
         stepId: step.quest_index + 1,
-        token
+        token,
+        points: points + step.value_points
       });
     } else {
       navigation.goBack();
@@ -131,12 +135,12 @@ const styles = StyleSheet.create({
   }
 });
 
-QuestStepViewer.navigationOptions = props => {
-  const quest = props.navigation.getParam('quest');
-  const stepId = props.navigation.getParam('stepId');
+QuestStepViewer.navigationOptions = ({ navigation }) => {
+  const quest: Quest = navigation.getParam('quest');
+  const points: number = navigation.getParam('points') || 0;
 
-  const step = quest.steps.find(s => s.id === stepId);
-  const percentage = (step.value_points / 1300) * 100;
+  const totalQuestPoints = sumBy(quest.steps, s => s.value_points);
+  const percentage = (points / totalQuestPoints) * 100;
 
   return {
     headerTitle: (
