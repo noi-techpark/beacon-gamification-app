@@ -1,16 +1,12 @@
 import to from 'await-to-js';
 import React, { useEffect, useState } from 'react';
-import { FlatList, StyleSheet, Text, View } from 'react-native';
-import FastImage from 'react-native-fast-image';
-import { material } from 'react-native-typography';
+import { FlatList, StyleSheet, View } from 'react-native';
 import { NavigationParams, NavigationRoute, NavigationScreenProp } from 'react-navigation';
 import { useNavigation, useNavigationParam } from 'react-navigation-hooks';
-import { SharedElement } from 'react-navigation-shared-element';
 import { getAuthToken, getUserDetail } from '../../api/auth';
 import { getQuests } from '../../api/quests';
-import { PlatformTouchable } from '../../common/PlatformTouchable';
-import { CircleAvatar } from '../../components/CircleAvatar';
-import { translate } from '../../localization/locale';
+import { QuestCardItem } from '../../components/QuestCardItem';
+import { UserRecap } from '../../components/UserRecap';
 import { Quest } from '../../models/quest';
 import { UserDetail } from '../../models/user';
 import { ScreenKeys } from '../../screens';
@@ -51,22 +47,12 @@ const Home = () => {
         keyExtractor={item => String(item.id)}
         style={{ paddingTop: 16 }}
         contentContainerStyle={{ flexGrow: 1 }}
-        ListHeaderComponent={<AvatarRecap username={username} points={user.points} />}
+        ListHeaderComponent={<UserRecap username={username} points={user.points} />}
         renderItem={({ item }) => renderItem(item, token, navigation)}
       />
     </View>
   );
 };
-
-const AvatarRecap = ({ username, points }) => (
-  <View style={styles.avatarRecapContainer}>
-    <CircleAvatar username={username} />
-    <View style={styles.userInfoContainer}>
-      <Text style={material.subheading}>{username}</Text>
-      <Text style={material.body1}>{`${points || 0} ${translate('points')}`}</Text>
-    </View>
-  </View>
-);
 
 const renderItem = (
   quest: Quest,
@@ -80,52 +66,12 @@ const renderItem = (
     });
   }
 
-  return (
-    <PlatformTouchable style={styles.questContainer} onPress={onOpenQuestPressed}>
-      <SharedElement id="image">
-        <FastImage
-          source={
-            quest.id === 1
-              ? {
-                  uri:
-                    'https://trento.impacthub.net/wp-content/uploads/sites/61/2015/10/hubtn_facciata02_low1-e1528807995616.jpg'
-                }
-              : {
-                  uri:
-                    'https://images.unsplash.com/photo-1509803874385-db7c23652552?ixlib=rb-1.2.1&auto=format&fit=crop&w=3300&q=80'
-                }
-          }
-          style={{ height: 150, width: '100%' }}
-          resizeMode="cover"
-        />
-      </SharedElement>
-      <View style={styles.dataContainer}>
-        <SharedElement id="name">
-          <Text style={material.body1}>{quest.name}</Text>
-        </SharedElement>
-      </View>
-    </PlatformTouchable>
-  );
+  return <QuestCardItem quest={quest} onOpenQuestPressed={onOpenQuestPressed} />;
 };
 
 const styles = StyleSheet.create({
   root: {
     flex: 1
-  },
-  avatarRecapContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginHorizontal: 16,
-    paddingHorizontal: 8,
-    height: 72,
-    elevation: 3,
-    borderRadius: 8,
-    borderWidth: 1,
-    borderColor: Colors.BLACK_008,
-    backgroundColor: Colors.WHITE
-  },
-  userInfoContainer: {
-    paddingHorizontal: 16
   },
   questContainer: {
     margin: 16,
