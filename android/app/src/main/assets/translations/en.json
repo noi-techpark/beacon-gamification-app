@@ -8,5 +8,6 @@
   "signin": "Signin",
   "points": "Points",
   "gained": "Congrats! You earned",
-  "answer": "Answer"
+  "answer": "Answer",
+  "email_invalid": "Error: Email is not valid"
 }

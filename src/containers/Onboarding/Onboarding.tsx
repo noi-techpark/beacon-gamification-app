@@ -1,5 +1,6 @@
 import React from 'react';
-import { Button, StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
+import { Button } from 'react-native-paper';
 import { material } from 'react-native-typography';
 import { useNavigation } from 'react-navigation-hooks';
 import { translate } from '../../localization/locale';
@@ -25,7 +26,9 @@ const Onboarding = () => {
           <Text style={material.headline}>{translate('onboarding')}</Text>
           <Text style={material.subheading}>{translate('ask_permission')}</Text>
         </>
-        <Button onPress={onStartOnboardingPressed} title={translate('start')} />
+        <Button onPress={onStartOnboardingPressed} mode="contained">
+          {translate('start')}
+        </Button>
       </View>
     </View>
   );

@@ -1,22 +1,37 @@
 import to from 'await-to-js';
 import React, { useState } from 'react';
-import { Button, Keyboard, ScrollView, StatusBar, StyleSheet, Text, TextInput } from 'react-native';
+import { Keyboard, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { Button, HelperText, TextInput } from 'react-native-paper';
 import { material } from 'react-native-typography';
 import { useNavigation } from 'react-navigation-hooks';
+import * as yup from 'yup';
 import { getAuthToken, postAddUserToGroup, postCreateUser } from '../../api/auth';
 import { CircleAvatar } from '../../components/CircleAvatar';
 import { translate } from '../../localization/locale';
 import { ApiError, isUsernameAlreadyExisiting } from '../../models/error';
 import { User } from '../../models/user';
 import { ScreenKeys } from '../../screens';
-import { Colors } from '../../styles/colors';
 
 const Register = () => {
   const navigation = useNavigation();
   const [username, setUsername] = useState('');
+  const [isValid, setValid] = useState(true);
+
+  const schema = yup.object().shape({
+    username: yup
+      .string()
+      .email()
+      .required()
+  });
 
   async function onSignInPressed() {
     Keyboard.dismiss();
+
+    setValid(
+      schema.isValidSync({
+        username
+      })
+    );
 
     const { token } = await getAuthToken('rizzo', 'rizzorizzorizzo');
     const [err, user] = await to<User, ApiError>(postCreateUser(token, username));
@@ -48,45 +63,49 @@ const Register = () => {
       contentContainerStyle={{ alignItems: 'center' }}
     >
       <CircleAvatar username={username} />
-      <Text style={{ ...material.headlineObject, marginTop: 8 }}>{translate('insert_username')}</Text>
-      <TextInput
-        onChangeText={username => setUsername(username)}
-        value={username}
-        autoCapitalize="none"
-        keyboardType="email-address"
-        style={styles.usernameInput}
-        selectionColor={Colors.BLUE_500}
-        underlineColorAndroid={Colors.BLUE_500}
-        autoFocus={true}
-        placeholder="mario.rossi@test.com"
-      />
-      <Button title={translate('signin')} onPress={onSignInPressed} />
+      <Text style={{ ...material.headlineObject, marginTop: 16 }}>{translate('insert_username')}</Text>
+      <View style={styles.formContainer}>
+        <TextInput
+          value={username}
+          onChangeText={username => {
+            setUsername(username);
+            setValid(true);
+          }}
+          mode="outlined"
+          autoCapitalize="none"
+          keyboardType="email-address"
+          style={styles.usernameInput}
+          autoFocus={true}
+          error={!isValid}
+          label="email"
+        />
+        <HelperText type="error" visible={!isValid}>
+          {translate('email_invalid')}
+        </HelperText>
+      </View>
+      <Button
+        onPress={onSignInPressed}
+        mode="contained"
+        style={styles.signinButton}
+        contentStyle={{ paddingHorizontal: 20 }}
+      >
+        {translate('signin')}
+      </Button>
     </ScrollView>
   );
-};
-
-Register.navigationOptions = {
-  headerStyle: {
-    // backgroundColor: Colors.WHITE,
-    elevation: 0,
-    marginTop: StatusBar.currentHeight,
-    // height: 
-  },
-  // headerTransparent: true,
 };
 
 const styles = StyleSheet.create({
   root: {
     flex: 1,
-    marginTop: 32,
+    marginTop: 24,
     paddingHorizontal: 16
   },
+  formContainer: { width: '100%', marginVertical: 16 },
   usernameInput: {
-    height: 40,
-    width: '100%',
-    paddingHorizontal: 6,
-    marginVertical: 16
-  }
+    width: '100%'
+  },
+  signinButton: { width: '100%', marginTop: 24 }
 });
 
 export default Register;
