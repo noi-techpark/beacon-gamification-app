@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
-import { Button, Image, StyleSheet, Text, View } from 'react-native';
+import { Image, StyleSheet, Text, View } from 'react-native';
 import NearbyBeacons from 'react-native-beacon-suedtirol-mobile-sdk';
+import { Button } from 'react-native-paper';
 import { material } from 'react-native-typography';
 import { useFocusState, useNavigation, useNavigationParam } from 'react-navigation-hooks';
 import { SharedElement } from 'react-navigation-shared-element';
@@ -58,7 +59,9 @@ const QuestPreview = () => {
           />
         </SharedElement>
       </View>
-      <Button onPress={onStartQuestPressed} title={translate('start')} />
+      <Button onPress={onStartQuestPressed} mode="contained">
+        {translate('start')}
+      </Button>
     </View>
   );
 };
