@@ -24,6 +24,8 @@ const QuestPreview = () => {
   }, [focusState]);
 
   const onStartQuestPressed = () => {
+    NearbyBeacons.configureScanMode(2);
+    
     NearbyBeacons.startScanning(() => {
       console.log('started scanning');
     });

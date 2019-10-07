@@ -41,8 +41,6 @@ const QuestStepViewer = () => {
       if (beaconToReach) {
         setBeaconToReach(beaconToReach);
 
-        console.log(discoveredBeacons);
-
         const alreadyFound = discoveredBeacons.find(b => b.id === beaconToReach.beacon_id);
         if (alreadyFound) {
           if (step.type === 'info') {
@@ -62,6 +60,8 @@ const QuestStepViewer = () => {
     const subscriptions = [
       DeviceEventEmitter.addListener(IBEACON_DISCOVERED, async (beacon: Beacon) => {
         setDiscoveredBeacons(unionBy(discoveredBeacons, [beacon], b => b.id));
+
+        console.log(discoveredBeacons);
 
         if (beaconToReach && beaconToReach.beacon_id === beacon.id) {
           if (step.type === 'info') {

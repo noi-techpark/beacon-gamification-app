@@ -5514,7 +5514,7 @@ react-lifecycles-compat@^3.0.4:
 
 "react-native-beacon-suedtirol-mobile-sdk@git://github.com/BelkaLab/react-native-beacon-suedtirol-mobile-sdk":
   version "1.0.0"
-  resolved "git://github.com/BelkaLab/react-native-beacon-suedtirol-mobile-sdk#110535049d1b3dcb5f69c3b068e5117beb580310"
+  resolved "git://github.com/BelkaLab/react-native-beacon-suedtirol-mobile-sdk#b2f0e4feb093d643d5bf57c81b472934e83aee6b"
 
 react-native-fast-image@^7.0.2:
   version "7.0.2"
