@@ -1,12 +1,11 @@
 import React from 'react';
 import { Image, StyleSheet, Text, View } from 'react-native';
 import { Button } from 'react-native-paper';
-import { material } from 'react-native-typography';
+import { material, materialColors } from 'react-native-typography';
 import { useNavigation } from 'react-navigation-hooks';
 import { PatternBackground } from '../../common/PatternBackground';
 import { translate } from '../../localization/locale';
 import { ScreenKeys } from '../../screens';
-import { Colors } from '../../styles/colors';
 import { requestFineLocationPermission } from '../../utils/permissions';
 
 const Onboarding = () => {
@@ -48,7 +47,7 @@ const styles = StyleSheet.create({
   title: {
     ...material.display2Object,
     fontFamily: 'SuedtirolPro-Regular',
-    color: Colors.BLACK
+    color: materialColors.blackSecondary
   }
 });
 

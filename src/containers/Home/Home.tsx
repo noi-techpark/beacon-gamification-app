@@ -48,7 +48,7 @@ const Home = () => {
       <FlatList<Quest>
         data={quests}
         keyExtractor={item => String(item.id)}
-        contentContainerStyle={{ flexGrow: 1, backgroundColor: Colors.GRAY_400, paddingHorizontal: 16 }}
+        contentContainerStyle={{ flexGrow: 1, backgroundColor: Colors.GRAY_200, paddingHorizontal: 16 }}
         ListHeaderComponent={
           <Text style={styles.questListHeader}>{translate('discover_adventures').toUpperCase()}</Text>
         }
@@ -77,7 +77,7 @@ const styles = StyleSheet.create({
   root: {
     flex: 1
   },
-  questListHeader: { ...material.captionObject, paddingTop: 28 }
+  questListHeader: { ...material.captionObject, paddingTop: 28, color: Colors.SUDTIROL_DARK_GREY }
 });
 
 Home.navigationOptions = ({ navigation }) => {

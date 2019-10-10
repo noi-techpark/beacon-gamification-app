@@ -17,7 +17,9 @@ const PointsRecap: React.FunctionComponent<IPointsRecapProps> = ({ points }) => 
       locations={[0.32, 0.52]}
     >
       <View style={styles.root}>
-        <Text style={material.caption}>{translate('current_points').toUpperCase()}</Text>
+        <Text style={{ ...material.captionObject, color: Colors.SUDTIROL_DARK_GREY }}>
+          {translate('current_points').toUpperCase()}
+        </Text>
         <View style={styles.pointsContainer}>
           <Text style={styles.pointsText}>{points || 0}</Text>
         </View>

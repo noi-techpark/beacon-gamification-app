@@ -11,5 +11,6 @@
   "answer": "Answer",
   "email_invalid": "Error: Email is not valid",
   "current_points": "Current points",
-  "discover_adventures": "Discover adventures"
+  "discover_adventures": "Discover adventures",
+  "discover": "Discover"
 }
