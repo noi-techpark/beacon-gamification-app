@@ -47,6 +47,7 @@ const styles = StyleSheet.create({
   },
   title: {
     ...material.display2Object,
+    fontFamily: 'SuedtirolPro-Regular',
     color: Colors.BLACK
   }
 });
