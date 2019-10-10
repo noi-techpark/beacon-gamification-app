@@ -1,16 +1,16 @@
 import to from 'await-to-js';
 import React, { useState } from 'react';
-import { Keyboard, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { Image, Keyboard, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { Button, HelperText, TextInput } from 'react-native-paper';
 import { material } from 'react-native-typography';
 import { useNavigation } from 'react-navigation-hooks';
 import * as yup from 'yup';
 import { getAuthToken, postAddUserToGroup, postCreateUser } from '../../api/auth';
-import { CircleAvatar } from '../../components/CircleAvatar';
 import { translate } from '../../localization/locale';
 import { ApiError, isUsernameAlreadyExisiting } from '../../models/error';
 import { User } from '../../models/user';
 import { ScreenKeys } from '../../screens';
+import { Colors } from '../../styles/colors';
 
 const Register = () => {
   const navigation = useNavigation();
@@ -57,14 +57,10 @@ const Register = () => {
   }
 
   return (
-    <ScrollView
-      style={styles.root}
-      keyboardShouldPersistTaps="handled"
-      contentContainerStyle={{ alignItems: 'center' }}
-    >
-      <CircleAvatar username={username} />
-      <Text style={{ ...material.headlineObject, marginTop: 16 }}>{translate('insert_username')}</Text>
+    <ScrollView contentContainerStyle={styles.root} keyboardShouldPersistTaps="handled">
       <View style={styles.formContainer}>
+        <Image source={require('../../images/logo.png')} />
+        <Text style={styles.emailTitle}>{translate('insert_username')}</Text>
         <TextInput
           value={username}
           onChangeText={username => {
@@ -83,12 +79,7 @@ const Register = () => {
           {translate('email_invalid')}
         </HelperText>
       </View>
-      <Button
-        onPress={onSignInPressed}
-        mode="contained"
-        style={styles.signinButton}
-        contentStyle={{ paddingHorizontal: 20 }}
-      >
+      <Button onPress={onSignInPressed} mode="contained" dark={true}>
         {translate('signin')}
       </Button>
     </ScrollView>
@@ -98,14 +89,20 @@ const Register = () => {
 const styles = StyleSheet.create({
   root: {
     flex: 1,
-    marginTop: 24,
-    paddingHorizontal: 16
+    justifyContent: 'space-between',
+    marginTop: 40,
+    paddingHorizontal: 16,
+    marginBottom: 16
   },
-  formContainer: { width: '100%', marginVertical: 16 },
+  emailTitle: { ...material.titleObject, marginTop: 32, marginBottom: 12, color: Colors.BLACK },
+  formContainer: { flexGrow: 1 },
   usernameInput: {
     width: '100%'
-  },
-  signinButton: { width: '100%', marginTop: 24 }
+  }
 });
+
+Register.navigationOptions = {
+  header: null
+};
 
 export default Register;

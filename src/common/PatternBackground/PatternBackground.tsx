@@ -1,4 +1,4 @@
-import React, { PureComponent } from 'react';
+import React, { FunctionComponent, PropsWithChildren } from 'react';
 import { ImageBackground, StyleProp, StyleSheet, View, ViewStyle } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 
@@ -8,29 +8,30 @@ interface IPatternBackgroundProps {
   isCentered?: boolean;
 }
 
-export default class PatternBackground extends PureComponent<IPatternBackgroundProps> {
-  render() {
-    const { contentContainerStyle, children, pattern, isCentered } = this.props;
-
-    return (
-      <View style={[styles.root, contentContainerStyle]}>
-        <ImageBackground
-          source={pattern || require('../../images/mosaic.png')}
-          resizeMode="cover"
-          style={{ flex: 1, backgroundColor: 'transparent' }}
+const PatternBackground: FunctionComponent<PropsWithChildren<IPatternBackgroundProps>> = ({
+  pattern,
+  contentContainerStyle,
+  isCentered,
+  children
+}) => {
+  return (
+    <View style={[styles.root, contentContainerStyle]}>
+      <ImageBackground
+        source={pattern || require('../../images/mosaic.png')}
+        resizeMode="cover"
+        style={{ flex: 1, backgroundColor: 'transparent' }}
+      >
+        <LinearGradient
+          colors={['rgba(255, 255, 255, 1)', 'rgba(255, 255, 255, 0.8)', 'rgba(255, 255, 255, 1)']}
+          locations={[0.175, 0.48, 0.77]}
+          style={[{ flex: 1 }, isCentered && styles.container]}
         >
-          <LinearGradient
-            colors={['rgba(255, 255, 255, 1)', 'rgba(255, 255, 255, 0.8)', 'rgba(255, 255, 255, 1)']}
-            locations={[0.175, 0.48, 0.77]}
-            style={[{ flex: 1 }, isCentered && styles.container]}
-          >
-            {children}
-          </LinearGradient>
-        </ImageBackground>
-      </View>
-    );
-  }
-}
+          {children}
+        </LinearGradient>
+      </ImageBackground>
+    </View>
+  );
+};
 
 const styles = StyleSheet.create({
   root: {
@@ -42,3 +43,5 @@ const styles = StyleSheet.create({
     paddingHorizontal: 64
   }
 });
+
+export default React.memo(PatternBackground);

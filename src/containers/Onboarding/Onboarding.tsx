@@ -31,7 +31,7 @@ const Onboarding = () => {
         <View style={{ padding: 16 }}>
           <Text style={styles.title}>{translate('welcome')}</Text>
           <Text style={{ ...material.body1Object, marginTop: 12, marginBottom: 32 }}>{translate('onboarding')}</Text>
-          <Button onPress={onStartOnboardingPressed} mode="contained" color={Colors.SUDTIROL_GREEN} dark={true}>
+          <Button onPress={onStartOnboardingPressed} mode="contained" dark={true}>
             {translate('start')}
           </Button>
         </View>
