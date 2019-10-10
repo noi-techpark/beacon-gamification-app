@@ -44,18 +44,9 @@ const Home = () => {
   }, []);
 
   useEffect(() => {
-    if (focusState.isBlurring) {
-      console.log('blurring');
-
-      // StatusBar.setTranslucent(true);
-      // StatusBar.setBackgroundColor('transparent', false);
-      // StatusBar.setHidden(true, 'slide');
-    } else if (focusState.isFocusing) {
-      console.log('focusing');
-
+    if (focusState.isFocusing) {
       StatusBar.setBackgroundColor(Colors.GRAY_200, false);
       StatusBar.setBarStyle('dark-content', true);
-      // StatusBar.setHidden(false, 'slide');
     }
   }, [focusState]);
 

@@ -1,12 +1,14 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Image, StatusBar, StyleSheet, Text, View } from 'react-native';
 import NearbyBeacons from 'react-native-beacon-suedtirol-mobile-sdk';
 import { ScrollView } from 'react-native-gesture-handler';
 import LinearGradient from 'react-native-linear-gradient';
 import { Button } from 'react-native-paper';
+import { Transition, Transitioning, TransitioningView } from 'react-native-reanimated';
 import { material } from 'react-native-typography';
 import { useFocusState, useNavigation, useNavigationParam } from 'react-navigation-hooks';
 import { SharedElement } from 'react-navigation-shared-element';
+import { translate } from '../../../localization/locale';
 import { Quest } from '../../../models/quest';
 import { ScreenKeys } from '../../../screens';
 import { Colors } from '../../../styles/colors';
@@ -16,6 +18,9 @@ const QuestPreview = () => {
   const quest: Quest = useNavigationParam('quest');
   const token = useNavigationParam('token');
   const focusState = useFocusState();
+  const [isAnimationFinished, setFinished] = useState(false);
+
+  const ref = useRef<TransitioningView>();
 
   useEffect(() => {
     if (focusState.isFocusing) {
@@ -24,12 +29,18 @@ const QuestPreview = () => {
       });
       StatusBar.setBarStyle('light-content', true);
       StatusBar.setBackgroundColor('transparent', false);
+
+      ref.current.animateNextTransition();
+      setFinished(true);
+    } else if (focusState.isBlurring) {
+      ref.current.animateNextTransition();
+      setFinished(false);
     }
   }, [focusState]);
 
   const onStartQuestPressed = () => {
     NearbyBeacons.configureScanMode(2);
-    NearbyBeacons.setDeviceupdateCallbackInterval(2);
+    NearbyBeacons.setDeviceUpdateCallbackInterval(2);
 
     NearbyBeacons.startScanning(() => {
       console.log('started scanning');
@@ -41,6 +52,14 @@ const QuestPreview = () => {
       token
     });
   };
+
+  const transition = (
+    <Transition.Together>
+      <Transition.In type="slide-bottom" interpolation="easeInOut" delayMs={1100} durationMs={150} />
+      <Transition.Change />
+      <Transition.Out type="slide-bottom" interpolation="easeInOut" durationMs={20} />
+    </Transition.Together>
+  );
 
   return (
     <>
@@ -64,11 +83,14 @@ const QuestPreview = () => {
       </SharedElement>
       <SharedElement id={`gradient`} style={StyleSheet.absoluteFill}>
         <LinearGradient
-          colors={['rgba(51,51,51,0.64)', 'rgba(51,51,51,0.24)']}
-          locations={[0.1, 0.5]}
+          colors={['rgba(51,51,51,0.64)', 'rgba(51,51,51,0.24)', '#333333']}
+          locations={[0.1, 0.5, 0.83]}
           style={StyleSheet.absoluteFill}
         >
-          <ScrollView contentContainerStyle={{ paddingTop: 350, paddingHorizontal: 16, paddingBottom: 80 }}>
+          <ScrollView
+            style={{ marginTop: 56 + StatusBar.currentHeight }}
+            contentContainerStyle={{ paddingTop: 350, paddingHorizontal: 16, paddingBottom: 115 }}
+          >
             <SharedElement id="name">
               <Text style={styles.questTitle}>{quest.name}</Text>
             </SharedElement>
@@ -86,6 +108,21 @@ const QuestPreview = () => {
                 egestas. Ut viverra ex sed ultrices sagittis. Lorem ipsum dolor sit amet, consectetur adipiscing elit.
                 Phasellus ultricies libero fermentum bibendum ultrices. In nec velit ac nibh ullamcorper consequat sit
                 amet sit amet elit. Ut in venenatis massa. Vivamus eu ante at elit tempor fermentum a nec nunc. Quisque
+                fermentum a nec nunc. Quisque ut sem nunc. Etiam ullamcorper diam in nisi volutpat, non mollis dui
+                sagittis. Duis vel condimentum lacus, eu sollicitudin sapien. Nulla ultricies eros a lorem mollis
+                egestas. Ut viverra ex sed ultrices sagittis. Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+                Phasellus ultricies libero fermentum bibendum ultrices. In nec velit ac nibh ullamcorper consequat sit
+                amet sit amet elit. Ut in venenatis massa. Vivamus eu ante at elit tempor fermentum a nec nunc.
+                Quisquefermentum a nec nunc. Quisque ut sem nunc. Etiam ullamcorper diam in nisi volutpat, non mollis
+                dui sagittis. Duis vel condimentum lacus, eu sollicitudin sapien. Nulla ultricies eros a lorem mollis
+                egestas. Ut viverra ex sed ultrices sagittis. Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+                Phasellus ultricies libero fermentum bibendum ultrices. In nec velit ac nibh ullamcorper consequat sit
+                amet sit amet elit. Ut in venenatis massa. Vivamus eu ante at elit tempor fermentum a nec nunc.
+                Quisquefermentum a nec nunc. Quisque ut sem nunc. Etiam ullamcorper diam in nisi volutpat, non mollis
+                dui sagittis. Duis vel condimentum lacus, eu sollicitudin sapien. Nulla ultricies eros a lorem mollis
+                egestas. Ut viverra ex sed ultrices sagittis. Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+                Phasellus ultricies libero fermentum bibendum ultrices. In nec velit ac nibh ullamcorper consequat sit
+                amet sit amet elit. Ut in venenatis massa. Vivamus eu ante at elit tempor fermentum a nec nunc. Quisque
                 ut sem nunc. Etiam ullamcorper diam in nisi volutpat, non mollis dui sagittis. Duis vel condimentum
                 lacus, eu sollicitudin sapien. Nulla ultricies eros a lorem mollis egestas. Ut viverra ex sed ultrices
                 sagittis.
@@ -94,24 +131,28 @@ const QuestPreview = () => {
           </ScrollView>
         </LinearGradient>
       </SharedElement>
-      <LinearGradient
-        colors={['rgba(51,51,51,0)', '#333333']}
-        locations={[0, 0.3]}
-        style={{
-          width: '100%',
-          height: 115,
-          position: 'absolute',
-          bottom: 0,
-          left: 0,
-          right: 0
-        }}
+      <Transitioning.View
+        ref={ref}
+        transition={transition}
+        style={{ height: 115, position: 'absolute', bottom: 0, left: 0, right: 0 }}
       >
-        <View style={{ height: 80, width: '100%', justifyContent: 'center', padding: 16, marginTop: 35 }}>
-          <Button mode="contained" dark={true} style={{ width: '100%' }}>
-            Ciao
-          </Button>
-        </View>
-      </LinearGradient>
+        {isAnimationFinished && (
+          <LinearGradient
+            colors={['rgba(51,51,51,0)', '#333333']}
+            locations={[0, 0.3]}
+            style={{
+              height: '100%',
+              width: '100%'
+            }}
+          >
+            <View style={{ height: 80, width: '100%', justifyContent: 'center', padding: 16, marginTop: 35 }}>
+              <Button mode="contained" dark={true} style={{ width: '100%' }} onPress={onStartQuestPressed}>
+                {translate('start')}
+              </Button>
+            </View>
+          </LinearGradient>
+        )}
+      </Transitioning.View>
     </>
   );
 };
@@ -120,7 +161,7 @@ const styles = StyleSheet.create({
   root: {
     flex: 1
   },
-  questTitle: { ...material.display1Object, fontFamily: 'SuedtirolPro-Regular', color: Colors.WHITE },
+  questTitle: { ...material.display1Object, fontFamily: 'SuedtirolPro-Regular', color: Colors.WHITE, marginBottom: 4 },
   questDescription: { ...material.body1Object, color: Colors.WHITE }
 });
 
