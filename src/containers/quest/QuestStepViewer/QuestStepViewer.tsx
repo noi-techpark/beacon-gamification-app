@@ -1,5 +1,7 @@
 import to from 'await-to-js';
 import filter from 'lodash.filter';
+import find from 'lodash.find';
+import sortBy from 'lodash.sortby';
 import sumBy from 'lodash.sumby';
 import unionBy from 'lodash.unionby';
 import React, { useEffect, useRef, useState } from 'react';
@@ -17,6 +19,7 @@ import { ScreenKeys } from '../../../screens';
 import { Colors } from '../../../styles/colors';
 
 const IBEACON_DISCOVERED = 'beaconDiscovered';
+const IBEACONS_UPDATED = 'beaconsUpdated';
 const IBEACON_LOST = 'beaconLost';
 
 const QuestStepViewer = () => {
@@ -27,14 +30,23 @@ const QuestStepViewer = () => {
   const points: number = useNavigationParam('points') || 0;
   const [discoveredBeacons, setDiscoveredBeacons] = useState<Beacon[]>([]);
   const [beaconToReach, setBeaconToReach] = useState<BeaconMedata>();
-  const [isBeaconFound, setBeaconFound] = useState(false);
+  const [beaconFound, setBeaconFound] = useState<{
+    distance: number;
+    range: 'immediate' | 'near' | 'far' | 'unknown';
+  }>({
+    range: 'unknown',
+    distance: 0
+  });
   const ref = useRef<TransitioningView>();
 
   const step = quest.steps.find(s => s.id === stepId);
 
   useEffect(() => {
     const fetchBeacon = async () => {
-      setBeaconFound(false);
+      setBeaconFound({
+        range: 'unknown',
+        distance: 0
+      });
 
       const [e, beaconToReach] = await to(getBeaconMetadataById(token, step.beacon));
 
@@ -47,7 +59,10 @@ const QuestStepViewer = () => {
             navigation.navigate(ScreenKeys.QuestStepCompleted, { step, onStepCompleted });
           } else {
             ref.current.animateNextTransition();
-            setBeaconFound(true);
+            setBeaconFound({
+              range: alreadyFound.range,
+              distance: alreadyFound.distance
+            });
           }
         }
       }
@@ -59,16 +74,35 @@ const QuestStepViewer = () => {
   useEffect(() => {
     const subscriptions = [
       DeviceEventEmitter.addListener(IBEACON_DISCOVERED, async (beacon: Beacon) => {
-        setDiscoveredBeacons(unionBy(discoveredBeacons, [beacon], b => b.id));
-
-        console.log(discoveredBeacons);
+        setDiscoveredBeacons(sortBy(unionBy(discoveredBeacons, [beacon], b => b.id), b => b.distance));
 
         if (beaconToReach && beaconToReach.beacon_id === beacon.id) {
           if (step.type === 'info') {
             navigation.navigate(ScreenKeys.QuestStepCompleted, { step, onStepCompleted });
           } else {
             ref.current.animateNextTransition();
-            setBeaconFound(true);
+            setBeaconFound({
+              range: beacon.range,
+              distance: beacon.distance
+            });
+          }
+        }
+      }),
+      DeviceEventEmitter.addListener(IBEACONS_UPDATED, ({ beacons }) => {
+        setDiscoveredBeacons(sortBy(unionBy(beacons, discoveredBeacons, b => b.id), b => b.distance));
+
+        if (beaconToReach) {
+          const beacon = find(discoveredBeacons, b => b.id === beaconToReach.beacon_id);
+          if (beacon) {
+            if (step.type === 'info') {
+              navigation.navigate(ScreenKeys.QuestStepCompleted, { step, onStepCompleted });
+            } else {
+              ref.current.animateNextTransition();
+              setBeaconFound({
+                range: beacon.range,
+                distance: beacon.distance
+              });
+            }
           }
         }
       }),
@@ -133,8 +167,8 @@ const QuestStepViewer = () => {
     >
       <Text>{step.name}</Text>
       <Transitioning.View ref={ref} transition={transition} style={{ flexGrow: 1, width: '100%', marginTop: 24 }}>
-        {!isBeaconFound ? (
-          <QuestStepFinder step={step} />
+        {beaconFound.distance >= 0.5 || beaconFound.distance === 0 ? (
+          <QuestStepFinder step={step} distance={beaconFound.distance} />
         ) : (
           <QuestStepQuestion step={step} onCorrectAnswer={onCorrectAnswer} />
         )}

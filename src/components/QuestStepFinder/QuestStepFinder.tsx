@@ -2,10 +2,14 @@ import React from 'react';
 import { ActivityIndicator, StyleSheet, Text, View } from 'react-native';
 import { Colors } from '../../styles/colors';
 
-const QuestStepFinder = ({ step }) => {
+const QuestStepFinder = ({ step, distance }) => {
   return (
     <View style={styles.founderContainer}>
-      <ActivityIndicator size="large" color={Colors.BLUE_500} />
+      {!!distance ? (
+        <Text>{`Metri di distanza dal beacon: ${distance}`}</Text>
+      ) : (
+        <ActivityIndicator size="large" color={Colors.BLUE_500} />
+      )}
       <Text>{step.instructions}</Text>
     </View>
   );
