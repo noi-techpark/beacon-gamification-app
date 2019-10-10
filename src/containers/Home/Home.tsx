@@ -1,9 +1,9 @@
 import to from 'await-to-js';
 import React, { useEffect, useState } from 'react';
-import { FlatList, StyleSheet, Text, View } from 'react-native';
+import { FlatList, StatusBar, StyleSheet, Text, View } from 'react-native';
 import { material } from 'react-native-typography';
 import { NavigationParams, NavigationRoute, NavigationScreenProp } from 'react-navigation';
-import { useNavigation, useNavigationParam } from 'react-navigation-hooks';
+import { useFocusState, useNavigation, useNavigationParam } from 'react-navigation-hooks';
 import { getAuthToken, getUserDetail } from '../../api/auth';
 import { getQuests } from '../../api/quests';
 import { PointsRecap } from '../../components/PointsRecap';
@@ -21,6 +21,7 @@ const Home = () => {
   const [user, setUser] = useState<UserDetail>({ username });
   const [token, setToken] = useState('');
   const [quests, setQuests] = useState([]);
+  const focusState = useFocusState();
 
   useEffect(() => {
     const fetchQuests = async () => {
@@ -41,6 +42,22 @@ const Home = () => {
 
     fetchQuests();
   }, []);
+
+  useEffect(() => {
+    if (focusState.isBlurring) {
+      console.log('blurring');
+
+      // StatusBar.setTranslucent(true);
+      // StatusBar.setBackgroundColor('transparent', false);
+      // StatusBar.setHidden(true, 'slide');
+    } else if (focusState.isFocusing) {
+      console.log('focusing');
+
+      StatusBar.setBackgroundColor(Colors.GRAY_200, false);
+      StatusBar.setBarStyle('dark-content', true);
+      // StatusBar.setHidden(false, 'slide');
+    }
+  }, [focusState]);
 
   return (
     <View style={styles.root}>
@@ -64,6 +81,8 @@ const renderItem = (
   navigation: NavigationScreenProp<NavigationRoute<NavigationParams>, NavigationParams>
 ) => {
   async function onOpenQuestPressed() {
+    StatusBar.setBackgroundColor('transparent', false);
+
     navigation.navigate(ScreenKeys.QuestPreview, {
       quest,
       token
@@ -89,10 +108,24 @@ Home.navigationOptions = ({ navigation }) => {
     },
     title: username,
     headerTransparent: true,
+    headerTitleStyle: {
+      ...material.subheadingObject
+    },
     headerLeft: null
   };
 };
 
-Home.sharedElements = () => [{ id: 'image' }, { id: 'name', animation: 'fade', resize: 'clip' }];
+Home.sharedElements = (nav, otherNav, isShowing) => {
+  if (otherNav.state.routeName === ScreenKeys.Register) {
+    return [];
+  }
+
+  return [
+    { id: 'image' },
+    { id: 'gradient', animation: 'fade' },
+    { id: 'name', animation: 'fade', resize: 'clip' },
+    { id: 'description', animation: 'fade', resize: 'clip' }
+  ];
+};
 
 export default Home;

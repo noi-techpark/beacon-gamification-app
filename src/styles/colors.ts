@@ -18,6 +18,7 @@ export enum Colors {
     SUDTIROL_GREEN = '#A9BF00',
     SUDTIROL_DARK_GREY = '#758592',
     SUDTIROL_DARK_GREEN = '#4D7530',
+    SUDTIROL_DARK_ORANGE = '#DE7000',
 
     BLUE_500 = '#0D97D5'
 }

@@ -1,6 +1,6 @@
 import to from 'await-to-js';
 import React, { useState } from 'react';
-import { Image, Keyboard, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { Image, Keyboard, ScrollView, StatusBar, StyleSheet, Text, View } from 'react-native';
 import { Button, HelperText, TextInput } from 'react-native-paper';
 import { material } from 'react-native-typography';
 import { useNavigation } from 'react-navigation-hooks';
@@ -90,7 +90,7 @@ const styles = StyleSheet.create({
   root: {
     flex: 1,
     justifyContent: 'space-between',
-    marginTop: 40,
+    marginTop: 40 + StatusBar.currentHeight,
     paddingHorizontal: 16,
     marginBottom: 16
   },

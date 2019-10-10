@@ -24,7 +24,7 @@ import { ScreenKeys } from './src/screens';
 import { Colors } from './src/styles/colors';
 import { forVertical, springyFadeIn } from './src/utils/animations';
 
-// StatusBar.setTranslucent(true);
+StatusBar.setTranslucent(true);
 StatusBar.setBarStyle('dark-content');
 StatusBar.setBackgroundColor(Colors.GRAY_200);
 
@@ -52,8 +52,8 @@ const AppNavigator = createSharedElementStackNavigator(
     defaultNavigationOptions: {
       headerStyle: {
         elevation: 0,
-        backgroundColor: 'transparent'
-        // marginTop: StatusBar.currentHeight
+        backgroundColor: 'transparent',
+        marginTop: StatusBar.currentHeight
       }
     },
     transitionConfig: (toProps: TransitionProps, fromProps: TransitionProps) => {

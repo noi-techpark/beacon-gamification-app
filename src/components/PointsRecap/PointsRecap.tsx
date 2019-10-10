@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { Image, StyleSheet, Text, View } from 'react-native';
 import { material } from 'react-native-typography';
 import { PatternBackground } from '../../common/PatternBackground';
 import { translate } from '../../localization/locale';
@@ -10,17 +10,18 @@ interface IPointsRecapProps {
 }
 
 const PointsRecap: React.FunctionComponent<IPointsRecapProps> = ({ points }) => (
-  <View style={{ height: 180 }}>
+  <View style={{ height: 204 }}>
     <PatternBackground
       pattern={require('../../images/points_pattern.png')}
       colors={[Colors.WHITE, Colors.WHITE_000]}
-      locations={[0.32, 0.52]}
+      locations={[0.34, 0.52]}
     >
       <View style={styles.root}>
-        <Text style={{ ...material.captionObject, color: Colors.SUDTIROL_DARK_GREY }}>
+        <Text style={{ ...material.captionObject, color: Colors.SUDTIROL_DARK_GREEN }}>
           {translate('current_points').toUpperCase()}
         </Text>
         <View style={styles.pointsContainer}>
+          <Image source={require('../../images/star.png')} />
           <Text style={styles.pointsText}>{points || 0}</Text>
         </View>
       </View>
@@ -29,15 +30,18 @@ const PointsRecap: React.FunctionComponent<IPointsRecapProps> = ({ points }) => 
 );
 
 const styles = StyleSheet.create({
-  root: { marginTop: 84, backgroundColor: 'transparent', alignItems: 'center' },
+  root: { marginTop: 108, backgroundColor: 'transparent', alignItems: 'center' },
   pointsContainer: {
-    justifyContent: 'center',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    paddingHorizontal: 16,
     alignItems: 'center',
-    width: 140,
+    width: 155,
     marginTop: 4,
-    backgroundColor: Colors.SUDTIROL_GREEN,
+    backgroundColor: Colors.SUDTIROL_DARK_ORANGE,
     borderRadius: 8,
-    elevation: 12
+    borderWidth: 4,
+    borderColor: 'rgba(222, 112, 0, 0.24)'
   },
   pointsText: {
     ...material.display1WhiteObject,

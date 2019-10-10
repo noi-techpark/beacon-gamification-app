@@ -1,5 +1,5 @@
 import React from 'react';
-import { Image, StyleSheet, Text, View } from 'react-native';
+import { Image, StatusBar, StyleSheet, Text, View } from 'react-native';
 import { Button } from 'react-native-paper';
 import { material, materialColors } from 'react-native-typography';
 import { useNavigation } from 'react-navigation-hooks';
@@ -42,6 +42,7 @@ const Onboarding = () => {
 const styles = StyleSheet.create({
   root: {
     flex: 1,
+    marginTop: StatusBar.currentHeight,
     justifyContent: 'space-between'
   },
   title: {
