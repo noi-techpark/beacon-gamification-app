@@ -10,5 +10,9 @@ export enum Colors {
     BLACK_040 = 'rgba(0,0,0,0.4)',
     TOTAL_BLACK = '#000000',
 
+    GRAY_200 = '#F2F2F2',
+
+    SUDTIROL_GREEN = '#A9BF00',
+
     BLUE_500 = '#0D97D5'
 }

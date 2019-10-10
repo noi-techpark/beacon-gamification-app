@@ -21,10 +21,12 @@ import { QuestStepViewer } from './src/containers/quest/QuestStepViewer';
 import { Register } from './src/containers/Register';
 import { setupI18nConfig } from './src/localization/locale';
 import { ScreenKeys } from './src/screens';
+import { Colors } from './src/styles/colors';
 import { forVertical, springyFadeIn } from './src/utils/animations';
 
-StatusBar.setTranslucent(true);
-StatusBar.setBackgroundColor('transparent');
+// StatusBar.setTranslucent(true);
+StatusBar.setBarStyle("dark-content");
+StatusBar.setBackgroundColor(Colors.GRAY_200);
 
 const AppNavigator = createSharedElementStackNavigator(
   createStackNavigator,
@@ -51,7 +53,7 @@ const AppNavigator = createSharedElementStackNavigator(
       headerStyle: {
         elevation: 0,
         backgroundColor: 'transparent',
-        marginTop: StatusBar.currentHeight
+        // marginTop: StatusBar.currentHeight
       }
     },
     transitionConfig: (toProps: TransitionProps, fromProps: TransitionProps) => {

@@ -1,10 +1,12 @@
 import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { Image, StyleSheet, Text, View } from 'react-native';
 import { Button } from 'react-native-paper';
 import { material } from 'react-native-typography';
 import { useNavigation } from 'react-navigation-hooks';
+import { PatternBackground } from '../../common/PatternBackground';
 import { translate } from '../../localization/locale';
 import { ScreenKeys } from '../../screens';
+import { Colors } from '../../styles/colors';
 import { requestFineLocationPermission } from '../../utils/permissions';
 
 const Onboarding = () => {
@@ -19,27 +21,38 @@ const Onboarding = () => {
   }
 
   return (
-    <View style={styles.root}>
-      <Text style={{ ...material.display2Object, marginBottom: 32 }}>{translate('welcome')}</Text>
-      <View style={{ flex: 1, justifyContent: 'space-between' }}>
-        <>
-          <Text style={material.headline}>{translate('onboarding')}</Text>
-          <Text style={material.subheading}>{translate('ask_permission')}</Text>
-        </>
-        <Button onPress={onStartOnboardingPressed} mode="contained">
-          {translate('start')}
-        </Button>
+    <PatternBackground>
+      <View style={styles.root}>
+        <Image
+          source={require('../../images/sudtirol_logo.png')}
+          style={{ alignSelf: 'center', marginTop: -10 }}
+          resizeMode="center"
+        />
+        <View style={{ padding: 16 }}>
+          <Text style={styles.title}>{translate('welcome')}</Text>
+          <Text style={{ ...material.body1Object, marginTop: 12, marginBottom: 32 }}>{translate('onboarding')}</Text>
+          <Button onPress={onStartOnboardingPressed} mode="contained" color={Colors.SUDTIROL_GREEN} dark={true}>
+            {translate('start')}
+          </Button>
+        </View>
       </View>
-    </View>
+    </PatternBackground>
   );
 };
 
 const styles = StyleSheet.create({
   root: {
     flex: 1,
-    padding: 20,
-    alignItems: 'center'
+    justifyContent: 'space-between'
+  },
+  title: {
+    ...material.display2Object,
+    color: Colors.BLACK
   }
 });
+
+Onboarding.navigationOptions = {
+  header: null
+};
 
 export default Onboarding;
