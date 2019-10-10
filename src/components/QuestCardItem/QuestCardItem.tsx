@@ -41,7 +41,7 @@ const QuestCardItem: React.FunctionComponent<QuestCardItemProps> = ({ quest, onO
 
 const styles = StyleSheet.create({
   questContainer: {
-    margin: 16
+    marginVertical: 16
   }
 });
 

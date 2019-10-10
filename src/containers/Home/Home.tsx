@@ -1,12 +1,14 @@
 import to from 'await-to-js';
 import React, { useEffect, useState } from 'react';
-import { FlatList, StyleSheet, View } from 'react-native';
+import { FlatList, StyleSheet, Text, View } from 'react-native';
+import { material } from 'react-native-typography';
 import { NavigationParams, NavigationRoute, NavigationScreenProp } from 'react-navigation';
 import { useNavigation, useNavigationParam } from 'react-navigation-hooks';
 import { getAuthToken, getUserDetail } from '../../api/auth';
 import { getQuests } from '../../api/quests';
+import { PointsRecap } from '../../components/PointsRecap';
 import { QuestCardItem } from '../../components/QuestCardItem';
-import { UserRecap } from '../../components/UserRecap';
+import { translate } from '../../localization/locale';
 import { Quest } from '../../models/quest';
 import { UserDetail } from '../../models/user';
 import { ScreenKeys } from '../../screens';
@@ -42,12 +44,14 @@ const Home = () => {
 
   return (
     <View style={styles.root}>
+      <PointsRecap points={user.points} />
       <FlatList<Quest>
         data={quests}
         keyExtractor={item => String(item.id)}
-        style={{ paddingTop: 16 }}
-        contentContainerStyle={{ flexGrow: 1 }}
-        ListHeaderComponent={<UserRecap username={username} points={user.points} />}
+        contentContainerStyle={{ flexGrow: 1, backgroundColor: Colors.GRAY_400, paddingHorizontal: 16 }}
+        ListHeaderComponent={
+          <Text style={styles.questListHeader}>{translate('discover_adventures').toUpperCase()}</Text>
+        }
         renderItem={({ item }) => renderItem(item, token, navigation)}
       />
     </View>
@@ -73,22 +77,20 @@ const styles = StyleSheet.create({
   root: {
     flex: 1
   },
-  questContainer: {
-    margin: 16,
-    height: 200,
-    elevation: 3,
-    borderRadius: 8,
-    borderWidth: 1,
-    borderColor: Colors.BLACK_008,
-    backgroundColor: Colors.WHITE
-  },
-  dataContainer: { paddingHorizontal: 16, justifyContent: 'center', height: 50 }
+  questListHeader: { ...material.captionObject, paddingTop: 28 }
 });
 
-Home.navigationOptions = {
-  cardStyle: {
-    backgroundColor: Colors.WHITE
-  }
+Home.navigationOptions = ({ navigation }) => {
+  const username: string = navigation.getParam('username');
+
+  return {
+    cardStyle: {
+      backgroundColor: Colors.WHITE
+    },
+    title: username,
+    headerTransparent: true,
+    headerLeft: null
+  };
 };
 
 Home.sharedElements = () => [{ id: 'image' }, { id: 'name', animation: 'fade', resize: 'clip' }];

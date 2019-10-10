@@ -6,12 +6,16 @@ interface IPatternBackgroundProps {
   pattern?: string;
   contentContainerStyle?: StyleProp<ViewStyle>;
   isCentered?: boolean;
+  colors?: string[];
+  locations?: number[];
 }
 
 const PatternBackground: FunctionComponent<PropsWithChildren<IPatternBackgroundProps>> = ({
   pattern,
   contentContainerStyle,
   isCentered,
+  colors,
+  locations,
   children
 }) => {
   return (
@@ -22,8 +26,8 @@ const PatternBackground: FunctionComponent<PropsWithChildren<IPatternBackgroundP
         style={{ flex: 1, backgroundColor: 'transparent' }}
       >
         <LinearGradient
-          colors={['rgba(255, 255, 255, 1)', 'rgba(255, 255, 255, 0.8)', 'rgba(255, 255, 255, 1)']}
-          locations={[0.175, 0.48, 0.77]}
+          colors={colors || ['rgba(255, 255, 255, 1)', 'rgba(255, 255, 255, 0.8)', 'rgba(255, 255, 255, 1)']}
+          locations={locations || [0.175, 0.48, 0.77]}
           style={[{ flex: 1 }, isCentered && styles.container]}
         >
           {children}
@@ -39,8 +43,7 @@ const styles = StyleSheet.create({
   },
   container: {
     justifyContent: 'center',
-    alignItems: 'center',
-    paddingHorizontal: 64
+    alignItems: 'center'
   }
 });
 
