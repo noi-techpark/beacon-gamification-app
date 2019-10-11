@@ -111,11 +111,13 @@ Home.sharedElements = (nav, otherNav, isShowing) => {
     return [];
   }
 
+  const quest: Quest = otherNav.getParam('quest');
+
   return [
-    { id: 'image' },
-    { id: 'gradient', animation: 'fade' },
-    { id: 'name', animation: 'fade', resize: 'clip' },
-    { id: 'description', animation: 'fade', resize: 'clip' }
+    { id: `image_${quest.id}` },
+    { id: `gradient_${quest.id}`, animation: 'fade' },
+    { id: `name_${quest.id}`, animation: 'fade', resize: 'clip' },
+    { id: `description_${quest.id}`, animation: 'fade', resize: 'clip' }
   ];
 };
 

@@ -39,7 +39,7 @@ const QuestStepViewer = () => {
   });
   const ref = useRef<TransitioningView>();
 
-  const step = quest.steps.find(s => s.id === stepId);
+  const step = quest.steps.find(s => s.quest_index === stepId);
 
   useEffect(() => {
     const fetchBeacon = async () => {

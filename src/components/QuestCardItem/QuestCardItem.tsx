@@ -15,10 +15,10 @@ interface QuestCardItemProps {
 const QuestCardItem: React.FunctionComponent<QuestCardItemProps> = ({ quest, onOpenQuestPressed }) => {
   return (
     <Card elevation={3} style={styles.questContainer}>
-      <SharedElement id={`gradient`} style={StyleSheet.absoluteFill}>
+      <SharedElement id={`gradient_${quest.id}`} style={StyleSheet.absoluteFill}>
         <View style={StyleSheet.absoluteFill} collapsable={false} />
       </SharedElement>
-      <SharedElement id="image">
+      <SharedElement id={`image_${quest.id}`}>
         <Card.Cover
           source={
             quest.id === 1
@@ -29,7 +29,8 @@ const QuestCardItem: React.FunctionComponent<QuestCardItemProps> = ({ quest, onO
                 }
               : {
                   uri:
-                    'https://images.unsplash.com/photo-1509803874385-db7c23652552?ixlib=rb-1.2.1&auto=format&fit=crop&w=3300&q=80'
+                    // 'https://images.unsplash.com/photo-1509803874385-db7c23652552?ixlib=rb-1.2.1&auto=format&fit=crop&w=3300&q=80'
+                    'https://static.wixstatic.com/media/9508b7_6810120813944ffb801e83ce6e4cca2a~mv2.jpg/v1/fill/w_3360,h_840,al_c,q_90,usm_0.66_1.00_0.01/9508b7_6810120813944ffb801e83ce6e4cca2a~mv2.jpg'
                 }
           }
           style={{ borderTopLeftRadius: 8, borderTopRightRadius: 8, height: 164 }}
@@ -37,10 +38,10 @@ const QuestCardItem: React.FunctionComponent<QuestCardItemProps> = ({ quest, onO
         />
       </SharedElement>
       <Card.Content style={{ paddingTop: 12 }}>
-        <SharedElement id="name">
+        <SharedElement id={`name_${quest.id}`}>
           <Text style={styles.questTitle}>{quest.name}</Text>
         </SharedElement>
-        <SharedElement id="description">
+        <SharedElement id={`description_${quest.id}`}>
           <Text style={styles.questDescription} numberOfLines={2}>
             Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus ultricies libero fermentum bibendum
             ultrices. In nec velit ac nibh ullamcorper consequat sit amet sit amet elit. Ut in venenatis massa. Vivamus
