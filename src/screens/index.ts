@@ -3,6 +3,6 @@ export enum ScreenKeys {
     Onboarding = 'beacon.adventure.onboarding',
     Register = 'beacon.adventure.register',
     QuestPreview = 'beacon.adventure.questPreview',
-    QuestStepViewer = 'beacon.adventure.questStepViewer',
+    StepViewer = 'beacon.adventure.stepViewer',
     QuestStepCompleted = 'beacon.adventure.questStepCompleted',
 }

@@ -98,7 +98,7 @@ const StepViewer: StepViewerProps = () => {
     // await postAddPoints(token, step.value_points);
 
     if (step.quest_index < quest.steps.length) {
-      navigation.navigate(ScreenKeys.QuestStepViewer, {
+      navigation.navigate(ScreenKeys.StepViewer, {
         quest,
         stepId: step.quest_index + 1,
         token,
@@ -112,7 +112,7 @@ const StepViewer: StepViewerProps = () => {
 
   const onSkipStepPressed = (step: QuestStep) => {
     if (step.quest_index < quest.steps.length) {
-      navigation.navigate(ScreenKeys.QuestStepViewer, {
+      navigation.navigate(ScreenKeys.StepViewer, {
         quest,
         stepId: step.quest_index + 1,
         token

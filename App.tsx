@@ -43,7 +43,7 @@ const AppNavigator = createSharedElementStackNavigator(
     [ScreenKeys.QuestPreview]: {
       screen: QuestPreview
     },
-    [ScreenKeys.QuestStepViewer]: {
+    [ScreenKeys.StepViewer]: {
       screen: StepViewer
     }
   },

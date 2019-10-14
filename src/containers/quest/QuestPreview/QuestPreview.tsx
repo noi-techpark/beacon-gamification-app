@@ -83,7 +83,7 @@ const QuestPreview: NavigationScreenComponent<NavigationStackOptions, Props> = (
       console.log('started scanning');
     });
 
-    navigation.navigate(ScreenKeys.QuestStepViewer, {
+    navigation.navigate(ScreenKeys.StepViewer, {
       quest,
       stepId: 1,
       token
