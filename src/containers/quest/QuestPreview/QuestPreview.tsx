@@ -267,7 +267,7 @@ QuestPreview.navigationOptions = {
     marginTop: 36 - StatusBar.currentHeight,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: 'rgba(255,255,255,0.24)',
+    backgroundColor: Colors.WHITE_024,
     borderRadius: 40
   }
 };

@@ -17,8 +17,8 @@ import { Home } from './src/containers/Home';
 import { Onboarding } from './src/containers/Onboarding';
 import { QuestPreview } from './src/containers/quest/QuestPreview';
 import { QuestStepCompleted } from './src/containers/quest/QuestStepCompleted';
-import { QuestStepViewer } from './src/containers/quest/QuestStepViewer';
 import { Register } from './src/containers/Register';
+import { StepViewer } from './src/containers/StepViewer';
 import { setupI18nConfig } from './src/localization/locale';
 import { ScreenKeys } from './src/screens';
 import { Colors } from './src/styles/colors';
@@ -44,7 +44,7 @@ const AppNavigator = createSharedElementStackNavigator(
       screen: QuestPreview
     },
     [ScreenKeys.QuestStepViewer]: {
-      screen: QuestStepViewer
+      screen: StepViewer
     }
   },
   {
