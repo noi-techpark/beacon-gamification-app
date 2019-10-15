@@ -1,11 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { Keyboard, StyleSheet, Text, TextInput } from 'react-native';
-import { useKeyboard } from 'react-native-hooks';
 import { Button } from 'react-native-paper';
-import { material } from 'react-native-typography';
-import { translate } from '../../localization/locale';
-import { Question } from '../../models/quest';
-import { Colors } from '../../styles/colors';
+import { translate } from '../../../localization/locale';
+import { Question } from '../../../models/quest';
+import { Colors } from '../../../styles/colors';
+import { useKeyboard } from './node_modules/react-native-hooks';
 
 const QuestStepQuestion = ({ step, onCorrectAnswer }) => {
   const [answer, setAnswer] = useState('');
@@ -35,7 +34,7 @@ const QuestStepQuestion = ({ step, onCorrectAnswer }) => {
     case 'text':
       return (
         <>
-          <Text style={material.headlineWhite}>{question.q}</Text>
+          <Text>{question.q}</Text>
           <TextInput
             onChangeText={answer => setAnswer(answer)}
             value={answer}
@@ -52,7 +51,7 @@ const QuestStepQuestion = ({ step, onCorrectAnswer }) => {
     case 'number':
       return (
         <>
-          <Text style={material.headlineWhite}>{question.q}</Text>
+          <Text>{question.q}</Text>
           <TextInput
             onChangeText={answer => setAnswer(answer)}
             value={answer}

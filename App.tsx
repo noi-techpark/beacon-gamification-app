@@ -13,8 +13,10 @@ import { createAppContainer } from 'react-navigation';
 import { createSharedElementStackNavigator } from 'react-navigation-shared-element';
 import { createStackNavigator } from 'react-navigation-stack';
 import { TransitionProps } from 'react-navigation-stack/lib/typescript/types';
+import { fromBottom } from 'react-navigation-transitions';
 import { Home } from './src/containers/Home';
 import { Onboarding } from './src/containers/Onboarding';
+import { QuestionViewer } from './src/containers/quest/QuestionViewer';
 import { QuestPreview } from './src/containers/quest/QuestPreview';
 import { QuestStepCompleted } from './src/containers/quest/QuestStepCompleted';
 import { Register } from './src/containers/Register';
@@ -43,6 +45,9 @@ const AppNavigator = createSharedElementStackNavigator(
     [ScreenKeys.QuestPreview]: {
       screen: QuestPreview
     },
+    [ScreenKeys.QuestionViewer]: {
+      screen: QuestionViewer
+    },
     [ScreenKeys.StepViewer]: {
       screen: StepViewer
     }
@@ -57,14 +62,20 @@ const AppNavigator = createSharedElementStackNavigator(
       }
     },
     transitionConfig: (toProps: TransitionProps, fromProps: TransitionProps) => {
-      if (
-        fromProps &&
-        ((fromProps.scene.route.routeName === ScreenKeys.Home &&
-          toProps.scene.route.routeName === ScreenKeys.QuestPreview) ||
-          (fromProps.scene.route.routeName === ScreenKeys.QuestPreview &&
-            toProps.scene.route.routeName === ScreenKeys.Home))
-      ) {
-        return springyFadeIn();
+      if (fromProps) {
+        const fromScreenKey = fromProps.scene.route.routeName;
+        const toScreenKey = toProps.scene.route.routeName;
+
+        if (
+          (fromScreenKey === ScreenKeys.Home && toScreenKey === ScreenKeys.QuestPreview) ||
+          (fromScreenKey === ScreenKeys.QuestPreview && toScreenKey === ScreenKeys.Home)
+        ) {
+          return springyFadeIn();
+        } else if (fromScreenKey === ScreenKeys.StepViewer && toScreenKey === ScreenKeys.QuestionViewer) {
+          return fromBottom(700);
+        } else if (fromScreenKey === ScreenKeys.QuestionViewer && toScreenKey === ScreenKeys.StepViewer) {
+          return fromBottom(700);
+        }
       }
     }
   }

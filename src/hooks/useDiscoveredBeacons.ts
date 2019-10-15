@@ -30,7 +30,7 @@ export function useDiscoveredBeacons() {
         };
     }, [discoveredBeacons]);
 
-    console.log(discoveredBeacons);
+    // console.log(discoveredBeacons);
 
     return discoveredBeacons;
 }
