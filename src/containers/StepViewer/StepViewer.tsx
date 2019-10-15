@@ -1,16 +1,17 @@
 import to from 'await-to-js';
 import find from 'lodash.find';
 import React, { useEffect, useRef, useState } from 'react';
-import { Animated, Dimensions, Easing, Image, ScrollView, StatusBar, StyleSheet, Text, View } from 'react-native';
+import { Animated, Dimensions, Image, ScrollView, StatusBar, StyleSheet, Text, View } from 'react-native';
 import { useBackHandler } from 'react-native-hooks';
 import LinearGradient from 'react-native-linear-gradient';
-import { Transition, Transitioning, TransitioningView } from 'react-native-reanimated';
 import { material } from 'react-native-typography';
 import { useNavigation, useNavigationParam } from 'react-navigation-hooks';
 import { SharedElement } from 'react-navigation-shared-element';
 import { getBeaconMetadataById } from '../../api/beacons';
 import BeaconLocalizer from '../../components/BeaconLocalizer/BeaconLocalizer';
 import { QuestStepQuestion } from '../../components/QuestStepQuestion';
+import { useAnimation } from '../../hooks/useAnimation';
+import { useContentChangeAnimation } from '../../hooks/useContentChangeAnimation';
 import { useDiscoveredBeacons } from '../../hooks/useDiscoveredBeacons';
 import { Beacon, BeaconMedata } from '../../models/beacon';
 import { Quest, QuestStep } from '../../models/quest';
@@ -26,7 +27,8 @@ const FOOTER_HEIGHT = 92;
 const HEADER_MAX_HEIGHT = DESIRED_DISTANCE + 56 + PADDING_BOTTOM_FIX + StatusBar.currentHeight - 12; // DO NOT ASK PLS
 const HEADER_MIN_HEIGHT = 56 + StatusBar.currentHeight;
 const HEADER_SCROLL_DISTANCE = HEADER_MAX_HEIGHT - HEADER_MIN_HEIGHT;
-const ANIMATION_EXTRA_DISTANCE = 200;
+const SLIDE_OUT_ANIMATION_DURATION = 250;
+const SLIDE_IN_ANIMATION_DURATION = 500;
 
 const StepViewer = () => {
   const navigation = useNavigation();
@@ -35,81 +37,75 @@ const StepViewer = () => {
   const token: string = useNavigationParam('token');
   const currentPoints: number = useNavigationParam('points') || 0;
   const discoveredBeacons = useDiscoveredBeacons();
+  const step = quest.steps.find(s => s.quest_index === stepId);
 
   const [targetBeacon, setTargetBeacon] = useState<BeaconMedata>();
+  const [beaconFound, setBeaconFound] = useState<Beacon | undefined>(undefined);
 
-  const [shouldAnimate, setShouldAnimate] = useState<boolean>(false);
   const [showQuestion, setShowQuestion] = useState<boolean>(false);
+  const [isHeaderTransition, setHeaderTransition] = useState<boolean>(false);
+  const [isHeaderFullVisible, setHeaderFullVisible] = useState<boolean>(false);
+
+  const scrollRef = useRef<ScrollView>();
+  const scrollY = new Animated.Value(0);
+  scrollY.addListener(({ value }) => {
+    setHeaderFullVisible(value >= HEADER_SCROLL_DISTANCE);
+  });
+
+  const [opacityMainContent, translateYMainContent] = useContentChangeAnimation({
+    doAnimation: showQuestion,
+    duration: SLIDE_OUT_ANIMATION_DURATION,
+    delay: !showQuestion ? SLIDE_IN_ANIMATION_DURATION : 0,
+    callback: () => {
+      if (!showQuestion && isHeaderTransition) {
+        setHeaderTransition(false);
+      }
+    }
+  });
+  const [opacitySecondayContent, translateSecondaryContent] = useContentChangeAnimation({
+    doAnimation: showQuestion,
+    scrollDistance: -Dimensions.get('window').height,
+    delay: showQuestion ? SLIDE_OUT_ANIMATION_DURATION : 0,
+    duration: SLIDE_IN_ANIMATION_DURATION,
+    isFadeInverted: true
+  });
+  const fadeFooter = useAnimation({
+    doAnimation: showQuestion,
+    delay: !showQuestion ? SLIDE_IN_ANIMATION_DURATION + 200 : 0
+  });
+
+  const headerHeight = isHeaderFullVisible
+    ? HEADER_MIN_HEIGHT
+    : scrollY.interpolate({
+        inputRange: [0, HEADER_SCROLL_DISTANCE],
+        outputRange: [HEADER_MAX_HEIGHT, HEADER_MIN_HEIGHT],
+        extrapolate: 'clamp'
+      });
+
+  const transitionHeaderOpacity = useAnimation({
+    doAnimation: showQuestion,
+    delay: !isHeaderTransition ? SLIDE_IN_ANIMATION_DURATION : 0
+  });
+  const headerOpacity = isHeaderFullVisible
+    ? 1
+    : !isHeaderTransition
+    ? scrollY.interpolate({
+        inputRange: [0, HEADER_SCROLL_DISTANCE * 0.9, HEADER_SCROLL_DISTANCE],
+        outputRange: [0, 0, 1],
+        extrapolate: 'clamp'
+      })
+    : transitionHeaderOpacity.interpolate({
+        inputRange: [0, 0.7, 1],
+        outputRange: [0, 0, 1]
+      });
 
   useBackHandler(() => {
-    if (shouldAnimate || showQuestion) {
-      scrollRef.current.scrollTo(0);
-      setShouldAnimate(false);
+    if (showQuestion) {
+      setShowQuestion(false);
       return true;
     }
     // let the default thing happen
     return false;
-  });
-
-  const footerRef = useRef<TransitioningView>();
-  const scrollRef = useRef<ScrollView>();
-  // const questionRef = useRef<TransitioningView>();
-  const transition = (
-    <Transition.Together>
-      <Transition.Out type="fade" interpolation="easeInOut" durationMs={150} />
-    </Transition.Together>
-  );
-
-  // const scrollTransition = (
-  //   <Transition.Together>
-  //     <Transition.In type="slide-bottom" interpolation="easeInOut" durationMs={350} />
-  //     <Transition.Out type="slide-bottom" interpolation="easeInOut" durationMs={350} />
-  //   </Transition.Together>
-  // );
-
-  const [beaconFound, setBeaconFound] = useState<Beacon | undefined>(undefined);
-
-  const scrollY = new Animated.Value(0);
-
-  const step = quest.steps.find(s => s.quest_index === stepId);
-
-  const headerHeight = scrollY.interpolate({
-    inputRange: [0, HEADER_SCROLL_DISTANCE],
-    outputRange: [HEADER_MAX_HEIGHT, HEADER_MIN_HEIGHT],
-    extrapolate: 'clamp'
-  });
-
-  const headerOpacity = scrollY.interpolate({
-    inputRange: [0, HEADER_SCROLL_DISTANCE * 0.9, HEADER_SCROLL_DISTANCE],
-    outputRange: [0, 0, 1],
-    extrapolate: 'clamp'
-  });
-
-  const headerTranslate = scrollY.interpolate({
-    inputRange: [0, HEADER_SCROLL_DISTANCE / 2, HEADER_SCROLL_DISTANCE],
-    outputRange: [0, 0, 60],
-    extrapolate: 'clamp'
-  });
-
-  const scrollOutOpacity = scrollY.interpolate({
-    inputRange: [0, HEADER_SCROLL_DISTANCE * 0.5],
-    outputRange: [1, 0],
-    easing: Easing.ease,
-    extrapolate: 'clamp'
-  });
-
-  const translateIn = scrollY.interpolate({
-    inputRange: [HEADER_SCROLL_DISTANCE, HEADER_SCROLL_DISTANCE + ANIMATION_EXTRA_DISTANCE],
-    outputRange: [Dimensions.get('screen').height, 0],
-    easing: Easing.ease,
-    extrapolate: 'clamp'
-  });
-
-  const fadeIn = scrollY.interpolate({
-    inputRange: [HEADER_SCROLL_DISTANCE, HEADER_SCROLL_DISTANCE + ANIMATION_EXTRA_DISTANCE],
-    outputRange: [0, 1],
-    easing: Easing.ease,
-    extrapolate: 'clamp'
   });
 
   useEffect(() => {
@@ -183,10 +179,8 @@ const StepViewer = () => {
   }
 
   function onOpenQuestionPressed() {
-    // navigation.navigate(ScreenKeys.QuestionViewer, { step, onCorrectAnswer, onSkipStepPressed });
-    scrollRef.current.scrollTo(DESIRED_DISTANCE + ANIMATION_EXTRA_DISTANCE);
-    footerRef.current.animateNextTransition();
-    setShouldAnimate(true);
+    setShowQuestion(true);
+    setHeaderTransition(true);
   }
 
   return (
@@ -209,37 +203,26 @@ const StepViewer = () => {
         />
       </SharedElement>
       <LinearGradient
-        colors={['rgba(51,51,51,0.64)', 'rgba(51,51,51,0.24)', Colors.BLACK]}
+        colors={['rgba(51,51,51,0.64)', 'rgba(51,51,51,0.6)', Colors.BLACK]}
         locations={[0.1, 0.5, 0.83]}
         style={StyleSheet.absoluteFill}
       >
-        <ScrollView
-          ref={scrollRef}
-          style={{ marginTop: StatusBar.currentHeight }}
-          contentContainerStyle={styles.scrollContainer}
-          scrollEventThrottle={16}
-          onScroll={Animated.event([{ nativeEvent: { contentOffset: { y: scrollY } } }], {
-            listener: e => {
-              console.log(e.nativeEvent);
-
-              if (shouldAnimate && e.nativeEvent.contentOffset.y === DESIRED_DISTANCE + ANIMATION_EXTRA_DISTANCE) {
-                footerRef.current.animateNextTransition();
-                // questionRef.current.animateNextTransition();
-                setShowQuestion(true);
-              } else if (!shouldAnimate && showQuestion && e.nativeEvent.contentOffset.y === 0) {
-                footerRef.current.animateNextTransition();
-                // scrollContentRef.current.animateNextTransition();
-                setShowQuestion(false);
+        <Animated.View
+          style={{
+            opacity: opacityMainContent,
+            transform: [
+              {
+                translateY: translateYMainContent
               }
-            }
-          })}
+            ]
+          }}
         >
-          <Animated.View
-            style={
-              (shouldAnimate || showQuestion) && {
-                opacity: scrollOutOpacity
-              }
-            }
+          <ScrollView
+            ref={scrollRef}
+            style={{ marginTop: StatusBar.currentHeight }}
+            contentContainerStyle={styles.scrollContainer}
+            scrollEventThrottle={16}
+            onScroll={Animated.event([{ nativeEvent: { contentOffset: { y: scrollY } } }])}
           >
             <Text style={styles.stepTitle}>{step.name}</Text>
             <View style={styles.scrollContent}>
@@ -277,30 +260,26 @@ const StepViewer = () => {
                 sagittis.
               </Text>
             </View>
-          </Animated.View>
-        </ScrollView>
-        {(shouldAnimate || showQuestion) && (
-          <Animated.View
-            style={[
-              {
-                ...StyleSheet.absoluteFillObject,
-                // bottom: Dimensions.get('window').height,
-                alignItems: 'center',
-                justifyContent: 'center',
-                backgroundColor: 'transparent',
-                opacity: fadeIn,
-                transform: [
-                  {
-                    translateY: translateIn
-                  }
-                ]
-              }
-            ]}
-          >
-            <QuestStepQuestion step={step} onCorrectAnswer={onCorrectAnswer} />
-          </Animated.View>
-        )}
-        <Animated.View style={[styles.headerContainer, { height: headerHeight }]}>
+          </ScrollView>
+        </Animated.View>
+        <Animated.View
+          style={[
+            styles.scrollSecondaryContent,
+            {
+              opacity: opacitySecondayContent,
+              transform: [
+                {
+                  translateY: translateSecondaryContent
+                }
+              ]
+            }
+          ]}
+        >
+          <QuestStepQuestion step={step} onCorrectAnswer={onCorrectAnswer} />
+        </Animated.View>
+        <Animated.View
+          style={[styles.headerContainer, { height: isHeaderTransition ? HEADER_MIN_HEIGHT : headerHeight }]}
+        >
           <Animated.View
             style={[
               styles.header,
@@ -313,15 +292,23 @@ const StepViewer = () => {
             {step.name}
           </Animated.Text> */}
         </Animated.View>
-        <Transitioning.View ref={footerRef} transition={transition} style={styles.footerContainer}>
-          {!shouldAnimate && (
-            <LinearGradient colors={['rgba(51,51,51,0)', Colors.BLACK]} locations={[0, 0.3]} style={styles.fill}>
-              <View style={styles.footer}>
-                <BeaconLocalizer beaconFound={beaconFound} onOpenQuestionPressed={onOpenQuestionPressed} />
-              </View>
-            </LinearGradient>
-          )}
-        </Transitioning.View>
+        <Animated.View
+          style={[
+            styles.footerContainer,
+            {
+              opacity: fadeFooter.interpolate({
+                inputRange: [0, 1],
+                outputRange: [1, 0]
+              })
+            }
+          ]}
+        >
+          <LinearGradient colors={['rgba(51,51,51,0)', Colors.BLACK]} locations={[0, 0.3]} style={styles.fill}>
+            <View style={styles.footer}>
+              <BeaconLocalizer beaconFound={beaconFound} onOpenQuestionPressed={onOpenQuestionPressed} />
+            </View>
+          </LinearGradient>
+        </Animated.View>
       </LinearGradient>
     </>
   );
@@ -346,9 +333,20 @@ const styles = StyleSheet.create({
     color: Colors.WHITE,
     marginBottom: PADDING_BOTTOM_FIX
   },
-  stepDescription: { ...material.body1Object, color: Colors.WHITE },
+  stepDescription: { ...material.subheadingObject, color: Colors.WHITE },
   scrollContent: {
     paddingTop: 12
+  },
+  scrollSecondaryContent: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    bottom: -Dimensions.get('window').height,
+    width: '100%',
+    height: '100%',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: 'transparent'
   },
   scrollContainer: {
     paddingTop: DESIRED_DISTANCE,
@@ -419,14 +417,5 @@ StepViewer.navigationOptions = ({ navigation }) => {
     )
   };
 };
-
-// StepViewer.sharedElements = (nav, otherNav, isShowing) => {
-//   const stepId: number = otherNav.getParam('stepId');
-
-//   return [
-//     { id: `image_${stepId}` }
-//     // { id: `gradient_${quest.id}`, animation: 'fade' }
-//   ];
-// };
 
 export default StepViewer;

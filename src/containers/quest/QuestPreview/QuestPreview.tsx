@@ -119,7 +119,7 @@ const QuestPreview: NavigationScreenComponent<NavigationStackOptions, Props> = (
       </SharedElement>
       <SharedElement id={`gradient_${quest.id}`} style={StyleSheet.absoluteFill}>
         <LinearGradient
-          colors={['rgba(51,51,51,0.64)', 'rgba(51,51,51,0.24)', Colors.BLACK]}
+          colors={['rgba(51,51,51,0.64)', 'rgba(51,51,51,0.6)', Colors.BLACK]}
           locations={[0.1, 0.5, 0.83]}
           style={StyleSheet.absoluteFill}
         >
@@ -254,7 +254,7 @@ const styles = StyleSheet.create({
     color: Colors.WHITE,
     marginBottom: PADDING_BOTTOM_FIX
   },
-  questDescription: { ...material.body1Object, color: Colors.WHITE }
+  questDescription: { ...material.subheadingObject, color: Colors.WHITE }
 });
 
 QuestPreview.navigationOptions = {
