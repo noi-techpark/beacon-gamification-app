@@ -57,12 +57,16 @@ export async function getQuestFinder(token: string, beaconId: string): Promise<a
 
 export async function postAddPoints(token: string, points: number): Promise<any> {
     const [error, response] = await to(
-        fetchBeaconsApi(`${API_SERVER_URL}/points=${points}`, {
+        fetchBeaconsApi(`${API_SERVER_URL}/users/add-points/`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
                 Authorization: `Token ${token}`
-            }
+            },
+            body: JSON.stringify({
+                pk_user: 28,
+                points
+            })
         })
     );
 

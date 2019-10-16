@@ -9,6 +9,8 @@
   "points": "Punti",
   "gained": "Congratulazioni! Hai ottenuto",
   "answer": "Rispondi",
+  "type_answer": "Scrivi la tua risposta",
+  "skip_question": "Salta domanda",
   "email_invalid": "Errore: Email non valida",
   "current_points": "Punteggio attuale",
   "discover_adventures": "Scopri le avventure",

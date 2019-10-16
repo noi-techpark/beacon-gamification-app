@@ -2,6 +2,7 @@ export enum Colors {
     WHITE = '#FFFFFF',
     WHITE_000 = 'rgba(255,255,255,0.00)',
     WHITE_008 = 'rgba(255,255,255,0.08)',
+    WHITE_012 = 'rgba(255,255,255,0.12)',
     WHITE_024 = 'rgba(255,255,255,0.24)',
     WHITE_032 = 'rgba(255,255,255,0.32)',
     WHITE_048 = 'rgba(255,255,255,0.48)',

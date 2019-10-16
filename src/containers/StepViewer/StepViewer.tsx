@@ -10,7 +10,7 @@ import { getBeaconMetadataById } from '../../api/beacons';
 import { AnimatedLinearGradient } from '../../common/AnimatedLinearGradient';
 import PlatformTouchable from '../../common/PlatformTouchable/PlatformTouchable';
 import BeaconLocalizer from '../../components/BeaconLocalizer/BeaconLocalizer';
-import { QuestStepQuestion } from '../../components/QuestStepQuestion';
+import { QuestionContainer } from '../../components/QuestionContainer';
 import { useAnimation } from '../../hooks/useAnimation';
 import { useContentChangeAnimation } from '../../hooks/useContentChangeAnimation';
 import { useDiscoveredBeacons } from '../../hooks/useDiscoveredBeacons';
@@ -19,6 +19,7 @@ import { Beacon, BeaconMedata } from '../../models/beacon';
 import { Quest, QuestStep } from '../../models/quest';
 import { ScreenKeys } from '../../screens';
 import { Colors } from '../../styles/colors';
+import { postAddPoints } from '../../api/quests';
 
 interface StepViewerProps {}
 
@@ -40,6 +41,7 @@ const StepViewer = () => {
   const currentPoints: number = useNavigationParam('points') || 0;
   const discoveredBeacons = useDiscoveredBeacons();
   const step = quest.steps.find(s => s.quest_index === stepId);
+  const [isStepCompleted, setStepCompleted] = useState<boolean>(false);
 
   const [targetBeacon, setTargetBeacon] = useState<BeaconMedata>();
   const [beaconFound, setBeaconFound] = useState<Beacon | undefined>(undefined);
@@ -119,6 +121,10 @@ const StepViewer = () => {
       });
 
   useBackHandler(() => {
+    if (isStepCompleted) {
+      return false;
+    }
+
     if (showQuestion) {
       textInputRef.current.blur();
       setShowQuestion(false);
@@ -134,7 +140,7 @@ const StepViewer = () => {
 
       if (beacon) {
         if (step.type === 'info') {
-          navigation.navigate(ScreenKeys.QuestStepCompleted, { step, onStepCompleted });
+          // navigation.navigate(ScreenKeys.QuestStepCompleted, { step, onStepCompleted });
         } else {
           setBeaconFound(beacon);
         }
@@ -154,7 +160,7 @@ const StepViewer = () => {
         const alreadyFound = discoveredBeacons.find(b => b.id === targetBeacon.beacon_id);
         if (alreadyFound) {
           if (step.type === 'info') {
-            navigation.navigate(ScreenKeys.QuestStepCompleted, { step, onStepCompleted });
+            // navigation.navigate(ScreenKeys.QuestStepCompleted, { step, onStepCompleted });
           } else {
             setBeaconFound(alreadyFound);
           }
@@ -166,8 +172,6 @@ const StepViewer = () => {
   }, [stepId]);
 
   async function onStepCompleted(step: QuestStep) {
-    // await postAddPoints(token, step.value_points);
-
     if (step.quest_index < quest.steps.length) {
       navigation.navigate(ScreenKeys.StepViewer, {
         quest,
@@ -176,7 +180,7 @@ const StepViewer = () => {
         points: currentPoints + step.value_points
       });
     } else {
-      navigation.goBack();
+      // navigation.goBack();
       // navigation.state.params.onQuestCompleted(quest);
     }
   }
@@ -194,8 +198,12 @@ const StepViewer = () => {
     }
   };
 
-  function onCorrectAnswer(step: QuestStep) {
-    navigation.navigate(ScreenKeys.QuestionViewer, { step, onStepCompleted });
+  async function onCorrectAnswer(step: QuestStep) {
+    const [e, response] = await to(postAddPoints(token, step.value_points));
+
+    setStepCompleted(true);
+
+    navigation.navigate(ScreenKeys.QuestStepCompleted, { step, onStepCompleted });
   }
 
   function onOpenQuestionPressed() {
@@ -271,7 +279,12 @@ const StepViewer = () => {
           ]}
         >
           <ScrollView contentContainerStyle={styles.questionContainer} keyboardShouldPersistTaps="handled">
-            <QuestStepQuestion ref={textInputRef} step={step} onCorrectAnswer={onCorrectAnswer} />
+            <QuestionContainer
+              ref={textInputRef}
+              step={step}
+              onCorrectAnswer={onCorrectAnswer}
+              onSkipQuestionPressed={onSkipStepPressed}
+            />
           </ScrollView>
         </Animated.View>
         <Animated.View

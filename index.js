@@ -11,7 +11,8 @@ const theme = {
   ...DefaultTheme,
   colors: {
     ...DefaultTheme.colors,
-    primary: Colors.SUDTIROL_GREEN
+    primary: Colors.SUDTIROL_GREEN,
+    background: Colors.WHITE
   }
 };
 

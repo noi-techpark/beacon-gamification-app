@@ -25,7 +25,7 @@ export function springyFadeIn() {
 
 export function forVertical() {
     const transitionSpec = {
-        duration: 500,
+        duration: 300,
         easing: Easing.out(Easing.poly(4)),
         timing: Animated.timing,
         useNativeDriver: true
@@ -34,7 +34,7 @@ export function forVertical() {
     return {
         transitionSpec,
         containerStyle: {
-            backgroundColor: Colors.BLACK
+            backgroundColor: Colors.TOTAL_BLACK
         },
         screenInterpolator: ({ layout, position, scene }) => {
             const { index } = scene;

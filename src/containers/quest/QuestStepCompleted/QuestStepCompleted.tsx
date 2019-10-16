@@ -29,7 +29,7 @@ const QuestStepCompleted = () => {
 const styles = StyleSheet.create({
   root: {
     flex: 1,
-    backgroundColor: 'transparent',
+    // backgroundColor: Colors.BLACK,
     alignItems: 'center',
     justifyContent: 'center'
   },

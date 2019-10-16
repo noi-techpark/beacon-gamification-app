@@ -13,7 +13,6 @@ import { createAppContainer } from 'react-navigation';
 import { createSharedElementStackNavigator } from 'react-navigation-shared-element';
 import { createStackNavigator } from 'react-navigation-stack';
 import { TransitionProps } from 'react-navigation-stack/lib/typescript/types';
-import { fromBottom } from 'react-navigation-transitions';
 import { Home } from './src/containers/Home';
 import { Onboarding } from './src/containers/Onboarding';
 import { QuestionViewer } from './src/containers/quest/QuestionViewer';
@@ -71,11 +70,12 @@ const AppNavigator = createSharedElementStackNavigator(
           (fromScreenKey === ScreenKeys.QuestPreview && toScreenKey === ScreenKeys.Home)
         ) {
           return springyFadeIn();
-        } else if (fromScreenKey === ScreenKeys.StepViewer && toScreenKey === ScreenKeys.QuestionViewer) {
-          return fromBottom(700);
-        } else if (fromScreenKey === ScreenKeys.QuestionViewer && toScreenKey === ScreenKeys.StepViewer) {
-          return fromBottom(700);
         }
+        // else if (fromScreenKey === ScreenKeys.QuestPreview && toScreenKey === ScreenKeys.StepViewer) {
+        //   return fromBottom(700);
+        // } else if (fromScreenKey === ScreenKeys.StepViewer && toScreenKey === ScreenKeys.QuestPreview) {
+        //   return fromBottom(700);
+        // }
       }
     }
   }
@@ -95,6 +95,9 @@ const ModalNavigator = createStackNavigator(
     headerMode: 'none',
     gesturesEnabled: false,
     transparentCard: true,
+    // cardStyle: {
+    //   backgroundColor: Colors.BLACK
+    // },
     transitionConfig: () => forVertical()
   }
 );

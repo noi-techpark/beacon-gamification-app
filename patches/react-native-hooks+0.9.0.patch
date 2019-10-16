@@ -1,8 +1,15 @@
 diff --git a/node_modules/react-native-hooks/lib/useKeyboard.js b/node_modules/react-native-hooks/lib/useKeyboard.js
-index 1264896..b28b407 100644
+index 1264896..70bb67a 100644
 --- a/node_modules/react-native-hooks/lib/useKeyboard.js
 +++ b/node_modules/react-native-hooks/lib/useKeyboard.js
-@@ -8,8 +8,8 @@ export default function useKeyboard() {
+@@ -2,14 +2,14 @@ import React, { useEffect, useState } from 'react'
+ import { Keyboard } from 'react-native'
+ 
+ export default function useKeyboard() {
+-  const [keyboard, setKeyboard] = useState({ Keyboard })
++  const [keyboard, setKeyboard] = useState({ Keyboard, isKeyboardShow: false})
+ 
+   function keyboardShown(e) {
      setKeyboard({
        isKeyboardShow: true,
        Keyboard,

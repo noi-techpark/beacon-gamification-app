@@ -9,6 +9,8 @@
   "points": "Points",
   "gained": "Congrats! You earned",
   "answer": "Answer",
+  "type_answer": "Type your answer",
+  "skip_question": "Skip question",
   "email_invalid": "Error: Email is not valid",
   "current_points": "Current points",
   "discover_adventures": "Discover adventures",
