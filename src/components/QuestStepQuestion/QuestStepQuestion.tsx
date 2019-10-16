@@ -1,13 +1,19 @@
-import React, { useEffect, useState } from 'react';
+import React, { forwardRef, FunctionComponent, useEffect, useState } from 'react';
 import { Keyboard, StyleSheet, Text, TextInput } from 'react-native';
 import { useKeyboard } from 'react-native-hooks';
 import { Button } from 'react-native-paper';
 import { material } from 'react-native-typography';
 import { translate } from '../../localization/locale';
-import { Question } from '../../models/quest';
+import { Question, QuestStep } from '../../models/quest';
 import { Colors } from '../../styles/colors';
 
-const QuestStepQuestion = ({ step, onCorrectAnswer }) => {
+interface IQuestStepQuestion {
+  step: QuestStep;
+  onCorrectAnswer: (step: QuestStep) => void;
+  ref?: React.MutableRefObject<TextInput>;
+}
+
+const QuestStepQuestion: FunctionComponent<IQuestStepQuestion> = forwardRef(({ step, onCorrectAnswer }, ref) => {
   const [answer, setAnswer] = useState('');
   const { isKeyboardShow } = useKeyboard();
 
@@ -37,6 +43,7 @@ const QuestStepQuestion = ({ step, onCorrectAnswer }) => {
         <>
           <Text style={material.headlineWhite}>{question.q}</Text>
           <TextInput
+            ref={ref}
             onChangeText={answer => setAnswer(answer)}
             value={answer}
             autoCapitalize="none"
@@ -54,6 +61,7 @@ const QuestStepQuestion = ({ step, onCorrectAnswer }) => {
         <>
           <Text style={material.headlineWhite}>{question.q}</Text>
           <TextInput
+            ref={ref}
             onChangeText={answer => setAnswer(answer)}
             value={answer}
             keyboardType="number-pad"
@@ -67,7 +75,7 @@ const QuestStepQuestion = ({ step, onCorrectAnswer }) => {
         </>
       );
   }
-};
+});
 
 const styles = StyleSheet.create({
   answerInput: {

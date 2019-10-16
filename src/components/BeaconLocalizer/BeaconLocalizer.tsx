@@ -31,13 +31,8 @@ const BeaconLocalizer: React.FunctionComponent<IBeaconLocalizerProps> = ({ beaco
         disabled={!beaconFound}
         mode="contained"
         dark={true}
-        style={{
-          width: BUTTON_WIDTH,
-          height: '100%',
-          justifyContent: 'center',
-          borderTopStartRadius: 0,
-          borderBottomStartRadius: 0
-        }}
+        style={styles.button}
+        contentStyle={styles.fill}
       >
         {translate('start_step')}
       </Button>
@@ -62,6 +57,13 @@ const styles = StyleSheet.create({
   fill: {
     height: '100%',
     width: '100%'
+  },
+  button: {
+    width: BUTTON_WIDTH,
+    height: 72,
+    justifyContent: 'center',
+    borderTopStartRadius: 0,
+    borderBottomStartRadius: 0
   }
 });
 

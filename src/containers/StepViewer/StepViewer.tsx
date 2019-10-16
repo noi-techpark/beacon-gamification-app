@@ -1,18 +1,20 @@
 import to from 'await-to-js';
 import find from 'lodash.find';
 import React, { useEffect, useRef, useState } from 'react';
-import { Animated, Dimensions, Image, ScrollView, StatusBar, StyleSheet, Text, View } from 'react-native';
+import { Animated, Dimensions, Image, ScrollView, StatusBar, StyleSheet, Text, TextInput, View } from 'react-native';
 import { useBackHandler } from 'react-native-hooks';
 import LinearGradient from 'react-native-linear-gradient';
 import { material } from 'react-native-typography';
 import { useNavigation, useNavigationParam } from 'react-navigation-hooks';
-import { SharedElement } from 'react-navigation-shared-element';
 import { getBeaconMetadataById } from '../../api/beacons';
+import { AnimatedLinearGradient } from '../../common/AnimatedLinearGradient';
+import PlatformTouchable from '../../common/PlatformTouchable/PlatformTouchable';
 import BeaconLocalizer from '../../components/BeaconLocalizer/BeaconLocalizer';
 import { QuestStepQuestion } from '../../components/QuestStepQuestion';
 import { useAnimation } from '../../hooks/useAnimation';
 import { useContentChangeAnimation } from '../../hooks/useContentChangeAnimation';
 import { useDiscoveredBeacons } from '../../hooks/useDiscoveredBeacons';
+import { translate } from '../../localization/locale';
 import { Beacon, BeaconMedata } from '../../models/beacon';
 import { Quest, QuestStep } from '../../models/quest';
 import { ScreenKeys } from '../../screens';
@@ -47,6 +49,7 @@ const StepViewer = () => {
   const [isHeaderFullVisible, setHeaderFullVisible] = useState<boolean>(false);
 
   const scrollRef = useRef<ScrollView>();
+  const textInputRef = useRef<TextInput>();
   const scrollY = new Animated.Value(0);
   scrollY.addListener(({ value }) => {
     setHeaderFullVisible(value >= HEADER_SCROLL_DISTANCE);
@@ -67,12 +70,27 @@ const StepViewer = () => {
     scrollDistance: -Dimensions.get('window').height,
     delay: showQuestion ? SLIDE_OUT_ANIMATION_DURATION : 0,
     duration: SLIDE_IN_ANIMATION_DURATION,
-    isFadeInverted: true
+    isFadeInverted: true,
+    callback: () => {
+      if (showQuestion) {
+        setTimeout(() => {
+          textInputRef.current.focus();
+        }, 200);
+      }
+    }
   });
   const fadeFooter = useAnimation({
     doAnimation: showQuestion,
     delay: !showQuestion ? SLIDE_IN_ANIMATION_DURATION + 200 : 0
   });
+
+  const slideTitle = useAnimation({
+    doAnimation: showQuestion,
+    delay: showQuestion ? SLIDE_IN_ANIMATION_DURATION : 0
+  });
+
+  const initialColors = ['rgba(51,51,51,0.64)', 'rgba(51,51,51,0.6)', Colors.BLACK];
+  const finalColors = [Colors.BLACK, 'rgba(51,51,51,0.8)', Colors.BLACK];
 
   const headerHeight = isHeaderFullVisible
     ? HEADER_MIN_HEIGHT
@@ -86,6 +104,7 @@ const StepViewer = () => {
     doAnimation: showQuestion,
     delay: !isHeaderTransition ? SLIDE_IN_ANIMATION_DURATION : 0
   });
+
   const headerOpacity = isHeaderFullVisible
     ? 1
     : !isHeaderTransition
@@ -101,6 +120,7 @@ const StepViewer = () => {
 
   useBackHandler(() => {
     if (showQuestion) {
+      textInputRef.current.blur();
       setShowQuestion(false);
       return true;
     }
@@ -183,30 +203,37 @@ const StepViewer = () => {
     setHeaderTransition(true);
   }
 
+  function onBackPressed() {
+    if (showQuestion) {
+      textInputRef.current.blur();
+      setShowQuestion(false);
+    }
+  }
+
   return (
     <>
-      <SharedElement id={`image_${quest.id}`} style={styles.fill}>
-        <Image
-          source={
-            quest.id === 1
-              ? {
-                  uri:
-                    'https://scontent-mxp1-1.xx.fbcdn.net/v/t1.0-9/60362028_10158533718775550_8803879888109961216_o.jpg?_nc_cat=104&_nc_oc=AQmQMfZctOTQtPwGgxzvFlkHScDy1Mm99JorANofezjCo3MOQwMURwXdBpSHB94ukCg&_nc_ht=scontent-mxp1-1.xx&oh=8eb016ce727d45adb0131a08ca6b06cc&oe=5E230089'
-                }
-              : {
-                  uri:
-                    'https://static.wixstatic.com/media/9508b7_6810120813944ffb801e83ce6e4cca2a~mv2.jpg/v1/fill/w_3360,h_840,al_c,q_90,usm_0.66_1.00_0.01/9508b7_6810120813944ffb801e83ce6e4cca2a~mv2.jpg'
-                }
+      <Image
+        source={
+          // quest.id === 1
+          //   ?
+          {
+            uri:
+              'https://scontent-mxp1-1.xx.fbcdn.net/v/t1.0-9/60362028_10158533718775550_8803879888109961216_o.jpg?_nc_cat=104&_nc_oc=AQmQMfZctOTQtPwGgxzvFlkHScDy1Mm99JorANofezjCo3MOQwMURwXdBpSHB94ukCg&_nc_ht=scontent-mxp1-1.xx&oh=8eb016ce727d45adb0131a08ca6b06cc&oe=5E230089'
           }
-          style={styles.absoluteFill}
-          resizeMode="cover"
-        />
-      </SharedElement>
-      <LinearGradient
-        colors={['rgba(51,51,51,0.64)', 'rgba(51,51,51,0.6)', Colors.BLACK]}
-        locations={[0.1, 0.5, 0.83]}
-        style={StyleSheet.absoluteFill}
-      >
+          // : {
+          //     uri:
+          //       'https://static.wixstatic.com/media/9508b7_6810120813944ffb801e83ce6e4cca2a~mv2.jpg/v1/fill/w_3360,h_840,al_c,q_90,usm_0.66_1.00_0.01/9508b7_6810120813944ffb801e83ce6e4cca2a~mv2.jpg'
+          //   }
+        }
+        style={[styles.absoluteFill, { height: Dimensions.get('window').height + StatusBar.currentHeight }]}
+        resizeMode="cover"
+      />
+      <AnimatedLinearGradient
+        colors={!showQuestion ? initialColors : finalColors}
+        locations={[0.15, 0.5, 0.83]}
+        style={[styles.absoluteFill, { height: Dimensions.get('window').height + StatusBar.currentHeight }]}
+      />
+      <View style={styles.fill}>
         <Animated.View
           style={{
             opacity: opacityMainContent,
@@ -226,39 +253,7 @@ const StepViewer = () => {
           >
             <Text style={styles.stepTitle}>{step.name}</Text>
             <View style={styles.scrollContent}>
-              {/* <Text style={styles.stepDescription}>{step.instructions}</Text> */}
-              <Text style={styles.stepDescription}>
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus ultricies libero fermentum bibendum
-                ultrices. In nec velit ac nibh ullamcorper consequat sit amet sit amet elit. Ut in venenatis massa.
-                Vivamus eu ante at elit tempor fermentum a nec nunc. Quisque ut sem nunc. Etiam ullamcorper diam in nisi
-                volutpat, non mollis dui sagittis. Duis vel condimentum lacus, eu sollicitudin sapien. Nulla ultricies
-                eros a lorem mollis egestas. Ut viverra ex sed ultrices sagittis. Lorem ipsum dolor sit amet,
-                consectetur adipiscing elit. Phasellus ultricies libero fermentum bibendum ultrices. In nec velit ac
-                nibh ullamcorper consequat sit amet sit amet elit. Ut in venenatis massa. Vivamus eu ante at elit tempor
-                fermentum a nec nunc. Quisque ut sem nunc. Etiam ullamcorper diam in nisi volutpat, non mollis dui
-                sagittis. Duis vel condimentum lacus, eu sollicitudin sapien. Nulla ultricies eros a lorem mollis
-                egestas. Ut viverra ex sed ultrices sagittis. Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                Phasellus ultricies libero fermentum bibendum ultrices. In nec velit ac nibh ullamcorper consequat sit
-                amet sit amet elit. Ut in venenatis massa. Vivamus eu ante at elit tempor fermentum a nec nunc. Quisque
-                fermentum a nec nunc. Quisque ut sem nunc. Etiam ullamcorper diam in nisi volutpat, non mollis dui
-                sagittis. Duis vel condimentum lacus, eu sollicitudin sapien. Nulla ultricies eros a lorem mollis
-                egestas. Ut viverra ex sed ultrices sagittis. Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                Phasellus ultricies libero fermentum bibendum ultrices. In nec velit ac nibh ullamcorper consequat sit
-                amet sit amet elit. Ut in venenatis massa. Vivamus eu ante at elit tempor fermentum a nec nunc.
-                Quisquefermentum a nec nunc. Quisque ut sem nunc. Etiam ullamcorper diam in nisi volutpat, non mollis
-                dui sagittis. Duis vel condimentum lacus, eu sollicitudin sapien. Nulla ultricies eros a lorem mollis
-                egestas. Ut viverra ex sed ultrices sagittis. Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                Phasellus ultricies libero fermentum bibendum ultrices. In nec velit ac nibh ullamcorper consequat sit
-                amet sit amet elit. Ut in venenatis massa. Vivamus eu ante at elit tempor fermentum a nec nunc.
-                Quisquefermentum a nec nunc. Quisque ut sem nunc. Etiam ullamcorper diam in nisi volutpat, non mollis
-                dui sagittis. Duis vel condimentum lacus, eu sollicitudin sapien. Nulla ultricies eros a lorem mollis
-                egestas. Ut viverra ex sed ultrices sagittis. Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                Phasellus ultricies libero fermentum bibendum ultrices. In nec velit ac nibh ullamcorper consequat sit
-                amet sit amet elit. Ut in venenatis massa. Vivamus eu ante at elit tempor fermentum a nec nunc. Quisque
-                ut sem nunc. Etiam ullamcorper diam in nisi volutpat, non mollis dui sagittis. Duis vel condimentum
-                lacus, eu sollicitudin sapien. Nulla ultricies eros a lorem mollis egestas. Ut viverra ex sed ultrices
-                sagittis.
-              </Text>
+              <Text style={styles.stepDescription}>{step.instructions}</Text>
             </View>
           </ScrollView>
         </Animated.View>
@@ -275,7 +270,9 @@ const StepViewer = () => {
             }
           ]}
         >
-          <QuestStepQuestion step={step} onCorrectAnswer={onCorrectAnswer} />
+          <ScrollView contentContainerStyle={styles.questionContainer} keyboardShouldPersistTaps="handled">
+            <QuestStepQuestion ref={textInputRef} step={step} onCorrectAnswer={onCorrectAnswer} />
+          </ScrollView>
         </Animated.View>
         <Animated.View
           style={[styles.headerContainer, { height: isHeaderTransition ? HEADER_MIN_HEIGHT : headerHeight }]}
@@ -288,9 +285,28 @@ const StepViewer = () => {
               }
             ]}
           />
-          {/* <Animated.Text style={[styles.stepTitle, { transform: [{ translateX: headerTranslate }] }]}>
-            {step.name}
-          </Animated.Text> */}
+          {isHeaderTransition && (
+            <Animated.View
+              style={{
+                alignItems: 'center',
+                transform: [
+                  {
+                    translateY: slideTitle.interpolate({
+                      inputRange: [0, 1],
+                      outputRange: [-56, 4]
+                    })
+                  }
+                ]
+              }}
+            >
+              <PlatformTouchable style={styles.backContainer} onPress={onBackPressed}>
+                <Image source={require('../../images/arrow_up.png')} />
+                <Text style={{ ...material.captionObject, color: Colors.WHITE, paddingTop: 8 }}>
+                  {translate('back')}
+                </Text>
+              </PlatformTouchable>
+            </Animated.View>
+          )}
         </Animated.View>
         <Animated.View
           style={[
@@ -309,7 +325,7 @@ const StepViewer = () => {
             </View>
           </LinearGradient>
         </Animated.View>
-      </LinearGradient>
+      </View>
     </>
   );
 };
@@ -364,7 +380,15 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-end',
     overflow: 'hidden'
   },
-  header: { backgroundColor: Colors.BLACK, position: 'absolute', top: 0, left: 0, right: 0, height: HEADER_MAX_HEIGHT },
+  header: {
+    backgroundColor: Colors.BLACK,
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    height: HEADER_MAX_HEIGHT
+  },
+  backContainer: { justifyContent: 'center', alignItems: 'center', height: 56, paddingHorizontal: 22 },
   footerContainer: {
     height: FOOTER_HEIGHT + FOOTER_SHADOW_DISTANCE,
     position: 'absolute',
@@ -377,6 +401,11 @@ const styles = StyleSheet.create({
     width: '100%',
     paddingHorizontal: 16,
     marginTop: FOOTER_SHADOW_DISTANCE
+  },
+  questionContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    paddingHorizontal: 16
   }
 });
 
