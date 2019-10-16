@@ -25,7 +25,7 @@ export function springyFadeIn() {
 
 export function forVertical() {
     const transitionSpec = {
-        duration: 300,
+        duration: 500,
         easing: Easing.out(Easing.poly(4)),
         timing: Animated.timing,
         useNativeDriver: true
