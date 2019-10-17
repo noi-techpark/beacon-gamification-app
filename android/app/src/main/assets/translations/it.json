@@ -16,5 +16,7 @@
   "discover_adventures": "Scopri le avventure",
   "discover": "Scopri",
   "start_step": "Inizia",
-  "back": "Indietro"
+  "back": "Indietro",
+  "quest_completed": "Hai terminato l'avventura di %{quest_name}!",
+  "finish_quest": "Completa avventura"
 }

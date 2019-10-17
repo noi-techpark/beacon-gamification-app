@@ -16,5 +16,7 @@
   "discover_adventures": "Discover adventures",
   "discover": "Discover",
   "start_step": "Start",
-  "back": "Back"
+  "back": "Back",
+  "quest_completed": "You've completed %{quest_name} adventure!",
+  "finish_quest": "Finish adventure"
 }

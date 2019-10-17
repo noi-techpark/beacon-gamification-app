@@ -76,6 +76,8 @@ const QuestPreview: NavigationScreenComponent<NavigationStackOptions, Props> = (
   });
 
   const onStartQuestPressed = () => {
+    // navigation.navigate(ScreenKeys.QuestCompleted, { quest, points: 1500 });
+
     NearbyBeacons.configureScanMode(2);
     NearbyBeacons.setDeviceUpdateCallbackInterval(2);
 
