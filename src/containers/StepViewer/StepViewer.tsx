@@ -192,6 +192,9 @@ const StepViewer = () => {
 
   const onSkipStepPressed = (step: QuestStep) => {
     if (step.quest_index < quest.steps.length) {
+      textInputRef.current.blur();
+      setShowQuestion(false);
+
       navigation.navigate(ScreenKeys.StepViewer, {
         quest,
         stepId: step.quest_index + 1,
