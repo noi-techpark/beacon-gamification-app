@@ -1,5 +1,6 @@
+import LottieView from 'lottie-react-native';
 import React from 'react';
-import { Dimensions, Image, StyleSheet, Text, Vibration, View } from 'react-native';
+import { Dimensions, StyleSheet, Text, Vibration, View } from 'react-native';
 import { Button } from 'react-native-paper';
 import { usePrevious } from '../../hooks/usePrevious';
 import { translate } from '../../localization/locale';
@@ -23,7 +24,13 @@ const BeaconLocalizer: React.FunctionComponent<IBeaconLocalizerProps> = ({ beaco
   return (
     <View style={styles.root}>
       <View style={styles.container}>
-        <Image source={require('../../images/localizer.png')} style={{ marginHorizontal: 8 }} />
+        <LottieView
+          source={require('../../animations/radar.json')}
+          autoPlay={!isFound}
+          autoSize={true}
+          speed={2}
+          style={{ width: 48, height: 48 }}
+        />
         <Text>Vai all'ingresso della sala per cominciare la sfida!</Text>
       </View>
       <Button
@@ -43,6 +50,7 @@ const BeaconLocalizer: React.FunctionComponent<IBeaconLocalizerProps> = ({ beaco
 const styles = StyleSheet.create({
   root: {
     height: 72,
+    width: Dimensions.get('window').width - 32,
     backgroundColor: Colors.WHITE,
     flexDirection: 'row',
     alignItems: 'center',

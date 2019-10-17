@@ -1,18 +1,23 @@
 import LottieView from 'lottie-react-native';
 import React, { useState } from 'react';
-import { Animated, Button, Dimensions, Easing, StyleSheet, Text, View } from 'react-native';
+import { Animated, Dimensions, Easing, Image, StyleSheet, Text, View } from 'react-native';
+import { Button } from 'react-native-paper';
 import { material } from 'react-native-typography';
 import { useNavigation, useNavigationEvents, useNavigationParam } from 'react-navigation-hooks';
 import { useAnimation } from '../../../hooks/useAnimation';
 import { translate } from '../../../localization/locale';
-import { QuestStep } from '../../../models/quest';
+import { Question, QuestStep } from '../../../models/quest';
 import { Colors } from '../../../styles/colors';
 
-const QuestStepCompleted = () => {
+const CorrectAnswer = () => {
   const navigation = useNavigation();
   const step: QuestStep = useNavigationParam('step');
   const [isScreenAppearing, setScreenAppearing] = useState(false);
   const [isTransitionCompleted, setCompleted] = useState(false);
+
+  const question: Question = JSON.parse(step.properties);
+
+  // const locale = getCurrentLocale();
 
   useNavigationEvents(evt => {
     if (evt.type === 'willFocus') {
@@ -31,8 +36,7 @@ const QuestStepCompleted = () => {
   const confettiAnimation = useAnimation({
     doAnimation: isTransitionCompleted,
     duration: 5000,
-    easing: Easing.out(Easing.poly(2)),
-    delay: 800
+    easing: Easing.out(Easing.poly(2))
   });
 
   const fadeConfetti = useAnimation({
@@ -89,9 +93,18 @@ const QuestStepCompleted = () => {
             ]}
             resizeMode="cover"
           />
-          <Text style={material.title}>{translate('gained')}</Text>
-          <Text style={material.display1}>{`${step.value_points} ${translate('points')}`}</Text>
-          <Button title={translate('proceed')} onPress={onStepCompleted} />
+          <Text style={styles.title}>{translate('gained')}</Text>
+          <Text style={styles.description}>
+            {question.answerExplanation ||
+              `Il castello fu commissionato nel 1346 dall’illuminato marchese Luca Fedrizzi detto “Totto da Lona”. La costruzione durò 8 anni.`}
+          </Text>
+          <View style={styles.pointsContainer}>
+            <Image source={require('../../../images/star_gradient.png')} />
+            <Text style={styles.pointsText}>{step.value_points}</Text>
+          </View>
+          <Button onPress={onStepCompleted} mode="contained" dark={true}>
+            {translate('proceed')}
+          </Button>
         </View>
       </Animated.View>
     </>
@@ -117,21 +130,48 @@ const styles = StyleSheet.create({
     position: 'absolute'
   },
   confetti: {
-    width: '100%',
-    height: 240,
+    width: Dimensions.get('window').width - 32,
     position: 'absolute',
-    top: 0
+    top: 0,
+    left: 0,
+    right: 0
   },
   cardContainer: {
-    // padding: 20,
     width: '100%',
     minHeight: 240,
-    // marginHorizontal: 16,
     backgroundColor: Colors.WHITE,
-    alignItems: 'center',
-    justifyContent: 'center',
+    padding: 16,
     borderRadius: 8
+  },
+  title: {
+    ...material.display1Object,
+    fontFamily: 'SuedtirolPro-Regular',
+    paddingTop: 40,
+    paddingBottom: 8,
+    paddingHorizontal: 16,
+    color: Colors.TOTAL_BLACK
+  },
+  description: {
+    ...material.subheadingObject,
+    paddingHorizontal: 16
+  },
+  pointsContainer: {
+    flexDirection: 'row',
+    alignSelf: 'center',
+    width: 124,
+    paddingHorizontal: 30,
+    marginTop: 16,
+    marginBottom: 48,
+    borderRadius: 100,
+    backgroundColor: ' rgba(222, 112, 0, 0.08)',
+    alignItems: 'center',
+    justifyContent: 'space-between'
+  },
+  pointsText: {
+    ...material.display1WhiteObject,
+    color: Colors.SUDTIROL_DARK_ORANGE,
+    fontFamily: 'SuedtirolPro-Regular'
   }
 });
 
-export default QuestStepCompleted;
+export default CorrectAnswer;

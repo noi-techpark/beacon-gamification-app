@@ -1,11 +1,10 @@
-import React, { FunctionComponent, forwardRef, useState, useEffect, MutableRefObject, RefObject, Ref } from 'react';
-import { TextInput as TextInputStatic, StyleSheet } from 'react-native';
-import { Question } from '../../../models/quest';
-import { TextInput, DefaultTheme } from 'react-native-paper';
-import { useKeyboard } from 'react-native-hooks';
+import React, { forwardRef, FunctionComponent, RefObject } from 'react';
+import { StyleSheet, TextInput as TextInputStatic } from 'react-native';
+import { DefaultTheme, TextInput } from 'react-native-paper';
 import { material } from 'react-native-typography';
-import { Colors } from '../../../styles/colors';
 import { translate } from '../../../localization/locale';
+import { Question } from '../../../models/quest';
+import { Colors } from '../../../styles/colors';
 import { QuestContext } from '../../QuestionContainer/QuestionContainer';
 
 interface IQuestionRendererProps {
@@ -27,7 +26,6 @@ const QuestionRenderer: FunctionComponent<IQuestionRendererProps> = forwardRef(
                 onChangeText={answer => context.setText(answer)}
                 value={context.text}
                 mode="outlined"
-                autoCapitalize="none"
                 style={styles.answerInput}
                 placeholder={translate('type_answer')}
                 theme={{

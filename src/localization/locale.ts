@@ -17,7 +17,7 @@ export const translate = memoize(
 
 export const setupI18nConfig = () => {
     // fallback if no available language fits
-    const fallback = { languageTag: "it", isRTL: false };
+    const fallback = { languageTag: "en", isRTL: false };
 
     const { languageTag, isRTL } =
         RNLocalize.findBestAvailableLanguage(Object.keys(translationGetters)) ||
@@ -32,3 +32,7 @@ export const setupI18nConfig = () => {
     i18n.translations = { [languageTag]: translationGetters[languageTag]() };
     i18n.locale = languageTag;
 };
+
+export function getCurrentLocale() {
+    return i18n.locale;
+}

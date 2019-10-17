@@ -15,9 +15,9 @@ import { createStackNavigator } from 'react-navigation-stack';
 import { TransitionProps } from 'react-navigation-stack/lib/typescript/types';
 import { Home } from './src/containers/Home';
 import { Onboarding } from './src/containers/Onboarding';
+import { CorrectAnswer } from './src/containers/quest/CorrectAnswer';
 import { QuestionViewer } from './src/containers/quest/QuestionViewer';
 import { QuestPreview } from './src/containers/quest/QuestPreview';
-import { QuestStepCompleted } from './src/containers/quest/QuestStepCompleted';
 import { Register } from './src/containers/Register';
 import { StepViewer } from './src/containers/StepViewer';
 import { setupI18nConfig } from './src/localization/locale';
@@ -86,8 +86,8 @@ const ModalNavigator = createStackNavigator(
     Main: {
       screen: AppNavigator
     },
-    [ScreenKeys.QuestStepCompleted]: {
-      screen: QuestStepCompleted
+    [ScreenKeys.CorrectAnswer]: {
+      screen: CorrectAnswer
     }
   },
   {

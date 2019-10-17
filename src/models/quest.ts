@@ -30,5 +30,6 @@ export type QuestFinder = {
 export type Question = {
     q: string;
     r: string;
-    kind: 'text' | 'number' | 'multiple'
+    kind: 'text' | 'number' | 'multiple';
+    answerExplanation: string;
 }

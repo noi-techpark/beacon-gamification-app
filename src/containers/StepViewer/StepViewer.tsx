@@ -173,6 +173,11 @@ const StepViewer = () => {
 
   async function onStepCompleted(step: QuestStep) {
     if (step.quest_index < quest.steps.length) {
+      setStepCompleted(false);
+      setShowQuestion(false);
+      setHeaderFullVisible(false);
+      setHeaderTransition(false);
+
       navigation.navigate(ScreenKeys.StepViewer, {
         quest,
         stepId: step.quest_index + 1,
@@ -180,7 +185,7 @@ const StepViewer = () => {
         points: currentPoints + step.value_points
       });
     } else {
-      // navigation.goBack();
+      navigation.goBack();
       // navigation.state.params.onQuestCompleted(quest);
     }
   }
@@ -203,7 +208,7 @@ const StepViewer = () => {
 
     setStepCompleted(true);
 
-    navigation.navigate(ScreenKeys.QuestStepCompleted, { step, onStepCompleted });
+    navigation.navigate(ScreenKeys.CorrectAnswer, { step, onStepCompleted });
   }
 
   function onOpenQuestionPressed() {
@@ -306,7 +311,7 @@ const StepViewer = () => {
                   {
                     translateY: slideTitle.interpolate({
                       inputRange: [0, 1],
-                      outputRange: [-56, 4]
+                      outputRange: [-56 - StatusBar.currentHeight, 10]
                     })
                   }
                 ]
