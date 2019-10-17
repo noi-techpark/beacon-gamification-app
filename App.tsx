@@ -16,6 +16,7 @@ import { TransitionProps } from 'react-navigation-stack/lib/typescript/types';
 import { Home } from './src/containers/Home';
 import { Onboarding } from './src/containers/Onboarding';
 import { CorrectAnswer } from './src/containers/quest/CorrectAnswer';
+import { QuestCompleted } from './src/containers/quest/QuestCompleted';
 import { QuestionViewer } from './src/containers/quest/QuestionViewer';
 import { QuestPreview } from './src/containers/quest/QuestPreview';
 import { Register } from './src/containers/Register';
@@ -49,6 +50,9 @@ const AppNavigator = createSharedElementStackNavigator(
     },
     [ScreenKeys.StepViewer]: {
       screen: StepViewer
+    },
+    [ScreenKeys.QuestCompleted]: {
+      screen: QuestCompleted
     }
   },
   {
@@ -95,9 +99,6 @@ const ModalNavigator = createStackNavigator(
     headerMode: 'none',
     gesturesEnabled: false,
     transparentCard: true,
-    // cardStyle: {
-    //   opacity: 0.8
-    // },
     transitionConfig: () => forVertical()
   }
 );

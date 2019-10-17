@@ -185,7 +185,7 @@ const StepViewer = () => {
         points: currentPoints + step.value_points
       });
     } else {
-      navigation.goBack();
+      navigation.navigate(ScreenKeys.QuestCompleted, { quest, points: currentPoints + step.value_points });
       // navigation.state.params.onQuestCompleted(quest);
     }
   }
