@@ -96,7 +96,7 @@ const ModalNavigator = createStackNavigator(
     gesturesEnabled: false,
     transparentCard: true,
     // cardStyle: {
-    //   backgroundColor: Colors.BLACK
+    //   opacity: 0.8
     // },
     transitionConfig: () => forVertical()
   }

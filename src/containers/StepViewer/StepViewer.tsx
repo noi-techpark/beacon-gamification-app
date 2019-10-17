@@ -7,6 +7,7 @@ import LinearGradient from 'react-native-linear-gradient';
 import { material } from 'react-native-typography';
 import { useNavigation, useNavigationParam } from 'react-navigation-hooks';
 import { getBeaconMetadataById } from '../../api/beacons';
+import { postAddPoints } from '../../api/quests';
 import { AnimatedLinearGradient } from '../../common/AnimatedLinearGradient';
 import PlatformTouchable from '../../common/PlatformTouchable/PlatformTouchable';
 import BeaconLocalizer from '../../components/BeaconLocalizer/BeaconLocalizer';
@@ -19,7 +20,6 @@ import { Beacon, BeaconMedata } from '../../models/beacon';
 import { Quest, QuestStep } from '../../models/quest';
 import { ScreenKeys } from '../../screens';
 import { Colors } from '../../styles/colors';
-import { postAddPoints } from '../../api/quests';
 
 interface StepViewerProps {}
 

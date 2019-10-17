@@ -34,23 +34,26 @@ export function forVertical() {
     return {
         transitionSpec,
         containerStyle: {
-            backgroundColor: Colors.TOTAL_BLACK
+            backgroundColor: Colors.BLACK_040
         },
-        screenInterpolator: ({ layout, position, scene }) => {
+        screenInterpolator: ({ _, position, scene }) => {
             const { index } = scene;
 
-            const height = layout.initHeight;
+            // const translateY = position.interpolate({
+            //     inputRange: [index - 1, index, index + 1],
+            //     outputRange: [height, 0, 0]
+            // });
+
+            // const opacity = position.interpolate({
+            //     inputRange: [index - 1, index, index + 1],
+            //     outputRange: [0, 1, 1],
+            // });
             const translateY = position.interpolate({
                 inputRange: [index - 1, index, index + 1],
-                outputRange: [height, 0, 0]
+                outputRange: [0, 0, 0]
             });
 
-            const opacity = position.interpolate({
-                inputRange: [index - 1, index, index + 1],
-                outputRange: [1, 1, 0.1],
-            });
-
-            return { opacity, transform: [{ translateY }] };
+            return { transform: [{ translateY }] };
         }
     }
 }
