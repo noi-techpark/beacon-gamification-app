@@ -1,5 +1,6 @@
+import LottieView from 'lottie-react-native';
 import React, { useState } from 'react';
-import { Animated, Button, Dimensions, StyleSheet, Text, View } from 'react-native';
+import { Animated, Button, Dimensions, Easing, StyleSheet, Text, View } from 'react-native';
 import { material } from 'react-native-typography';
 import { useNavigation, useNavigationEvents, useNavigationParam } from 'react-navigation-hooks';
 import { useAnimation } from '../../../hooks/useAnimation';
@@ -10,19 +11,33 @@ import { Colors } from '../../../styles/colors';
 const QuestStepCompleted = () => {
   const navigation = useNavigation();
   const step: QuestStep = useNavigationParam('step');
+  const [isScreenAppearing, setScreenAppearing] = useState(false);
   const [isTransitionCompleted, setCompleted] = useState(false);
 
   useNavigationEvents(evt => {
     if (evt.type === 'willFocus') {
-      setCompleted(true);
+      setScreenAppearing(true);
     } else if (evt.type === 'willBlur') {
-      setCompleted(false);
+      setScreenAppearing(false);
+    } else if (evt.type === 'didFocus') {
+      setCompleted(true);
     }
   });
 
   const fadeBackground = useAnimation({
-    doAnimation: isTransitionCompleted
-    // easing: Easing.out(Easing.poly(4)),
+    doAnimation: isScreenAppearing
+  });
+
+  const confettiAnimation = useAnimation({
+    doAnimation: isTransitionCompleted,
+    duration: 5000,
+    easing: Easing.out(Easing.poly(2)),
+    delay: 800
+  });
+
+  const fadeConfetti = useAnimation({
+    doAnimation: isTransitionCompleted,
+    delay: 5800 - 2000
   });
 
   async function onStepCompleted() {
@@ -42,9 +57,7 @@ const QuestStepCompleted = () => {
             })
           }
         ]}
-      >
-        <View style={{ width: '100%', height: '100%' }} />
-      </Animated.View>
+      />
       <Animated.View
         style={[
           styles.root,
@@ -61,6 +74,21 @@ const QuestStepCompleted = () => {
         ]}
       >
         <View style={styles.cardContainer}>
+          <LottieView
+            source={require('../../../animations/confetti.json')}
+            progress={confettiAnimation}
+            resizeMode="cover"
+          />
+          <Animated.Image
+            source={require('../../../images/confetti_win.png')}
+            style={[
+              styles.confetti,
+              {
+                opacity: fadeConfetti
+              }
+            ]}
+            resizeMode="cover"
+          />
           <Text style={material.title}>{translate('gained')}</Text>
           <Text style={material.display1}>{`${step.value_points} ${translate('points')}`}</Text>
           <Button title={translate('proceed')} onPress={onStepCompleted} />
@@ -77,6 +105,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     position: 'absolute',
+    paddingHorizontal: 16,
     left: 0,
     right: 0,
     bottom: -Dimensions.get('window').height
@@ -87,8 +116,17 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.TOTAL_BLACK,
     position: 'absolute'
   },
+  confetti: {
+    width: '100%',
+    height: 240,
+    position: 'absolute',
+    top: 0
+  },
   cardContainer: {
-    padding: 20,
+    // padding: 20,
+    width: '100%',
+    minHeight: 240,
+    // marginHorizontal: 16,
     backgroundColor: Colors.WHITE,
     alignItems: 'center',
     justifyContent: 'center',
