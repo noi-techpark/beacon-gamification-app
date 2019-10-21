@@ -19,5 +19,8 @@
   "back": "",
   "quest_completed": "",
   "finish_quest": "",
-  "scored_points": ""
+  "scored_points": "",
+  "continue": "",
+  "restart": "",
+  "exit_from_game": ""
 }
