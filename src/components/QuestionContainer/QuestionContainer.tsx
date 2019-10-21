@@ -30,17 +30,19 @@ const QuestionContainer: FunctionComponent<IQuestionContainerProps> = forwardRef
     const [data, setData] = useState({
       text: ''
     });
+    const [isCorrect, setCorrect] = useState(false);
 
     const question: Question = JSON.parse(step.properties);
 
     useEffect(() => {
-      if (!isKeyboardShow && data.text === question.r) {
+      if (!isKeyboardShow && isCorrect) {
         onCorrectAnswer(step);
         clearState();
       }
     }, [isKeyboardShow]);
 
     const onAnswerPressed = () => {
+      setCorrect(data.text === question.r);
       if (isKeyboardShow) {
         Keyboard.dismiss();
       } else {
@@ -54,11 +56,9 @@ const QuestionContainer: FunctionComponent<IQuestionContainerProps> = forwardRef
     };
 
     const clearState = () => {
-      setTimeout(() => {
-        setData({
-          text: ''
-        });
-      }, 2000);
+      setData({
+        text: ''
+      });
     };
 
     return (
@@ -67,6 +67,7 @@ const QuestionContainer: FunctionComponent<IQuestionContainerProps> = forwardRef
           value={{
             text: data.text,
             setText: (text: string) => {
+              setCorrect(false);
               setData({
                 ...data,
                 text

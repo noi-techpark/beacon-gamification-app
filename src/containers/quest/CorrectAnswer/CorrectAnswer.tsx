@@ -17,8 +17,6 @@ const CorrectAnswer = () => {
 
   const question: Question = JSON.parse(step.properties);
 
-  // const locale = getCurrentLocale();
-
   useNavigationEvents(evt => {
     if (evt.type === 'willFocus') {
       setScreenAppearing(true);

@@ -29,12 +29,12 @@ const QuestCompleted: NavigationScreenComponent<NavigationStackOptions, IQuestCo
   const [isTransitionCompleted, setCompleted] = useState(false);
 
   useBackHandler(() => {
+    navigation.goBack();
     navigation.dispatch(
       StackActions.pop({
         n: 3
       })
     );
-    // let the default thing happen
     return true;
   });
 

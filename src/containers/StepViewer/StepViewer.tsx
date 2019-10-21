@@ -123,9 +123,9 @@ const StepViewer = () => {
       });
 
   useBackHandler(() => {
-    // if (isStepCompleted) {
-    //   return false;
-    // }
+    if (isStepCompleted) {
+      return true;
+    }
 
     // if (showQuestion && !) {
     //   textInputRef.current.blur();
