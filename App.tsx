@@ -17,6 +17,7 @@ import { Home } from './src/containers/Home';
 import { Onboarding } from './src/containers/Onboarding';
 import { CorrectAnswer } from './src/containers/quest/CorrectAnswer';
 import { QuestCompleted } from './src/containers/quest/QuestCompleted';
+import { QuestPause } from './src/containers/quest/QuestPause';
 import { QuestPreview } from './src/containers/quest/QuestPreview';
 import { Register } from './src/containers/Register';
 import { StepViewer } from './src/containers/StepViewer';
@@ -88,6 +89,9 @@ const ModalNavigator = createStackNavigator(
     },
     [ScreenKeys.CorrectAnswer]: {
       screen: CorrectAnswer
+    },
+    [ScreenKeys.QuestPause]: {
+      screen: QuestPause
     }
   },
   {

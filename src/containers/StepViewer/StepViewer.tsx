@@ -5,6 +5,7 @@ import { Animated, Dimensions, Image, ScrollView, StatusBar, StyleSheet, Text, T
 import { useBackHandler } from 'react-native-hooks';
 import LinearGradient from 'react-native-linear-gradient';
 import { material } from 'react-native-typography';
+import { StackActions } from 'react-navigation';
 import { useNavigation, useNavigationParam } from 'react-navigation-hooks';
 import { getBeaconMetadataById } from '../../api/beacons';
 import { postAddPoints } from '../../api/quests';
@@ -21,7 +22,7 @@ import { Quest, QuestStep } from '../../models/quest';
 import { ScreenKeys } from '../../screens';
 import { Colors } from '../../styles/colors';
 
-interface StepViewerProps {}
+interface IStepViewerProps {}
 
 const PADDING_BOTTOM_FIX = 4;
 const DESIRED_DISTANCE = 350;
@@ -38,6 +39,7 @@ const StepViewer = () => {
   const quest: Quest = useNavigationParam('quest');
   const stepId: number = useNavigationParam('stepId');
   const token: string = useNavigationParam('token');
+  const isPaused: boolean = useNavigationParam('isPaused');
   const currentPoints: number = useNavigationParam('points') || 0;
   const discoveredBeacons = useDiscoveredBeacons();
   const step = quest.steps.find(s => s.quest_index === stepId);
@@ -121,17 +123,30 @@ const StepViewer = () => {
       });
 
   useBackHandler(() => {
-    if (isStepCompleted) {
-      return false;
-    }
+    // if (isStepCompleted) {
+    //   return false;
+    // }
 
-    if (showQuestion) {
-      textInputRef.current.blur();
-      setShowQuestion(false);
-      return true;
+    // if (showQuestion && !) {
+    //   textInputRef.current.blur();
+    //   setShowQuestion(false);
+    //   return true;
+    // }
+
+    if (!navigation.isFocused()) {
+      return false;
+    } else {
+      navigation.navigate(ScreenKeys.QuestPause, {
+        onExitPressed: () => {
+          navigation.dispatch(
+            StackActions.pop({
+              n: 2
+            })
+          );
+        }
+      });
     }
-    // let the default thing happen
-    return false;
+    return true;
   });
 
   useEffect(() => {
@@ -202,8 +217,9 @@ const StepViewer = () => {
         token
       });
     } else {
-      navigation.goBack();
-      // navigation.state.params.onQuestCompleted(quest);
+      setTimeout(() => {
+        navigation.navigate(ScreenKeys.QuestCompleted, { quest, points: currentPoints });
+      }, 500);
     }
   };
 
@@ -433,20 +449,49 @@ const styles = StyleSheet.create({
 
 StepViewer.navigationOptions = ({ navigation }) => {
   const points: number = navigation.getParam('points') || 0;
+  const onBackPressed = () => {
+    navigation.navigate(ScreenKeys.QuestPause, {
+      onExitPressed: () => {
+        navigation.dispatch(
+          StackActions.pop({
+            n: 2
+          })
+        );
+      }
+    });
+  };
 
   return {
     headerTransparent: true,
     headerTintColor: Colors.WHITE,
-    headerLeftContainerStyle: {
-      width: 40,
-      height: 40,
-      marginHorizontal: 16,
-      marginTop: 36 - StatusBar.currentHeight,
-      alignItems: 'center',
-      justifyContent: 'center',
-      backgroundColor: Colors.WHITE_024,
-      borderRadius: 40
-    },
+    headerLeft: (
+      <PlatformTouchable
+        onPress={onBackPressed}
+        style={{
+          width: 30,
+          height: 30,
+          marginHorizontal: 16 + 5,
+          marginTop: 36 - StatusBar.currentHeight - 5,
+          alignItems: 'center',
+          justifyContent: 'center',
+          borderRadius: 40
+        }}
+      >
+        <View
+          style={{
+            position: 'absolute',
+            width: 40,
+            height: 40,
+            borderRadius: 32,
+            backgroundColor: Colors.WHITE,
+            alignItems: 'center',
+            justifyContent: 'center'
+          }}
+        >
+          <Image source={require('../../images/pause.png')} style={{ width: 16, height: 16 }} />
+        </View>
+      </PlatformTouchable>
+    ),
     headerRight: (
       <View
         style={{

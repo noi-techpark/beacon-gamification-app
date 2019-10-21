@@ -19,5 +19,8 @@
   "back": "Indietro",
   "quest_completed": "Hai terminato l'avventura di %{quest_name}!",
   "finish_quest": "Completa avventura",
-  "scored_points": "Scored points"
+  "scored_points": "Scored points",
+  "continue": "Continua",
+  "restart": "Ricomincia",
+  "exit_from_game": "Esci dal gioco"
 }

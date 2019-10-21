@@ -1,6 +1,7 @@
 import debounce from 'lodash.debounce';
 import React from 'react';
 import { GestureResponderEvent, Platform, StyleProp, TouchableNativeFeedback, TouchableOpacity, View, ViewStyle } from 'react-native';
+import { Colors } from '../../styles/colors';
 
 export interface IPlatformTouchableProps {
   children: React.ReactNode;
@@ -24,8 +25,8 @@ const PlatformTouchable = (props: IPlatformTouchableProps): JSX.Element => {
     return (
       <TouchableNativeFeedback
         onPress={onPress ? debounce(onPress, 500, { leading: true, trailing: false }) : undefined}
-        // background={TouchableNativeFeedback.Ripple(Colors.GRAY_200)}
-        useForeground={true}
+        useForeground={TouchableNativeFeedback.canUseNativeForeground()}
+        background={TouchableNativeFeedback.Ripple(Colors.BLACK_032, true)}
         disabled={disabled}
       >
         <View style={style}>{children}</View>
