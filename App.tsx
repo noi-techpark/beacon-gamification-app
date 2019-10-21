@@ -17,7 +17,6 @@ import { Home } from './src/containers/Home';
 import { Onboarding } from './src/containers/Onboarding';
 import { CorrectAnswer } from './src/containers/quest/CorrectAnswer';
 import { QuestCompleted } from './src/containers/quest/QuestCompleted';
-import { QuestionViewer } from './src/containers/quest/QuestionViewer';
 import { QuestPreview } from './src/containers/quest/QuestPreview';
 import { Register } from './src/containers/Register';
 import { StepViewer } from './src/containers/StepViewer';
@@ -33,20 +32,17 @@ StatusBar.setBackgroundColor(Colors.GRAY_200);
 const AppNavigator = createSharedElementStackNavigator(
   createStackNavigator,
   {
-    [ScreenKeys.Home]: {
-      screen: Home
-    },
     [ScreenKeys.Onboarding]: {
       screen: Onboarding
     },
     [ScreenKeys.Register]: {
       screen: Register
     },
+    [ScreenKeys.Home]: {
+      screen: Home
+    },
     [ScreenKeys.QuestPreview]: {
       screen: QuestPreview
-    },
-    [ScreenKeys.QuestionViewer]: {
-      screen: QuestionViewer
     },
     [ScreenKeys.StepViewer]: {
       screen: StepViewer

@@ -18,5 +18,6 @@
   "start_step": "Inizia",
   "back": "Indietro",
   "quest_completed": "Hai terminato l'avventura di %{quest_name}!",
-  "finish_quest": "Completa avventura"
+  "finish_quest": "Completa avventura",
+  "scored_points": "Scored points"
 }

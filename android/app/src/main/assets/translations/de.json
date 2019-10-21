@@ -16,5 +16,8 @@
   "discover_adventures": "",
   "discover": "",
   "start_step": "",
-  "back": ""
+  "back": "",
+  "quest_completed": "",
+  "finish_quest": "",
+  "scored_points": ""
 }

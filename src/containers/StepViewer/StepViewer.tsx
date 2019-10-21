@@ -185,8 +185,9 @@ const StepViewer = () => {
         points: currentPoints + step.value_points
       });
     } else {
-      navigation.navigate(ScreenKeys.QuestCompleted, { quest, points: currentPoints + step.value_points });
-      // navigation.state.params.onQuestCompleted(quest);
+      setTimeout(() => {
+        navigation.navigate(ScreenKeys.QuestCompleted, { quest, points: currentPoints + step.value_points });
+      }, 500);
     }
   }
 

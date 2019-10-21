@@ -18,5 +18,6 @@
   "start_step": "Start",
   "back": "Back",
   "quest_completed": "You've completed %{quest_name} adventure!",
-  "finish_quest": "Finish adventure"
+  "finish_quest": "Finish adventure",
+  "scored_points": "Punti totalizzati"
 }
