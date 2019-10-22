@@ -1,16 +1,18 @@
+import LottieView from 'lottie-react-native';
 import React, { useState } from 'react';
-import { Animated, ImageBackground, StatusBar, StyleSheet, View } from 'react-native';
+import { Animated, Easing, ImageBackground, StyleSheet, View } from 'react-native';
 import { useBackHandler } from 'react-native-hooks';
 import LinearGradient from 'react-native-linear-gradient';
 import { Button, Text } from 'react-native-paper';
 import { material } from 'react-native-typography';
-import { NavigationScreenComponent, NavigationScreenProps, StackActions } from 'react-navigation';
+import { NavigationScreenComponent, NavigationScreenProps } from 'react-navigation';
 import { useNavigation, useNavigationEvents, useNavigationParam } from 'react-navigation-hooks';
 import { NavigationStackOptions } from 'react-navigation-stack';
 import { PointsTotal } from '../../../components/PointsTotal';
 import { useAnimation } from '../../../hooks/useAnimation';
 import { translate } from '../../../localization/locale';
 import { Quest } from '../../../models/quest';
+import { ScreenKeys } from '../../../screens';
 import { Colors } from '../../../styles/colors';
 
 interface IQuestCompletedProps extends NavigationScreenProps {
@@ -29,12 +31,7 @@ const QuestCompleted: NavigationScreenComponent<NavigationStackOptions, IQuestCo
   const [isTransitionCompleted, setCompleted] = useState(false);
 
   useBackHandler(() => {
-    navigation.goBack();
-    navigation.dispatch(
-      StackActions.pop({
-        n: 3
-      })
-    );
+    navigation.navigate(ScreenKeys.Home);
     return true;
   });
 
@@ -53,12 +50,14 @@ const QuestCompleted: NavigationScreenComponent<NavigationStackOptions, IQuestCo
     duration: 180
   });
 
+  const confettiAnimation = useAnimation({
+    doAnimation: isTransitionCompleted,
+    duration: 5000,
+    easing: Easing.out(Easing.poly(1.5))
+  });
+
   const onFinishQuestPressed = () => {
-    navigation.dispatch(
-      StackActions.pop({
-        n: 3
-      })
-    );
+    navigation.navigate(ScreenKeys.Home);
   };
 
   return (
@@ -92,6 +91,13 @@ const QuestCompleted: NavigationScreenComponent<NavigationStackOptions, IQuestCo
           <PointsTotal points={points} />
         </ImageBackground>
       </LinearGradient>
+      <View style={styles.absoluteFill}>
+        <LottieView
+          source={require('../../../animations/confetti.json')}
+          progress={confettiAnimation}
+          resizeMode="cover"
+        />
+      </View>
       <View style={styles.footer}>
         <Button mode="contained" dark={true} style={{ width: '100%' }} onPress={onFinishQuestPressed}>
           {translate('finish_quest')}
@@ -136,16 +142,7 @@ const styles = StyleSheet.create({
 QuestCompleted.navigationOptions = {
   headerTransparent: true,
   headerTintColor: Colors.WHITE,
-  headerLeftContainerStyle: {
-    width: 40,
-    height: 40,
-    marginHorizontal: 16,
-    marginTop: 36 - StatusBar.currentHeight,
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: Colors.WHITE_024,
-    borderRadius: 40
-  }
+  headerLeft: null
 };
 
 export default QuestCompleted;
