@@ -1,3 +1,5 @@
+import isEqual from 'lodash.isequal';
+import sortBy from 'lodash.sortby';
 import React, { forwardRef, FunctionComponent, RefObject, useEffect, useState } from 'react';
 import { Dimensions, Keyboard, ScrollView, StatusBar, StyleSheet, Text, TextInput as TextInputStatic, View } from 'react-native';
 import { useKeyboard } from 'react-native-hooks';
@@ -6,7 +8,7 @@ import { material } from 'react-native-typography';
 import { translate } from '../../localization/locale';
 import { QuestionMetadata, QuestStep } from '../../models/quest';
 import { Colors } from '../../styles/colors';
-import { isQuestionWithTextInput } from '../../utils/uiobjects';
+import { addOrRemove, isQuestionWithTextInput } from '../../utils/uiobjects';
 import QuestionRenderer from '../step/QuestionRenderer/QuestionRenderer';
 
 interface IQuestionContainerProps {
@@ -18,18 +20,22 @@ interface IQuestionContainerProps {
 
 type QuestionContext = {
   answer: string;
+  multipleAnswer: string[];
   setAnswer?: (answer: string) => void;
+  toggleAnswer?: (answer: string) => void;
 };
 
 export const QuestContext = React.createContext<QuestionContext>({
-  answer: ''
+  answer: '',
+  multipleAnswer: []
 });
 
 const QuestionContainer: FunctionComponent<IQuestionContainerProps> = forwardRef(
   ({ step, onCorrectAnswer, onSkipQuestionPressed }, ref: RefObject<TextInputStatic>) => {
     const { isKeyboardShow } = useKeyboard();
     const [data, setData] = useState({
-      text: ''
+      text: '',
+      multipleAnswer: []
     });
     const [isCorrect, setCorrect] = useState(false);
 
@@ -43,7 +49,10 @@ const QuestionContainer: FunctionComponent<IQuestionContainerProps> = forwardRef
     }, [isKeyboardShow]);
 
     const onAnswerPressed = () => {
-      const isValid = data.text === question.answer;
+      const isValid =
+        question.kind === 'multiple'
+          ? isEqual(sortBy(data.multipleAnswer), sortBy(question.answer))
+          : data.text === question.answer;
 
       if (isKeyboardShow) {
         setCorrect(isValid);
@@ -60,7 +69,8 @@ const QuestionContainer: FunctionComponent<IQuestionContainerProps> = forwardRef
 
     const clearState = () => {
       setData({
-        text: ''
+        text: '',
+        multipleAnswer: []
       });
     };
 
@@ -71,11 +81,18 @@ const QuestionContainer: FunctionComponent<IQuestionContainerProps> = forwardRef
             <QuestContext.Provider
               value={{
                 answer: data.text,
+                multipleAnswer: data.multipleAnswer,
                 setAnswer: (text: string) => {
                   setCorrect(false);
                   setData({
                     ...data,
                     text
+                  });
+                },
+                toggleAnswer: (text: string) => {
+                  setData({
+                    ...data,
+                    multipleAnswer: addOrRemove(data.multipleAnswer, text)
                   });
                 }
               }}

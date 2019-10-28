@@ -293,40 +293,6 @@ const StepViewer = () => {
           </ScrollView>
         </Animated.View>
         <Animated.View
-          style={[styles.headerContainer, { height: isHeaderTransition ? HEADER_MIN_HEIGHT : headerHeight }]}
-        >
-          <Animated.View
-            style={[
-              styles.header,
-              {
-                opacity: headerOpacity
-              }
-            ]}
-          />
-          {isHeaderTransition && (
-            <Animated.View
-              style={{
-                alignItems: 'center',
-                transform: [
-                  {
-                    translateY: slideTitle.interpolate({
-                      inputRange: [0, 1],
-                      outputRange: [-56 - StatusBar.currentHeight, 10]
-                    })
-                  }
-                ]
-              }}
-            >
-              <PlatformTouchable style={styles.backContainer} onPress={onBackPressed}>
-                <Image source={require('../../images/arrow_up.png')} />
-                <Text style={{ ...material.captionObject, color: Colors.WHITE, paddingTop: 8 }}>
-                  {translate('back')}
-                </Text>
-              </PlatformTouchable>
-            </Animated.View>
-          )}
-        </Animated.View>
-        <Animated.View
           style={[
             styles.footerContainer,
             {
@@ -362,6 +328,40 @@ const StepViewer = () => {
             onCorrectAnswer={onCorrectAnswer}
             onSkipQuestionPressed={onSkipStepPressed}
           />
+        </Animated.View>
+        <Animated.View
+          style={[styles.headerContainer, { height: isHeaderTransition ? HEADER_MIN_HEIGHT : headerHeight }]}
+        >
+          <Animated.View
+            style={[
+              styles.header,
+              {
+                opacity: headerOpacity
+              }
+            ]}
+          />
+          {isHeaderTransition && (
+            <Animated.View
+              style={{
+                alignItems: 'center',
+                transform: [
+                  {
+                    translateY: slideTitle.interpolate({
+                      inputRange: [0, 1],
+                      outputRange: [-56 - StatusBar.currentHeight, 10]
+                    })
+                  }
+                ]
+              }}
+            >
+              <PlatformTouchable style={styles.backContainer} onPress={onBackPressed}>
+                <Image source={require('../../images/arrow_up.png')} />
+                <Text style={{ ...material.captionObject, color: Colors.WHITE, paddingTop: 8 }}>
+                  {translate('back')}
+                </Text>
+              </PlatformTouchable>
+            </Animated.View>
+          )}
         </Animated.View>
       </View>
     </>
