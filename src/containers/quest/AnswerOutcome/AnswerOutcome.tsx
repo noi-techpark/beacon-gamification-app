@@ -6,16 +6,17 @@ import { material } from 'react-native-typography';
 import { useNavigation, useNavigationEvents, useNavigationParam } from 'react-navigation-hooks';
 import { useAnimation } from '../../../hooks/useAnimation';
 import { translate } from '../../../localization/locale';
-import { Question, QuestStep } from '../../../models/quest';
+import { QuestionMetadata, QuestStep } from '../../../models/quest';
 import { Colors } from '../../../styles/colors';
 
-const CorrectAnswer = () => {
+const AnswerOutcome = () => {
   const navigation = useNavigation();
   const step: QuestStep = useNavigationParam('step');
+  const isCorrect: boolean = useNavigationParam('isCorrect');
   const [isScreenAppearing, setScreenAppearing] = useState(false);
   const [isTransitionCompleted, setCompleted] = useState(false);
 
-  const question: Question = JSON.parse(step.properties);
+  const question: QuestionMetadata = JSON.parse(step.properties);
 
   useNavigationEvents(evt => {
     if (evt.type === 'willFocus') {
@@ -44,7 +45,7 @@ const CorrectAnswer = () => {
 
   async function onStepCompleted() {
     navigation.goBack();
-    navigation.state.params.onStepCompleted(step);
+    navigation.state.params.onStepCompleted(step, isCorrect);
   }
 
   return (
@@ -76,29 +77,37 @@ const CorrectAnswer = () => {
         ]}
       >
         <View style={styles.cardContainer}>
-          <LottieView
-            source={require('../../../animations/confetti.json')}
-            progress={confettiAnimation}
-            resizeMode="cover"
-          />
-          <Animated.Image
-            source={require('../../../images/confetti_win.png')}
-            style={[
-              styles.confetti,
-              {
-                opacity: fadeConfetti
-              }
-            ]}
-            resizeMode="cover"
-          />
-          <Text style={styles.title}>{translate('gained')}</Text>
+          {isCorrect && (
+            <LottieView
+              source={require('../../../animations/confetti.json')}
+              progress={confettiAnimation}
+              resizeMode="cover"
+            />
+          )}
+          {isCorrect && (
+            <Animated.Image
+              source={require('../../../images/confetti_win.png')}
+              style={[
+                styles.confetti,
+                {
+                  opacity: fadeConfetti
+                }
+              ]}
+              resizeMode="cover"
+            />
+          )}
+          <Text style={styles.title}>{translate(isCorrect ? 'right_answer' : 'wrong_answer')}</Text>
           <Text style={styles.description}>
-            {question.answerExplanation ||
-              `Il castello fu commissionato nel 1346 dall’illuminato marchese Luca Fedrizzi detto “Totto da Lona”. La costruzione durò 8 anni.`}
+            {isCorrect
+              ? question.correctAnswerMessage || translate('general_correct_answer')
+              : question.wrongAnswerMessage || translate('general_wrong_answer')}
           </Text>
           <View style={styles.pointsContainer}>
-            <Image source={require('../../../images/star_gradient.png')} />
-            <Text style={styles.pointsText}>{step.value_points}</Text>
+            <Image source={require('../../../images/star_gradient.png')} style={{ marginEnd: 8 }} />
+            <>
+              {!isCorrect && <Text style={styles.pointsText}>-</Text>}
+              <Text style={styles.pointsText}>{step.value_points}</Text>
+            </>
           </View>
           <Button onPress={onStepCompleted} mode="contained" dark={true}>
             {translate('proceed')}
@@ -156,7 +165,7 @@ const styles = StyleSheet.create({
   pointsContainer: {
     flexDirection: 'row',
     alignSelf: 'center',
-    width: 124,
+    minWidth: 124,
     paddingHorizontal: 30,
     marginTop: 16,
     marginBottom: 48,
@@ -172,4 +181,4 @@ const styles = StyleSheet.create({
   }
 });
 
-export default CorrectAnswer;
+export default AnswerOutcome;

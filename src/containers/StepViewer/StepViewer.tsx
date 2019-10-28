@@ -188,7 +188,7 @@ const StepViewer = () => {
     fetchBeacon();
   }, [stepId]);
 
-  async function onStepCompleted(step: QuestStep) {
+  async function onStepCompleted(step: QuestStep, isCorrectAnswer: boolean) {
     if (step.quest_index < quest.steps.length) {
       setStepCompleted(false);
       setShowQuestion(false);
@@ -199,11 +199,14 @@ const StepViewer = () => {
         quest,
         stepId: step.quest_index + 1,
         token,
-        points: currentPoints + step.value_points
+        points: isCorrectAnswer ? currentPoints + step.value_points : currentPoints - step.value_points
       });
     } else {
       setTimeout(() => {
-        navigation.navigate(ScreenKeys.QuestCompleted, { quest, points: currentPoints + step.value_points });
+        navigation.navigate(ScreenKeys.QuestCompleted, {
+          quest,
+          points: isCorrectAnswer ? currentPoints + step.value_points : currentPoints - step.value_points
+        });
       }, 500);
     }
   }
@@ -230,7 +233,16 @@ const StepViewer = () => {
 
     setStepCompleted(true);
 
-    navigation.navigate(ScreenKeys.CorrectAnswer, { step, onStepCompleted });
+    navigation.navigate(ScreenKeys.AnswerOutcome, { step, onStepCompleted, isCorrect: true });
+  }
+
+  async function onWrongAnswer(step: QuestStep) {
+    // TODO: Api call to remove points!
+    // const [e, response] = await to(postAddPoints(token, step.value_points));
+
+    setStepCompleted(true);
+
+    navigation.navigate(ScreenKeys.AnswerOutcome, { step, onStepCompleted, isCorrect: false });
   }
 
   function onOpenQuestionPressed() {
@@ -240,7 +252,9 @@ const StepViewer = () => {
 
   function onBackPressed() {
     if (showQuestion) {
-      textInputRef.current.blur();
+      if (isQuestionWithTextInput(question)) {
+        textInputRef.current.blur();
+      }
       setShowQuestion(false);
     }
   }
@@ -326,6 +340,7 @@ const StepViewer = () => {
             ref={textInputRef}
             step={step}
             onCorrectAnswer={onCorrectAnswer}
+            onWrongAnswer={onWrongAnswer}
             onSkipQuestionPressed={onSkipStepPressed}
           />
         </Animated.View>
