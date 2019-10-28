@@ -14,6 +14,7 @@ import QuestionRenderer from '../step/QuestionRenderer/QuestionRenderer';
 interface IQuestionContainerProps {
   step: QuestStep;
   onCorrectAnswer: (step: QuestStep) => void;
+  onWrongAnswer: (step: QuestStep) => void;
   onSkipQuestionPressed: (step: QuestStep) => void;
   ref?: RefObject<TextInputStatic>;
 }
@@ -31,7 +32,7 @@ export const QuestContext = React.createContext<QuestionContext>({
 });
 
 const QuestionContainer: FunctionComponent<IQuestionContainerProps> = forwardRef(
-  ({ step, onCorrectAnswer, onSkipQuestionPressed }, ref: RefObject<TextInputStatic>) => {
+  ({ step, onCorrectAnswer, onWrongAnswer, onSkipQuestionPressed }, ref: RefObject<TextInputStatic>) => {
     const { isKeyboardShow } = useKeyboard();
     const [data, setData] = useState({
       text: '',
@@ -42,9 +43,14 @@ const QuestionContainer: FunctionComponent<IQuestionContainerProps> = forwardRef
     const question: QuestionMetadata = JSON.parse(step.properties);
 
     useEffect(() => {
-      if (!isKeyboardShow && isCorrect) {
-        onCorrectAnswer(step);
-        clearState();
+      if (!isKeyboardShow && (data.multipleAnswer.length > 0 || data.text.length > 0)) {
+        if (isCorrect) {
+          onCorrectAnswer(step);
+          clearState();
+        } else {
+          onWrongAnswer(step);
+          clearState();
+        }
       }
     }, [isKeyboardShow]);
 
@@ -59,6 +65,9 @@ const QuestionContainer: FunctionComponent<IQuestionContainerProps> = forwardRef
         Keyboard.dismiss();
       } else if (isValid) {
         onCorrectAnswer(step);
+        clearState();
+      } else {
+        onWrongAnswer(step);
         clearState();
       }
     };

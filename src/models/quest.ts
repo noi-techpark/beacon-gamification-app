@@ -31,6 +31,7 @@ export type QuestionMetadata = {
     question: string;
     answer: string | string[];
     kind: 'text' | 'number' | 'multiple' | 'single';
-    answerExplanation: string;
+    correctAnswerMessage: string;
+    wrongAnswerMessage: string;
     options: string[];
 }
