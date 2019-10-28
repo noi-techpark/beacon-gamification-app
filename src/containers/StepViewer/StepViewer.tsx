@@ -18,7 +18,7 @@ import { useContentChangeAnimation } from '../../hooks/useContentChangeAnimation
 import { useDiscoveredBeacons } from '../../hooks/useDiscoveredBeacons';
 import { translate } from '../../localization/locale';
 import { Beacon, BeaconMedata } from '../../models/beacon';
-import { Quest, QuestStep } from '../../models/quest';
+import { Quest, QuestionMetadata, QuestStep } from '../../models/quest';
 import { ScreenKeys } from '../../screens';
 import { Colors } from '../../styles/colors';
 
@@ -39,7 +39,6 @@ const StepViewer = () => {
   const quest: Quest = useNavigationParam('quest');
   const stepId: number = useNavigationParam('stepId');
   const token: string = useNavigationParam('token');
-  const isPaused: boolean = useNavigationParam('isPaused');
   const currentPoints: number = useNavigationParam('points') || 0;
   const discoveredBeacons = useDiscoveredBeacons();
   const step = quest.steps.find(s => s.quest_index === stepId);
@@ -51,6 +50,8 @@ const StepViewer = () => {
   const [showQuestion, setShowQuestion] = useState<boolean>(false);
   const [isHeaderTransition, setHeaderTransition] = useState<boolean>(false);
   const [isHeaderFullVisible, setHeaderFullVisible] = useState<boolean>(false);
+
+  const question: QuestionMetadata = JSON.parse(step.properties);
 
   const scrollRef = useRef<ScrollView>();
   const textInputRef = useRef<TextInput>();
@@ -76,7 +77,7 @@ const StepViewer = () => {
     duration: SLIDE_IN_ANIMATION_DURATION,
     isFadeInverted: true,
     callback: () => {
-      if (showQuestion) {
+      if (showQuestion && (question.kind === 'number' || question.kind === 'text')) {
         setTimeout(() => {
           textInputRef.current.focus();
         }, 200);

@@ -4,7 +4,7 @@ import { useKeyboard } from 'react-native-hooks';
 import { Button } from 'react-native-paper';
 import { material } from 'react-native-typography';
 import { translate } from '../../localization/locale';
-import { Question, QuestStep } from '../../models/quest';
+import { QuestionMetadata, QuestStep } from '../../models/quest';
 import { Colors } from '../../styles/colors';
 import { QuestionRenderer } from '../step/QuestionRenderer';
 
@@ -16,12 +16,12 @@ interface IQuestionContainerProps {
 }
 
 type QuestionContext = {
-  text: string;
-  setText?: (text: string) => void;
+  answer: string;
+  setAnswer?: (answer: string) => void;
 };
 
 export const QuestContext = React.createContext<QuestionContext>({
-  text: ''
+  answer: ''
 });
 
 const QuestionContainer: FunctionComponent<IQuestionContainerProps> = forwardRef(
@@ -32,7 +32,7 @@ const QuestionContainer: FunctionComponent<IQuestionContainerProps> = forwardRef
     });
     const [isCorrect, setCorrect] = useState(false);
 
-    const question: Question = JSON.parse(step.properties);
+    const question: QuestionMetadata = JSON.parse(step.properties);
 
     useEffect(() => {
       if (!isKeyboardShow && isCorrect) {
@@ -42,10 +42,12 @@ const QuestionContainer: FunctionComponent<IQuestionContainerProps> = forwardRef
     }, [isKeyboardShow]);
 
     const onAnswerPressed = () => {
-      setCorrect(data.text === question.r);
+      const isValid = data.text === question.answer;
+      
       if (isKeyboardShow) {
+        setCorrect(isValid);
         Keyboard.dismiss();
-      } else {
+      } else if (isValid) {
         onCorrectAnswer(step);
         clearState();
       }
@@ -65,8 +67,8 @@ const QuestionContainer: FunctionComponent<IQuestionContainerProps> = forwardRef
       <View style={{ width: Dimensions.get('window').width - 32 }}>
         <QuestContext.Provider
           value={{
-            text: data.text,
-            setText: (text: string) => {
+            answer: data.text,
+            setAnswer: (text: string) => {
               setCorrect(false);
               setData({
                 ...data,
@@ -75,7 +77,7 @@ const QuestionContainer: FunctionComponent<IQuestionContainerProps> = forwardRef
             }
           }}
         >
-          <Text style={styles.question}>{`${step.quest_index}. ${question.q}`}</Text>
+          <Text style={styles.question}>{`${step.quest_index}. ${question.question}`}</Text>
           <QuestionRenderer ref={ref} question={question} />
           <Button onPress={onAnswerPressed} mode="contained" dark={true}>
             {translate('answer')}

@@ -27,9 +27,10 @@ export type QuestFinder = {
     quests: Quest[];
 }
 
-export type Question = {
-    q: string;
-    r: string;
-    kind: 'text' | 'number' | 'multiple';
+export type QuestionMetadata = {
+    question: string;
+    answer: string;
+    kind: 'text' | 'number' | 'multiple' | 'single';
     answerExplanation: string;
+    options: string[];
 }
