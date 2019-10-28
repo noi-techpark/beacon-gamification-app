@@ -109,21 +109,11 @@ const QuestionContainer: FunctionComponent<IQuestionContainerProps> = forwardRef
     };
 
     return isQuestionWithTextInput(question) ? (
-      <ScrollView
-        contentContainerStyle={{
-          flex: 1,
-          paddingHorizontal: 16,
-          marginTop: 120 + StatusBar.currentHeight,
-          marginBottom: 16
-        }}
-        keyboardShouldPersistTaps="handled"
-      >
+      <ScrollView contentContainerStyle={styles.questionContainer} keyboardShouldPersistTaps="handled">
         {renderContent()}
       </ScrollView>
     ) : (
-      <View style={{ flex: 1, paddingHorizontal: 16, marginTop: 120 + StatusBar.currentHeight, marginBottom: 16 }}>
-        {renderContent()}
-      </View>
+      <View style={styles.questionContainer}>{renderContent()}</View>
     );
   }
 );
@@ -135,8 +125,9 @@ const styles = StyleSheet.create({
   },
   questionContainer: {
     flex: 1,
-    justifyContent: 'center',
-    paddingHorizontal: 16
+    paddingHorizontal: 16,
+    marginTop: 120 + StatusBar.currentHeight,
+    marginBottom: 16
   },
   answerInput: {
     width: '100%',
