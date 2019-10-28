@@ -1,12 +1,13 @@
 import React, { forwardRef, FunctionComponent, RefObject, useEffect, useState } from 'react';
-import { Dimensions, Keyboard, StyleSheet, Text, TextInput as TextInputStatic, View } from 'react-native';
+import { Dimensions, Keyboard, ScrollView, StatusBar, StyleSheet, Text, TextInput as TextInputStatic, View } from 'react-native';
 import { useKeyboard } from 'react-native-hooks';
 import { Button } from 'react-native-paper';
 import { material } from 'react-native-typography';
 import { translate } from '../../localization/locale';
-import { Question, QuestStep } from '../../models/quest';
+import { QuestionMetadata, QuestStep } from '../../models/quest';
 import { Colors } from '../../styles/colors';
-import { QuestionRenderer } from '../step/QuestionRenderer';
+import { isQuestionWithTextInput } from '../../utils/uiobjects';
+import QuestionRenderer from '../step/QuestionRenderer/QuestionRenderer';
 
 interface IQuestionContainerProps {
   step: QuestStep;
@@ -16,12 +17,12 @@ interface IQuestionContainerProps {
 }
 
 type QuestionContext = {
-  text: string;
-  setText?: (text: string) => void;
+  answer: string;
+  setAnswer?: (answer: string) => void;
 };
 
 export const QuestContext = React.createContext<QuestionContext>({
-  text: ''
+  answer: ''
 });
 
 const QuestionContainer: FunctionComponent<IQuestionContainerProps> = forwardRef(
@@ -32,7 +33,7 @@ const QuestionContainer: FunctionComponent<IQuestionContainerProps> = forwardRef
     });
     const [isCorrect, setCorrect] = useState(false);
 
-    const question: Question = JSON.parse(step.properties);
+    const question: QuestionMetadata = JSON.parse(step.properties);
 
     useEffect(() => {
       if (!isKeyboardShow && isCorrect) {
@@ -42,10 +43,12 @@ const QuestionContainer: FunctionComponent<IQuestionContainerProps> = forwardRef
     }, [isKeyboardShow]);
 
     const onAnswerPressed = () => {
-      setCorrect(data.text === question.r);
+      const isValid = data.text === question.answer;
+
       if (isKeyboardShow) {
+        setCorrect(isValid);
         Keyboard.dismiss();
-      } else {
+      } else if (isValid) {
         onCorrectAnswer(step);
         clearState();
       }
@@ -61,40 +64,56 @@ const QuestionContainer: FunctionComponent<IQuestionContainerProps> = forwardRef
       });
     };
 
-    return (
-      <View style={{ width: Dimensions.get('window').width - 32 }}>
-        <QuestContext.Provider
-          value={{
-            text: data.text,
-            setText: (text: string) => {
-              setCorrect(false);
-              setData({
-                ...data,
-                text
-              });
-            }
-          }}
-        >
-          <Text style={styles.question}>{`${step.quest_index}. ${question.q}`}</Text>
-          <QuestionRenderer ref={ref} question={question} />
-          <Button onPress={onAnswerPressed} mode="contained" dark={true}>
-            {translate('answer')}
-          </Button>
-          <Button
-            onPress={onSkipPressed}
-            mode="text"
-            dark={true}
-            theme={{
-              colors: {
-                primary: Colors.WHITE
-              }
-            }}
-            style={{ marginTop: 12 }}
-          >
-            {translate('skip_question')}
-          </Button>
-        </QuestContext.Provider>
-      </View>
+    const renderContent = () => {
+      return (
+        <>
+          <View style={{ flex: 1, width: Dimensions.get('window').width - 32, justifyContent: 'space-between' }}>
+            <QuestContext.Provider
+              value={{
+                answer: data.text,
+                setAnswer: (text: string) => {
+                  setCorrect(false);
+                  setData({
+                    ...data,
+                    text
+                  });
+                }
+              }}
+            >
+              <View>
+                <Text style={styles.question}>{`${step.quest_index}. ${question.question}`}</Text>
+                <QuestionRenderer ref={ref} question={question} />
+              </View>
+            </QuestContext.Provider>
+            <View>
+              <Button onPress={onAnswerPressed} mode="contained" dark={true}>
+                {translate('answer')}
+              </Button>
+              <Button
+                onPress={onSkipPressed}
+                mode="text"
+                dark={true}
+                theme={{
+                  colors: {
+                    primary: Colors.WHITE
+                  }
+                }}
+                style={{ marginTop: 12 }}
+              >
+                {translate('skip_question')}
+              </Button>
+            </View>
+          </View>
+        </>
+      );
+    };
+
+    return isQuestionWithTextInput(question) ? (
+      <ScrollView contentContainerStyle={styles.questionContainer} keyboardShouldPersistTaps="handled">
+        {renderContent()}
+      </ScrollView>
+    ) : (
+      <View style={styles.questionContainer}>{renderContent()}</View>
     );
   }
 );
@@ -103,6 +122,12 @@ const styles = StyleSheet.create({
   question: {
     ...material.titleObject,
     color: Colors.WHITE
+  },
+  questionContainer: {
+    flex: 1,
+    paddingHorizontal: 16,
+    marginTop: 120 + StatusBar.currentHeight,
+    marginBottom: 16
   },
   answerInput: {
     width: '100%',
