@@ -29,7 +29,7 @@ export type QuestFinder = {
 
 export type QuestionMetadata = {
     question: string;
-    answer: string;
+    answer: string | string[];
     kind: 'text' | 'number' | 'multiple' | 'single';
     answerExplanation: string;
     options: string[];

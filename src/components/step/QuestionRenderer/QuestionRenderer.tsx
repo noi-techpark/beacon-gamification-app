@@ -1,6 +1,7 @@
+import includes from 'lodash.includes';
 import React, { forwardRef, FunctionComponent, RefObject } from 'react';
 import { Dimensions, StyleSheet, Text, TextInput as TextInputStatic, View } from 'react-native';
-import { DefaultTheme, RadioButton, TextInput } from 'react-native-paper';
+import { Checkbox, DefaultTheme, RadioButton, TextInput, TouchableRipple } from 'react-native-paper';
 import { material } from 'react-native-typography';
 import { translate } from '../../../localization/locale';
 import { QuestionMetadata } from '../../../models/quest';
@@ -83,6 +84,36 @@ const QuestionRenderer: FunctionComponent<IQuestionRendererProps> = forwardRef(
             )}
           </QuestContext.Consumer>
         );
+      case 'multiple':
+        return (
+          <QuestContext.Consumer>
+            {context => (
+              <View style={{ marginVertical: 12 }}>
+                {question.options.map((opt, index) => (
+                  <View style={{ borderRadius: 100 }}>
+                    <TouchableRipple key={index} onPress={() => context.toggleAnswer(opt)} rippleColor={Colors.WHITE}>
+                      <>
+                        <View style={styles.row}>
+                          <View pointerEvents="none" style={styles.optionCheckBox}>
+                            <Checkbox
+                              status={includes(context.multipleAnswer, opt) ? 'checked' : 'unchecked'}
+                              uncheckedColor={Colors.GRAY_500}
+                              color={Colors.WHITE}
+                            />
+                          </View>
+                          <Text style={[material.subheading, { color: Colors.WHITE, flex: 1, flexWrap: 'wrap' }]}>
+                            {opt}
+                          </Text>
+                        </View>
+                        <View style={styles.separator} />
+                      </>
+                    </TouchableRipple>
+                  </View>
+                ))}
+              </View>
+            )}
+          </QuestContext.Consumer>
+        );
     }
   }
 );
@@ -98,12 +129,24 @@ const styles = StyleSheet.create({
   },
   optionLabelContainer: {
     marginStart: 56,
+    paddingEnd: 12,
     width: Dimensions.get('window').width - 56,
     paddingVertical: 12,
     borderBottomWidth: 1,
     borderColor: Colors.WHITE_016
   },
-  optionRadioButton: { position: 'absolute', width: '100%', paddingTop: 6 }
+  optionRadioButton: { position: 'absolute', width: '100%', paddingTop: 6 },
+  row: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginEnd: 16
+  },
+  optionCheckBox: {
+    paddingStart: 4,
+    paddingEnd: 20,
+    paddingVertical: 12
+  },
+  separator: { marginStart: 56, borderBottomWidth: 1, borderColor: Colors.WHITE_016 }
 });
 
 export default QuestionRenderer;
