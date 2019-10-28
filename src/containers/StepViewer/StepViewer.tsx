@@ -21,6 +21,7 @@ import { Beacon, BeaconMedata } from '../../models/beacon';
 import { Quest, QuestionMetadata, QuestStep } from '../../models/quest';
 import { ScreenKeys } from '../../screens';
 import { Colors } from '../../styles/colors';
+import { isQuestionWithTextInput } from '../../utils/uiobjects';
 
 interface IStepViewerProps {}
 
@@ -77,7 +78,7 @@ const StepViewer = () => {
     duration: SLIDE_IN_ANIMATION_DURATION,
     isFadeInverted: true,
     callback: () => {
-      if (showQuestion && (question.kind === 'number' || question.kind === 'text')) {
+      if (showQuestion && isQuestionWithTextInput(question)) {
         setTimeout(() => {
           textInputRef.current.focus();
         }, 200);
@@ -208,7 +209,7 @@ const StepViewer = () => {
   }
 
   const onSkipStepPressed = (step: QuestStep) => {
-    if (step.quest_index < quest.steps.length) {
+    if (step.quest_index < quest.steps.length && isQuestionWithTextInput(question)) {
       textInputRef.current.blur();
       setShowQuestion(false);
 
@@ -292,28 +293,6 @@ const StepViewer = () => {
           </ScrollView>
         </Animated.View>
         <Animated.View
-          style={[
-            styles.scrollSecondaryContent,
-            {
-              opacity: opacitySecondayContent,
-              transform: [
-                {
-                  translateY: translateSecondaryContent
-                }
-              ]
-            }
-          ]}
-        >
-          <ScrollView contentContainerStyle={styles.questionContainer} keyboardShouldPersistTaps="handled">
-            <QuestionContainer
-              ref={textInputRef}
-              step={step}
-              onCorrectAnswer={onCorrectAnswer}
-              onSkipQuestionPressed={onSkipStepPressed}
-            />
-          </ScrollView>
-        </Animated.View>
-        <Animated.View
           style={[styles.headerContainer, { height: isHeaderTransition ? HEADER_MIN_HEIGHT : headerHeight }]}
         >
           <Animated.View
@@ -364,6 +343,26 @@ const StepViewer = () => {
             </View>
           </LinearGradient>
         </Animated.View>
+        <Animated.View
+          style={[
+            styles.scrollSecondaryContent,
+            {
+              opacity: opacitySecondayContent,
+              transform: [
+                {
+                  translateY: translateSecondaryContent
+                }
+              ]
+            }
+          ]}
+        >
+          <QuestionContainer
+            ref={textInputRef}
+            step={step}
+            onCorrectAnswer={onCorrectAnswer}
+            onSkipQuestionPressed={onSkipStepPressed}
+          />
+        </Animated.View>
       </View>
     </>
   );
@@ -399,8 +398,8 @@ const styles = StyleSheet.create({
     bottom: -Dimensions.get('window').height,
     width: '100%',
     height: '100%',
-    alignItems: 'center',
-    justifyContent: 'center',
+    // alignItems: 'center',
+    // justifyContent: 'center',
     backgroundColor: 'transparent'
   },
   scrollContainer: {
