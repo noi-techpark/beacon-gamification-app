@@ -30,7 +30,7 @@ export type QuestFinder = {
 export type QuestionMetadata = {
     question: string;
     answer: string | string[];
-    kind: 'text' | 'number' | 'multiple' | 'single' | 'order';
+    kind: 'text' | 'number' | 'multiple' | 'single' | 'order' | 'image';
     correctAnswerMessage: string;
     wrongAnswerMessage: string;
     options: string[];

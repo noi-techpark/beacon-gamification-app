@@ -1,10 +1,11 @@
 import includes from 'lodash.includes';
 import React, { forwardRef, FunctionComponent, RefObject } from 'react';
-import { Dimensions, GestureResponderEvent, Image, StyleSheet, Text, TextInput as TextInputStatic, View } from 'react-native';
+import { Dimensions, GestureResponderEvent, Image, ListRenderItemInfo, StyleSheet, Text, TextInput as TextInputStatic, View } from 'react-native';
 import DraggableFlatList from 'react-native-draggable-flatlist';
 import { Checkbox, DefaultTheme, RadioButton, TextInput, TouchableRipple } from 'react-native-paper';
+import { FlatGrid } from 'react-native-super-grid';
 import { material } from 'react-native-typography';
-import PlatformTouchable from '../../../common/PlatformTouchable/PlatformTouchable';
+import { PlatformTouchable } from '../../../common/PlatformTouchable';
 import { translate } from '../../../localization/locale';
 import { QuestionMetadata } from '../../../models/quest';
 import { Colors } from '../../../styles/colors';
@@ -131,6 +132,23 @@ const QuestionRenderer: FunctionComponent<IQuestionRendererProps> = forwardRef(
             )}
           </QuestContext.Consumer>
         );
+      case 'image':
+        return (
+          <QuestContext.Consumer>
+            {context => (
+              <View style={{ flex: 1, marginVertical: 12 }}>
+                <FlatGrid<string>
+                  itemDimension={124}
+                  // spacing={16}
+                  items={question.options}
+                  renderItem={info =>
+                    renderImageOption(info, context.answer === info.item, () => context.setAnswer(info.item))
+                  }
+                />
+              </View>
+            )}
+          </QuestContext.Consumer>
+        );
     }
 
     function renderOrderOption(params: {
@@ -141,14 +159,35 @@ const QuestionRenderer: FunctionComponent<IQuestionRendererProps> = forwardRef(
     }) {
       return (
         <PlatformTouchable onLongPress={params.drag} style={{ height: ITEM_HEIGHT }}>
-          <View style={[styles.row, { height: ITEM_HEIGHT }, params.isActive && { backgroundColor: Colors.WHITE_024 }]}>
-            <View style={styles.optionOrderIcon}>
-              <Image source={require('../../../images/order_icon.png')} />
+          <>
+            <View
+              style={[styles.row, { height: ITEM_HEIGHT }, params.isActive && { backgroundColor: Colors.WHITE_024 }]}
+            >
+              <View style={styles.optionOrderIcon}>
+                <Image source={require('../../../images/order_icon.png')} />
+              </View>
+              <Text style={[material.subheading, { color: Colors.WHITE, flex: 1, flexWrap: 'wrap' }]}>
+                {params.item}
+              </Text>
             </View>
-            <Text style={[material.subheading, { color: Colors.WHITE, flex: 1, flexWrap: 'wrap' }]}>{params.item}</Text>
-          </View>
-          <View style={styles.separator} />
+            <View style={styles.separator} />
+          </>
         </PlatformTouchable>
+      );
+    }
+
+    function renderImageOption(
+      info: ListRenderItemInfo<string>,
+      isSelected: boolean,
+      onSelectImagePressed: () => void
+    ) {
+      return (
+        <TouchableRipple
+          style={{ borderWidth: 6, borderColor: isSelected ? Colors.WHITE : 'transparent' }}
+          onPress={onSelectImagePressed}
+        >
+          <Image source={{ uri: info.item }} style={{ height: 124 }} resizeMode="cover" />
+        </TouchableRipple>
       );
     }
   }
