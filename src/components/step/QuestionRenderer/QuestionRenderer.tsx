@@ -1,9 +1,10 @@
 import includes from 'lodash.includes';
 import React, { forwardRef, FunctionComponent, RefObject } from 'react';
-import { Dimensions, GestureResponderEvent, Image, StyleSheet, Text, TextInput as TextInputStatic, TouchableWithoutFeedback, View } from 'react-native';
+import { Dimensions, GestureResponderEvent, Image, StyleSheet, Text, TextInput as TextInputStatic, View } from 'react-native';
 import DraggableFlatList from 'react-native-draggable-flatlist';
 import { Checkbox, DefaultTheme, RadioButton, TextInput, TouchableRipple } from 'react-native-paper';
 import { material } from 'react-native-typography';
+import PlatformTouchable from '../../../common/PlatformTouchable/PlatformTouchable';
 import { translate } from '../../../localization/locale';
 import { QuestionMetadata } from '../../../models/quest';
 import { Colors } from '../../../styles/colors';
@@ -139,15 +140,15 @@ const QuestionRenderer: FunctionComponent<IQuestionRendererProps> = forwardRef(
       isActive: boolean;
     }) {
       return (
-        <TouchableWithoutFeedback onLongPress={params.drag}>
-          <View style={[styles.row, { height: ITEM_HEIGHT }, params.isActive && { backgroundColor: Colors.WHITE_012 }]}>
+        <PlatformTouchable onLongPress={params.drag} style={{ height: ITEM_HEIGHT }}>
+          <View style={[styles.row, { height: ITEM_HEIGHT }, params.isActive && { backgroundColor: Colors.WHITE_024 }]}>
             <View style={styles.optionOrderIcon}>
               <Image source={require('../../../images/order_icon.png')} />
             </View>
             <Text style={[material.subheading, { color: Colors.WHITE, flex: 1, flexWrap: 'wrap' }]}>{params.item}</Text>
           </View>
           <View style={styles.separator} />
-        </TouchableWithoutFeedback>
+        </PlatformTouchable>
       );
     }
   }
