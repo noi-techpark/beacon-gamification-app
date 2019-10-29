@@ -1,8 +1,10 @@
 import includes from 'lodash.includes';
 import React, { forwardRef, FunctionComponent, RefObject } from 'react';
-import { Dimensions, StyleSheet, Text, TextInput as TextInputStatic, View } from 'react-native';
+import { Dimensions, Image, StyleSheet, Text, TextInput as TextInputStatic, View } from 'react-native';
+import DraggableFlatList from 'react-native-draggable-flatlist';
 import { Checkbox, DefaultTheme, RadioButton, TextInput, TouchableRipple } from 'react-native-paper';
 import { material } from 'react-native-typography';
+import PlatformTouchable from '../../../common/PlatformTouchable/PlatformTouchable';
 import { translate } from '../../../localization/locale';
 import { QuestionMetadata } from '../../../models/quest';
 import { Colors } from '../../../styles/colors';
@@ -90,33 +92,69 @@ const QuestionRenderer: FunctionComponent<IQuestionRendererProps> = forwardRef(
             {context => (
               <View style={{ marginVertical: 12 }}>
                 {question.options.map((opt, index) => (
-                  <View style={{ borderRadius: 100 }}>
-                    <TouchableRipple key={index} onPress={() => context.toggleAnswer(opt)} rippleColor={Colors.WHITE}>
-                      <>
-                        <View style={styles.row}>
-                          <View pointerEvents="none" style={styles.optionCheckBox}>
-                            <Checkbox
-                              status={includes(context.multipleAnswer, opt) ? 'checked' : 'unchecked'}
-                              uncheckedColor={Colors.GRAY_500}
-                              color={Colors.WHITE}
-                            />
-                          </View>
-                          <Text style={[material.subheading, { color: Colors.WHITE, flex: 1, flexWrap: 'wrap' }]}>
-                            {opt}
-                          </Text>
+                  <TouchableRipple key={index} onPress={() => context.toggleAnswer(opt)} rippleColor={Colors.WHITE}>
+                    <>
+                      <View style={styles.row}>
+                        <View pointerEvents="none" style={styles.optionCheckBox}>
+                          <Checkbox
+                            status={includes(context.multipleAnswer, opt) ? 'checked' : 'unchecked'}
+                            uncheckedColor={Colors.GRAY_500}
+                            color={Colors.WHITE}
+                          />
                         </View>
-                        <View style={styles.separator} />
-                      </>
-                    </TouchableRipple>
-                  </View>
+                        <Text style={[material.subheading, { color: Colors.WHITE, flex: 1, flexWrap: 'wrap' }]}>
+                          {opt}
+                        </Text>
+                      </View>
+                      <View style={styles.separator} />
+                    </>
+                  </TouchableRipple>
                 ))}
               </View>
             )}
           </QuestContext.Consumer>
         );
+      case 'order':
+        return (
+          <QuestContext.Consumer>
+            {context => (
+              <View style={{ flex: 1, marginVertical: 12 }}>
+                <DraggableFlatList<string>
+                  contentContainerStyle={{ height: ITEM_HEIGHT * question.options.length }}
+                  keyExtractor={(item, _) => `draggable-item-${item}`}
+                  data={context.orderedAnswer.length > 0 ? context.orderedAnswer : question.options}
+                  renderItem={renderOrderOption}
+                  onDragEnd={({ data }) => context.setOrderedAnswer(data)}
+                  fixedOffset={ITEM_HEIGHT * question.options.length}
+                />
+              </View>
+            )}
+          </QuestContext.Consumer>
+        );
+    }
+
+    function renderOrderOption(params: {
+      item: unknown;
+      index: number;
+      drag: (index: number) => void;
+      isActive: boolean;
+    }) {
+      return (
+        <PlatformTouchable onLongPress={params.drag}>
+          <View style={[styles.row, { height: ITEM_HEIGHT }, params.isActive && { backgroundColor: Colors.WHITE_012 }]}>
+            <View style={styles.optionOrderIcon}>
+              <Image source={require('../../../images/order_icon.png')} />
+            </View>
+            <Text style={[material.subheading, { color: Colors.WHITE, flex: 1, flexWrap: 'wrap' }]}>{params.item}</Text>
+          </View>
+          <View style={styles.separator} />
+        </PlatformTouchable>
+      );
     }
   }
 );
+
+const ITEM_HEIGHT = 48;
 
 const styles = StyleSheet.create({
   question: {
@@ -142,6 +180,11 @@ const styles = StyleSheet.create({
     marginEnd: 16
   },
   optionCheckBox: {
+    paddingStart: 4,
+    paddingEnd: 20,
+    paddingVertical: 12
+  },
+  optionOrderIcon: {
     paddingStart: 4,
     paddingEnd: 20,
     paddingVertical: 12
