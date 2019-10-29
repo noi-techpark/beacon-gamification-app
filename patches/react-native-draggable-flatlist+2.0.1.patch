@@ -1,5 +1,5 @@
 diff --git a/node_modules/react-native-draggable-flatlist/index.tsx b/node_modules/react-native-draggable-flatlist/index.tsx
-index 4979821..88679f9 100644
+index 4979821..c92d649 100644
 --- a/node_modules/react-native-draggable-flatlist/index.tsx
 +++ b/node_modules/react-native-draggable-flatlist/index.tsx
 @@ -1,26 +1,10 @@
@@ -27,7 +27,7 @@ index 4979821..88679f9 100644
 -
 -const AnimatedFlatList = Animated.createAnimatedComponent(FlatList)
 +import * as React from 'react';
-+import { findNodeHandle, Platform, StatusBar, StyleSheet, ViewStyle, VirtualizedListProps } from 'react-native';
++import { findNodeHandle, GestureResponderEvent, Platform, StatusBar, StyleSheet, ViewStyle, VirtualizedListProps } from 'react-native';
 +import { FlatList, PanGestureHandler, State as GestureState, TapGestureHandler } from 'react-native-gesture-handler';
 +import Animated from 'react-native-reanimated';
 +import { getOnCellTap, setupCell, springFill } from './procs';
@@ -98,7 +98,7 @@ index 4979821..88679f9 100644
 -  animationConfig: Partial<Animated.SpringConfig>,
 +    item: T;
 +    index: number;
-+    drag: (index: number) => void;
++    drag: (index: number | GestureResponderEvent) => void;
 +    isActive: boolean;
 +  }) => React.ComponentType | JSX.Element;
 +  animationConfig?: Partial<Animated.SpringConfig>;
@@ -223,7 +223,7 @@ index 4979821..88679f9 100644
 +  hoverMid = add(this.hoverAnim, divide(this.activeCellSize, 2));
 +  hoverOffset = add(this.hoverAnim, this.scrollOffset);
  
-   // Stash a snapshot of scroll position at the time that
+   // Stash a snapshot of scroll position at the time that 
    // translation occurs
 -  hoverScrollSnapshot = new Value(0)
 -  hoverScrollDiff = new Value(0)
@@ -326,7 +326,7 @@ index 4979821..88679f9 100644
    componentDidMount() {
 -    if (Platform.OS === "android" && !this.props.horizontal) {
 +    if (Platform.OS === 'android' && !this.props.horizontal) {
-       // Android measurements do not account for StatusBar,
+       // Android measurements do not account for StatusBar, 
        // so we must do so manually.
 -      const { hidden, translucent } = StatusBar._propsStack.reduce((acc, cur) => {
 -        if (cur.translucent !== undefined) acc.translucent = cur.translucent
@@ -357,7 +357,7 @@ index 4979821..88679f9 100644
 +        const key = this.keyExtractor(item, index);
 +        this.keyToIndex.set(key, index);
 +      });
-       // Remeasure on next paint
+       // Remeasure on next paint  
 -      this.updateCellData(this.props.data)
 -      onNextFrame(this.flushQueue)
 -      this.disabled.setValue(0)
@@ -1161,7 +1161,7 @@ index 4979821..88679f9 100644
            </TapGestureHandler>
 @@ -778,33 +750,27 @@ class DraggableFlatList<T> extends React.Component<Props<T>, State> {
                  opacity: 0,
-                 // The active cell is removed from the list, so we need to add its size to the end
+                 // The active cell is removed from the list, so we need to add its size to the end 
                  // for our list to remain a consistent size
 -                [horizontal ? "width" : "height"]: activeCellData.measurements.size
 +                [horizontal ? 'width' : 'height']: activeCellData.measurements.size
