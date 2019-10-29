@@ -6,6 +6,8 @@ import { Colors } from '../../styles/colors';
 export interface IPlatformTouchableProps {
   children: React.ReactNode;
   onPress?: (event: GestureResponderEvent) => void;
+  onPressOut?: (event: GestureResponderEvent) => void;
+  onLongPress?: (event: GestureResponderEvent | number) => void;
   style?: StyleProp<ViewStyle>;
   disabled?: boolean;
 }
@@ -14,6 +16,8 @@ const PlatformTouchable = (props: IPlatformTouchableProps): JSX.Element => {
   const {
     //   raised,
     onPress,
+    onPressOut,
+    onLongPress,
     children,
     style,
     disabled
@@ -25,6 +29,8 @@ const PlatformTouchable = (props: IPlatformTouchableProps): JSX.Element => {
     return (
       <TouchableNativeFeedback
         onPress={onPress ? debounce(onPress, 500, { leading: true, trailing: false }) : undefined}
+        onPressOut={onPressOut}
+        onLongPress={onLongPress}
         useForeground={TouchableNativeFeedback.canUseNativeForeground()}
         background={TouchableNativeFeedback.Ripple(Colors.BLACK_032, true)}
         disabled={disabled}
@@ -38,6 +44,8 @@ const PlatformTouchable = (props: IPlatformTouchableProps): JSX.Element => {
   return (
     <TouchableOpacity
       onPress={onPress ? debounce(onPress, 500, { leading: true, trailing: false }) : undefined}
+      onPressOut={onPressOut}
+      onLongPress={onLongPress}
       disabled={disabled}
       style={style}
     >

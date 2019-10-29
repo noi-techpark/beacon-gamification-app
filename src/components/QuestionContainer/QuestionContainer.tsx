@@ -5,6 +5,7 @@ import { Dimensions, Keyboard, ScrollView, StatusBar, StyleSheet, Text, TextInpu
 import { useKeyboard } from 'react-native-hooks';
 import { Button } from 'react-native-paper';
 import { material } from 'react-native-typography';
+import { useNavigationEvents } from 'react-navigation-hooks';
 import { translate } from '../../localization/locale';
 import { QuestionMetadata, QuestStep } from '../../models/quest';
 import { Colors } from '../../styles/colors';
@@ -22,34 +23,43 @@ interface IQuestionContainerProps {
 type QuestionContext = {
   answer: string;
   multipleAnswer: string[];
+  orderedAnswer: string[];
   setAnswer?: (answer: string) => void;
   toggleAnswer?: (answer: string) => void;
+  setOrderedAnswer?: (orderedAnswers: string[]) => void;
 };
 
 export const QuestContext = React.createContext<QuestionContext>({
   answer: '',
-  multipleAnswer: []
+  multipleAnswer: [],
+  orderedAnswer: []
 });
 
 const QuestionContainer: FunctionComponent<IQuestionContainerProps> = forwardRef(
   ({ step, onCorrectAnswer, onWrongAnswer, onSkipQuestionPressed }, ref: RefObject<TextInputStatic>) => {
     const { isKeyboardShow } = useKeyboard();
+    const question: QuestionMetadata = JSON.parse(step.properties);
+
     const [data, setData] = useState({
       text: '',
-      multipleAnswer: []
+      multipleAnswer: [],
+      orderedAnswer: []
     });
+
     const [isCorrect, setCorrect] = useState(false);
 
-    const question: QuestionMetadata = JSON.parse(step.properties);
+    useNavigationEvents(evt => {
+      if (evt.type === 'didBlur') {
+        clearState();
+      }
+    });
 
     useEffect(() => {
       if (!isKeyboardShow && (data.multipleAnswer.length > 0 || data.text.length > 0)) {
         if (isCorrect) {
           onCorrectAnswer(step);
-          clearState();
         } else {
           onWrongAnswer(step);
-          clearState();
         }
       }
     }, [isKeyboardShow]);
@@ -58,6 +68,8 @@ const QuestionContainer: FunctionComponent<IQuestionContainerProps> = forwardRef
       const isValid =
         question.kind === 'multiple'
           ? isEqual(sortBy(data.multipleAnswer), sortBy(question.answer))
+          : question.kind === 'order'
+          ? isEqual(data.orderedAnswer, question.answer)
           : data.text === question.answer;
 
       if (isKeyboardShow) {
@@ -65,10 +77,8 @@ const QuestionContainer: FunctionComponent<IQuestionContainerProps> = forwardRef
         Keyboard.dismiss();
       } else if (isValid) {
         onCorrectAnswer(step);
-        clearState();
       } else {
         onWrongAnswer(step);
-        clearState();
       }
     };
 
@@ -79,7 +89,8 @@ const QuestionContainer: FunctionComponent<IQuestionContainerProps> = forwardRef
     const clearState = () => {
       setData({
         text: '',
-        multipleAnswer: []
+        multipleAnswer: [],
+        orderedAnswer: []
       });
     };
 
@@ -91,6 +102,7 @@ const QuestionContainer: FunctionComponent<IQuestionContainerProps> = forwardRef
               value={{
                 answer: data.text,
                 multipleAnswer: data.multipleAnswer,
+                orderedAnswer: data.orderedAnswer,
                 setAnswer: (text: string) => {
                   setCorrect(false);
                   setData({
@@ -103,10 +115,16 @@ const QuestionContainer: FunctionComponent<IQuestionContainerProps> = forwardRef
                     ...data,
                     multipleAnswer: addOrRemove(data.multipleAnswer, text)
                   });
+                },
+                setOrderedAnswer: (orderedAnswer: string[]) => {
+                  setData({
+                    ...data,
+                    orderedAnswer
+                  });
                 }
               }}
             >
-              <View>
+              <View style={{ flexGrow: 1 }}>
                 <Text style={styles.question}>{`${step.quest_index}. ${question.question}`}</Text>
                 <QuestionRenderer ref={ref} question={question} />
               </View>
