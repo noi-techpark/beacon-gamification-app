@@ -5405,7 +5405,7 @@ prompts@^2.0.1:
     kleur "^3.0.3"
     sisteransi "^1.0.3"
 
-prop-types@^15.5.10, prop-types@^15.6.2, prop-types@^15.7.2:
+prop-types@^15.5.10, prop-types@^15.6.0, prop-types@^15.6.2, prop-types@^15.7.2:
   version "15.7.2"
   resolved "https://registry.yarnpkg.com/prop-types/-/prop-types-15.7.2.tgz#52c41e75b8c87e72b9d9360e0206b99dcbffa6c5"
   integrity sha512-8QQikdH7//R2vurIJSutZ1smHYTcLpRWEOlHnzcWHmBYrOGUysKwSsrC89BCiFj3CbrfJ/nXFdJepOVrY1GCHQ==
@@ -5586,6 +5586,13 @@ react-native-shared-element@^0.5.1:
   version "0.5.1"
   resolved "https://registry.yarnpkg.com/react-native-shared-element/-/react-native-shared-element-0.5.1.tgz#d6210c3c9e116b8f03692c4144b2d11e660bc49c"
   integrity sha512-s4KiuNBHaVwjpezvtU2QaQ6c++XOWIcDrJHKSrVkEj9b0e5tQbJuDkqnrVH80o+y2vODV15jzu1yOZCo7ItIBA==
+
+react-native-super-grid@^3.1.1:
+  version "3.1.1"
+  resolved "https://registry.yarnpkg.com/react-native-super-grid/-/react-native-super-grid-3.1.1.tgz#27652de0827d158ba0ab400631f30c74a68f8550"
+  integrity sha512-qtnoXDKDG/hfqPzmXt34HGNjlOL1D7+efYlaaECCGp2MwOZxE7MTDy9pHGtpTcrM8JRTVyqB1Piy1SkkWEa80Q==
+  dependencies:
+    prop-types "^15.6.0"
 
 react-native-typography@^1.4.1:
   version "1.4.1"
