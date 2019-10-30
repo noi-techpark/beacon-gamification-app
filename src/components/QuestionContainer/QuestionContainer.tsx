@@ -14,6 +14,8 @@ import QuestionRenderer from '../step/QuestionRenderer/QuestionRenderer';
 
 interface IQuestionContainerProps {
   step: QuestStep;
+  question: QuestionMetadata;
+  questEnumeration: string;
   onCorrectAnswer: (step: QuestStep) => void;
   onWrongAnswer: (step: QuestStep) => void;
   onSkipQuestionPressed: (step: QuestStep) => void;
@@ -36,9 +38,11 @@ export const QuestContext = React.createContext<QuestionContext>({
 });
 
 const QuestionContainer: FunctionComponent<IQuestionContainerProps> = forwardRef(
-  ({ step, onCorrectAnswer, onWrongAnswer, onSkipQuestionPressed }, ref: RefObject<TextInputStatic>) => {
+  (
+    { step, question, questEnumeration, onCorrectAnswer, onWrongAnswer, onSkipQuestionPressed },
+    ref: RefObject<TextInputStatic>
+  ) => {
     const { isKeyboardShow } = useKeyboard();
-    const question: QuestionMetadata = JSON.parse(step.properties);
 
     const [data, setData] = useState({
       text: '',
@@ -70,7 +74,7 @@ const QuestionContainer: FunctionComponent<IQuestionContainerProps> = forwardRef
           ? isEqual(sortBy(data.multipleAnswer), sortBy(question.answer))
           : question.kind === 'order'
           ? isEqual(data.orderedAnswer, question.answer)
-          : data.text === question.answer;
+          : data.text.toLowerCase() === (question.answer as string).toLowerCase();
 
       if (isKeyboardShow) {
         setCorrect(isValid);
@@ -125,7 +129,7 @@ const QuestionContainer: FunctionComponent<IQuestionContainerProps> = forwardRef
               }}
             >
               <View style={{ flexGrow: 1 }}>
-                <Text style={styles.question}>{`${step.quest_index}. ${question.question}`}</Text>
+                <Text style={styles.question}>{`${questEnumeration}. ${question.question}`}</Text>
                 <QuestionRenderer ref={ref} question={question} />
               </View>
             </QuestContext.Provider>

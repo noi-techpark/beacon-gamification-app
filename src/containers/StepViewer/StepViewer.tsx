@@ -21,7 +21,7 @@ import { Beacon, BeaconMedata } from '../../models/beacon';
 import { Quest, QuestionMetadata, QuestStep } from '../../models/quest';
 import { ScreenKeys } from '../../screens';
 import { Colors } from '../../styles/colors';
-import { isQuestionWithTextInput } from '../../utils/uiobjects';
+import { getLetterFromAlphabetByIndex, isQuestionWithTextInput } from '../../utils/uiobjects';
 
 interface IStepViewerProps {}
 
@@ -43,6 +43,8 @@ const StepViewer = () => {
   const currentPoints: number = useNavigationParam('points') || 0;
   const discoveredBeacons = useDiscoveredBeacons();
   const step = quest.steps.find(s => s.quest_index === stepId);
+  const isMultiQuestionForStep = step.type === 'multi';
+
   const [isStepCompleted, setStepCompleted] = useState<boolean>(false);
 
   const [targetBeacon, setTargetBeacon] = useState<BeaconMedata>();
@@ -52,7 +54,12 @@ const StepViewer = () => {
   const [isHeaderTransition, setHeaderTransition] = useState<boolean>(false);
   const [isHeaderFullVisible, setHeaderFullVisible] = useState<boolean>(false);
 
-  const question: QuestionMetadata = JSON.parse(step.properties);
+  const [questIndex, setQuestIndex] = useState<number>(0);
+  const question: QuestionMetadata = isMultiQuestionForStep
+    ? JSON.parse(step.properties)[questIndex]
+    : JSON.parse(step.properties);
+
+  console.log(question);
 
   const scrollRef = useRef<ScrollView>();
   const textInputRef = useRef<TextInput>();
@@ -129,12 +136,6 @@ const StepViewer = () => {
       return true;
     }
 
-    // if (showQuestion && !) {
-    //   textInputRef.current.blur();
-    //   setShowQuestion(false);
-    //   return true;
-    // }
-
     if (!navigation.isFocused()) {
       return false;
     } else {
@@ -156,11 +157,11 @@ const StepViewer = () => {
       const beacon = find(discoveredBeacons, b => b.id === targetBeacon.beacon_id);
 
       if (beacon) {
-        if (step.type === 'info') {
-          // navigation.navigate(ScreenKeys.QuestStepCompleted, { step, onStepCompleted });
-        } else {
-          setBeaconFound(beacon);
-        }
+        // if (step.type === 'info') {
+        //   // navigation.navigate(ScreenKeys.QuestStepCompleted, { step, onStepCompleted });
+        // } else {
+        setBeaconFound(beacon);
+        // }
       }
     }
   }, [targetBeacon, discoveredBeacons]);
@@ -176,11 +177,11 @@ const StepViewer = () => {
 
         const alreadyFound = discoveredBeacons.find(b => b.id === targetBeacon.beacon_id);
         if (alreadyFound) {
-          if (step.type === 'info') {
-            // navigation.navigate(ScreenKeys.QuestStepCompleted, { step, onStepCompleted });
-          } else {
-            setBeaconFound(alreadyFound);
-          }
+          // if (step.type === 'info') {
+          //   // navigation.navigate(ScreenKeys.QuestStepCompleted, { step, onStepCompleted });
+          // } else {
+          setBeaconFound(alreadyFound);
+          // }
         }
       }
     };
@@ -189,6 +190,17 @@ const StepViewer = () => {
   }, [stepId]);
 
   async function onStepCompleted(step: QuestStep, isCorrectAnswer: boolean) {
+    if (isMultiQuestionForStep && questIndex < JSON.parse(step.properties).length - 1) {
+      setQuestIndex(questIndex + 1);
+      navigation.navigate(ScreenKeys.StepViewer, {
+        quest,
+        stepId: step.quest_index,
+        token,
+        points: isCorrectAnswer ? currentPoints + step.value_points : currentPoints - step.value_points
+      });
+      return;
+    }
+
     if (step.quest_index < quest.steps.length) {
       setStepCompleted(false);
       setShowQuestion(false);
@@ -212,8 +224,10 @@ const StepViewer = () => {
   }
 
   const onSkipStepPressed = (step: QuestStep) => {
-    if (step.quest_index < quest.steps.length && isQuestionWithTextInput(question)) {
-      textInputRef.current.blur();
+    if (step.quest_index < quest.steps.length) {
+      if (isQuestionWithTextInput(question)) {
+        textInputRef.current.blur();
+      }
       setShowQuestion(false);
 
       navigation.navigate(ScreenKeys.StepViewer, {
@@ -339,6 +353,10 @@ const StepViewer = () => {
           <QuestionContainer
             ref={textInputRef}
             step={step}
+            question={question}
+            questEnumeration={`${step.quest_index}${
+              isMultiQuestionForStep ? getLetterFromAlphabetByIndex(questIndex) : ''
+            }`}
             onCorrectAnswer={onCorrectAnswer}
             onWrongAnswer={onWrongAnswer}
             onSkipQuestionPressed={onSkipStepPressed}
