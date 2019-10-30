@@ -14,7 +14,7 @@ export type QuestStep = {
     properties: string;
     quest: number;
     quest_index: number;
-    type: 'info' | 'question' | 'media';
+    type: 'question' | 'multi';
     value_points: number;
 }
 

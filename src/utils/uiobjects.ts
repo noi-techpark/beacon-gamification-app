@@ -22,3 +22,9 @@ export function swapArrayElements<T>(arr: T[], x: number, y: number) {
     const b = x > y ? x : y;
     return [...arr.slice(0, a), arr[b], ...arr.slice(a + 1, b), arr[a], ...arr.slice(b + 1)];
 }
+
+const ALPHABET = 'abcdefghijklmnopqrstuvwxyz'.split('');
+
+export function getLetterFromAlphabetByIndex(index: number): string {
+    return ALPHABET[index];
+}
