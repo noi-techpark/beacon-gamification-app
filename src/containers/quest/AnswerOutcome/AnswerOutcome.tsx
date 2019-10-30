@@ -12,11 +12,10 @@ import { Colors } from '../../../styles/colors';
 const AnswerOutcome = () => {
   const navigation = useNavigation();
   const step: QuestStep = useNavigationParam('step');
+  const question: QuestionMetadata = useNavigationParam('question');
   const isCorrect: boolean = useNavigationParam('isCorrect');
   const [isScreenAppearing, setScreenAppearing] = useState(false);
   const [isTransitionCompleted, setCompleted] = useState(false);
-
-  const question: QuestionMetadata = JSON.parse(step.properties);
 
   useNavigationEvents(evt => {
     if (evt.type === 'willFocus') {

@@ -137,36 +137,7 @@ const QuestPreview: NavigationScreenComponent<NavigationStackOptions, Props> = (
             <View style={styles.scrollContent}>
               <SharedElement id={`description_${quest.id}`}>
                 <Text style={styles.questDescription}>
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus ultricies libero fermentum bibendum
-                  ultrices. In nec velit ac nibh ullamcorper consequat sit amet sit amet elit. Ut in venenatis massa.
-                  Vivamus eu ante at elit tempor fermentum a nec nunc. Quisque ut sem nunc. Etiam ullamcorper diam in
-                  nisi volutpat, non mollis dui sagittis. Duis vel condimentum lacus, eu sollicitudin sapien. Nulla
-                  ultricies eros a lorem mollis egestas. Ut viverra ex sed ultrices sagittis. Lorem ipsum dolor sit
-                  amet, consectetur adipiscing elit. Phasellus ultricies libero fermentum bibendum ultrices. In nec
-                  velit ac nibh ullamcorper consequat sit amet sit amet elit. Ut in venenatis massa. Vivamus eu ante at
-                  elit tempor fermentum a nec nunc. Quisque ut sem nunc. Etiam ullamcorper diam in nisi volutpat, non
-                  mollis dui sagittis. Duis vel condimentum lacus, eu sollicitudin sapien. Nulla ultricies eros a lorem
-                  mollis egestas. Ut viverra ex sed ultrices sagittis. Lorem ipsum dolor sit amet, consectetur
-                  adipiscing elit. Phasellus ultricies libero fermentum bibendum ultrices. In nec velit ac nibh
-                  ullamcorper consequat sit amet sit amet elit. Ut in venenatis massa. Vivamus eu ante at elit tempor
-                  fermentum a nec nunc. Quisque fermentum a nec nunc. Quisque ut sem nunc. Etiam ullamcorper diam in
-                  nisi volutpat, non mollis dui sagittis. Duis vel condimentum lacus, eu sollicitudin sapien. Nulla
-                  ultricies eros a lorem mollis egestas. Ut viverra ex sed ultrices sagittis. Lorem ipsum dolor sit
-                  amet, consectetur adipiscing elit. Phasellus ultricies libero fermentum bibendum ultrices. In nec
-                  velit ac nibh ullamcorper consequat sit amet sit amet elit. Ut in venenatis massa. Vivamus eu ante at
-                  elit tempor fermentum a nec nunc. Quisquefermentum a nec nunc. Quisque ut sem nunc. Etiam ullamcorper
-                  diam in nisi volutpat, non mollis dui sagittis. Duis vel condimentum lacus, eu sollicitudin sapien.
-                  Nulla ultricies eros a lorem mollis egestas. Ut viverra ex sed ultrices sagittis. Lorem ipsum dolor
-                  sit amet, consectetur adipiscing elit. Phasellus ultricies libero fermentum bibendum ultrices. In nec
-                  velit ac nibh ullamcorper consequat sit amet sit amet elit. Ut in venenatis massa. Vivamus eu ante at
-                  elit tempor fermentum a nec nunc. Quisquefermentum a nec nunc. Quisque ut sem nunc. Etiam ullamcorper
-                  diam in nisi volutpat, non mollis dui sagittis. Duis vel condimentum lacus, eu sollicitudin sapien.
-                  Nulla ultricies eros a lorem mollis egestas. Ut viverra ex sed ultrices sagittis. Lorem ipsum dolor
-                  sit amet, consectetur adipiscing elit. Phasellus ultricies libero fermentum bibendum ultrices. In nec
-                  velit ac nibh ullamcorper consequat sit amet sit amet elit. Ut in venenatis massa. Vivamus eu ante at
-                  elit tempor fermentum a nec nunc. Quisque ut sem nunc. Etiam ullamcorper diam in nisi volutpat, non
-                  mollis dui sagittis. Duis vel condimentum lacus, eu sollicitudin sapien. Nulla ultricies eros a lorem
-                  mollis egestas. Ut viverra ex sed ultrices sagittis.
+                  The question of all questions: Who am I? Get in and explore the mysteries of this mysterious castle.
                 </Text>
               </SharedElement>
             </View>

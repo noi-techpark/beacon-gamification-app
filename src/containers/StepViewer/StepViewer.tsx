@@ -252,7 +252,7 @@ const StepViewer = () => {
 
     setStepCompleted(true);
 
-    navigation.navigate(ScreenKeys.AnswerOutcome, { step, onStepCompleted, isCorrect: true });
+    navigation.navigate(ScreenKeys.AnswerOutcome, { step, question, onStepCompleted, isCorrect: true });
   }
 
   async function onWrongAnswer(step: QuestStep) {
@@ -261,7 +261,7 @@ const StepViewer = () => {
 
     setStepCompleted(true);
 
-    navigation.navigate(ScreenKeys.AnswerOutcome, { step, onStepCompleted, isCorrect: false });
+    navigation.navigate(ScreenKeys.AnswerOutcome, { step, question, onStepCompleted, isCorrect: false });
   }
 
   function onOpenQuestionPressed() {
