@@ -6,5 +6,6 @@ export enum ScreenKeys {
     StepViewer = 'beacon.adventure.stepViewer',
     AnswerOutcome = 'beacon.adventure.answerOutcome',
     QuestCompleted = 'beacon.adventure.questCompleted',
-    QuestPause = 'beacon.adventure.questPause'
+    QuestPause = 'beacon.adventure.questPause',
+    ProvideHelp = 'beacon.adventure.provideHelp'
 }

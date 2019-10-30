@@ -2,7 +2,7 @@ import to from 'await-to-js';
 import find from 'lodash.find';
 import LottieView from 'lottie-react-native';
 import React, { useEffect, useRef, useState } from 'react';
-import { Animated, Dimensions, Easing, Image, ScrollView, StatusBar, StyleSheet, Text, TextInput, View } from 'react-native';
+import { Animated, Dimensions, Image, ScrollView, StatusBar, StyleSheet, Text, TextInput, View } from 'react-native';
 import { useBackHandler } from 'react-native-hooks';
 import LinearGradient from 'react-native-linear-gradient';
 import { material } from 'react-native-typography';
@@ -63,8 +63,7 @@ const StepViewer = () => {
   const helpAnimation = useAnimation({
     doAnimation: showQuestion,
     duration: showQuestion ? 1000 : 300,
-    delay: showQuestion ? 5000 : 0,
-    easing: Easing.out(Easing.poly(2))
+    delay: showQuestion ? 5000 : 0
   });
 
   const scrollRef = useRef<ScrollView>();
@@ -279,6 +278,10 @@ const StepViewer = () => {
     }
   }
 
+  function onHelpPressed() {
+    navigation.navigate(ScreenKeys.ProvideHelp, { step, question });
+  }
+
   return (
     <>
       <Image
@@ -402,29 +405,8 @@ const StepViewer = () => {
             </Animated.View>
           )}
 
-          <PlatformTouchable
-            onPress={() => console.log('mele')}
-            style={{
-              width: 32,
-              height: 32,
-              position: 'absolute',
-              top: StatusBar.currentHeight + 16,
-              left: 80,
-              alignItems: 'center',
-              justifyContent: 'center',
-              borderRadius: 40
-            }}
-          >
-            <View
-              style={{
-                position: 'absolute',
-                width: 48,
-                height: 48,
-                borderRadius: 48,
-                alignItems: 'center',
-                justifyContent: 'center'
-              }}
-            >
+          <PlatformTouchable onPress={onHelpPressed} style={styles.helpButtonContainer}>
+            <View style={styles.helpButton}>
               <LottieView source={require('../../animations/help.json')} progress={helpAnimation} resizeMode="cover" />
             </View>
           </PlatformTouchable>
@@ -464,8 +446,6 @@ const styles = StyleSheet.create({
     bottom: -Dimensions.get('window').height,
     width: '100%',
     height: '100%',
-    // alignItems: 'center',
-    // justifyContent: 'center',
     backgroundColor: 'transparent'
   },
   scrollContainer: {
@@ -510,6 +490,24 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     paddingHorizontal: 16
+  },
+  helpButtonContainer: {
+    width: 32,
+    height: 32,
+    position: 'absolute',
+    top: StatusBar.currentHeight + 14,
+    left: 80,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 40
+  },
+  helpButton: {
+    position: 'absolute',
+    width: 46,
+    height: 46,
+    borderRadius: 48,
+    alignItems: 'center',
+    justifyContent: 'center'
   }
 });
 
