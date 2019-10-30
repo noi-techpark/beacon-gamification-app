@@ -34,4 +34,5 @@ export type QuestionMetadata = {
     correctAnswerMessage: string;
     wrongAnswerMessage: string;
     options: string[];
+    help: string;
 }

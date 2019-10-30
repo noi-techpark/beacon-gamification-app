@@ -25,5 +25,7 @@
   "scored_points": "",
   "continue": "",
   "restart": "",
-  "exit_from_game": ""
+  "exit_from_game": "",
+  "help": "",
+  "close": ""
 }

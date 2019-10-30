@@ -25,5 +25,7 @@
   "scored_points": "Punti totalizzati",
   "continue": "Continue",
   "restart": "Restart",
-  "exit_from_game": "Exit from game"
+  "exit_from_game": "Exit from game",
+  "help": "Help",
+  "close": "Close"
 }
