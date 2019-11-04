@@ -28,5 +28,6 @@
   "exit_from_game": "Esci dal gioco",
   "help": "Aiuto",
   "close": "Chiudi",
-  "retry": "Riprova"
+  "retry": "Riprova",
+  "how_to_play": "Come giocare"
 }

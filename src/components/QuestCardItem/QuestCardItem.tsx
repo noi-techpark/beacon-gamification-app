@@ -43,11 +43,7 @@ const QuestCardItem: React.FunctionComponent<QuestCardItemProps> = ({ quest, onO
         </SharedElement>
         <SharedElement id={`description_${quest.id}`}>
           <Text style={styles.questDescription} numberOfLines={2}>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus ultricies libero fermentum bibendum
-            ultrices. In nec velit ac nibh ullamcorper consequat sit amet sit amet elit. Ut in venenatis massa. Vivamus
-            eu ante at elit tempor fermentum a nec nunc. Quisque ut sem nunc. Etiam ullamcorper diam in nisi volutpat,
-            non mollis dui sagittis. Duis vel condimentum lacus, eu sollicitudin sapien. Nulla ultricies eros a lorem
-            mollis egestas. Ut viverra ex sed ultrices sagittis.
+            {quest.description}
           </Text>
         </SharedElement>
       </Card.Content>
@@ -66,7 +62,7 @@ const styles = StyleSheet.create({
     height: 304
   },
   questTitle: { ...material.headlineObject, fontFamily: 'SuedtirolPro-Regular' },
-  questDescription: { ...material.body1Object, color: materialColors.blackSecondary }
+  questDescription: { ...material.body1Object, color: materialColors.blackSecondary, height: 40 }
 });
 
 export default React.memo(QuestCardItem);
