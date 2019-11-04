@@ -2,6 +2,9 @@
 export type Quest = {
     id: number;
     name: string;
+    description: string;
+    epilogue: string;
+    instructions: string;
     position: string; //format: latitude,longitude
     steps: QuestStep[];
 }

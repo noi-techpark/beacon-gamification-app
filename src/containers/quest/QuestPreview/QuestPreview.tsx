@@ -136,9 +136,11 @@ const QuestPreview: NavigationScreenComponent<NavigationStackOptions, Props> = (
             </SharedElement>
             <View style={styles.scrollContent}>
               <SharedElement id={`description_${quest.id}`}>
-                <Text style={styles.questDescription}>
-                  The question of all questions: Who am I? Get in and explore the mysteries of this mysterious castle.
-                </Text>
+                <>
+                  <Text style={styles.paragraph}>{quest.description || ''}</Text>
+                  {!!quest.instructions && <Text style={styles.howToPlayTitle}>{translate('how_to_play')}</Text>}
+                  {!!quest.instructions && <Text style={styles.paragraph}>{quest.instructions || ''}</Text>}
+                </>
               </SharedElement>
             </View>
           </ScrollView>
@@ -227,7 +229,14 @@ const styles = StyleSheet.create({
     color: Colors.WHITE,
     marginBottom: PADDING_BOTTOM_FIX
   },
-  questDescription: { ...material.subheadingObject, color: Colors.WHITE }
+  howToPlayTitle: {
+    ...material.display1Object,
+    fontFamily: 'SuedtirolPro-Regular',
+    color: Colors.WHITE,
+    marginTop: 32,
+    marginBottom: PADDING_BOTTOM_FIX
+  },
+  paragraph: { ...material.subheadingObject, color: Colors.WHITE }
 });
 
 QuestPreview.navigationOptions = {
