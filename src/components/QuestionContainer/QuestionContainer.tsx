@@ -136,8 +136,6 @@ const QuestionContainer: FunctionComponent<IQuestionContainerProps> = forwardRef
         <View style={{ flexGrow: 1 }}>
           <Text
             onLayout={e => {
-              console.log(e.nativeEvent);
-
               setDescriptionHeight(e.nativeEvent.layout.height);
             }}
             style={styles.question}

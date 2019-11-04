@@ -1,6 +1,6 @@
 import filter from "lodash.filter";
 import includes from "lodash.includes";
-import { QuestionMetadata } from "../models/quest";
+import { QuestionMetadata, QuestStep } from "../models/quest";
 
 export function isQuestionWithTextInput(question: QuestionMetadata): boolean {
     return (question.kind === 'number' || question.kind === 'text');
@@ -27,4 +27,8 @@ const ALPHABET = 'abcdefghijklmnopqrstuvwxyz'.split('');
 
 export function getLetterFromAlphabetByIndex(index: number): string {
     return ALPHABET[index];
+}
+
+export function showValuePointsSigned(step: QuestStep, isCorrect: boolean): string {
+    return isCorrect ? String(step.value_points) : `-${String(step.value_points)}`
 }

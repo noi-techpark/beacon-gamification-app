@@ -27,5 +27,6 @@
   "restart": "",
   "exit_from_game": "",
   "help": "",
-  "close": ""
+  "close": "",
+  "retry": ""
 }

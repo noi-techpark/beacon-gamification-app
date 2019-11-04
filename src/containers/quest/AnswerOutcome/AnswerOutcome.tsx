@@ -8,12 +8,16 @@ import { useAnimation } from '../../../hooks/useAnimation';
 import { translate } from '../../../localization/locale';
 import { QuestionMetadata, QuestStep } from '../../../models/quest';
 import { Colors } from '../../../styles/colors';
+import { showValuePointsSigned } from '../../../utils/uiobjects';
+
+const MAX_RETRY = 1;
 
 const AnswerOutcome = () => {
   const navigation = useNavigation();
   const step: QuestStep = useNavigationParam('step');
   const question: QuestionMetadata = useNavigationParam('question');
   const isCorrect: boolean = useNavigationParam('isCorrect');
+  const retryTimes: number = useNavigationParam('retryTimes');
   const [isScreenAppearing, setScreenAppearing] = useState(false);
   const [isTransitionCompleted, setCompleted] = useState(false);
 
@@ -42,9 +46,20 @@ const AnswerOutcome = () => {
     delay: 5800 - 2000
   });
 
-  async function onStepCompleted() {
+  async function onCloseOutcomePressed() {
     navigation.goBack();
-    navigation.state.params.onStepCompleted(step, isCorrect);
+    if (isCorrect || retryTimes === MAX_RETRY) {
+      navigation.state.params.onStepCompleted(step, isCorrect);
+    } else {
+      navigation.state.params.onRetryStepPressed();
+    }
+  }
+
+  async function onSkipPressed() {
+    navigation.goBack();
+    if (navigation.state.params.onSkipStepPressed) {
+      navigation.state.params.onSkipStepPressed(step);
+    }
   }
 
   return (
@@ -101,15 +116,29 @@ const AnswerOutcome = () => {
               ? question.correctAnswerMessage || translate('general_correct_answer')
               : question.wrongAnswerMessage || translate('general_wrong_answer')}
           </Text>
-          <View style={styles.pointsContainer}>
-            <Image source={require('../../../images/star_gradient.png')} style={{ marginEnd: 8 }} />
-            <>
-              {!isCorrect && <Text style={styles.pointsText}>-</Text>}
-              <Text style={styles.pointsText}>{step.value_points}</Text>
-            </>
-          </View>
-          <Button onPress={onStepCompleted} mode="contained" dark={true}>
-            {translate('proceed')}
+          {(isCorrect || retryTimes === MAX_RETRY) && (
+            <View style={styles.pointsContainer}>
+              <Image source={require('../../../images/star_gradient.png')} style={{ marginEnd: 8 }} />
+              <>
+                <Text style={styles.pointsText}>{showValuePointsSigned(step, isCorrect)}</Text>
+              </>
+            </View>
+          )}
+          <Button onPress={onCloseOutcomePressed} mode="contained" dark={true} style={{ marginTop: 48 }}>
+            {translate(retryTimes === MAX_RETRY ? 'proceed' : 'retry')}
+          </Button>
+          <Button
+            onPress={onSkipPressed}
+            mode="text"
+            dark={true}
+            theme={{
+              colors: {
+                primary: Colors.BLACK
+              }
+            }}
+            style={{ marginTop: 12 }}
+          >
+            {translate('skip_question')}
           </Button>
         </View>
       </Animated.View>
@@ -167,7 +196,6 @@ const styles = StyleSheet.create({
     minWidth: 124,
     paddingHorizontal: 30,
     marginTop: 16,
-    marginBottom: 48,
     borderRadius: 100,
     backgroundColor: ' rgba(222, 112, 0, 0.08)',
     alignItems: 'center',
