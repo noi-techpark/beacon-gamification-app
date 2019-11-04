@@ -51,6 +51,7 @@ const QuestionContainer: FunctionComponent<IQuestionContainerProps> = forwardRef
     });
 
     const [isCorrect, setCorrect] = useState(false);
+    const [isFormSubmitted, setFormSubmitted] = useState(false);
 
     useNavigationEvents(evt => {
       if (evt.type === 'didBlur') {
@@ -59,7 +60,7 @@ const QuestionContainer: FunctionComponent<IQuestionContainerProps> = forwardRef
     });
 
     useEffect(() => {
-      if (!isKeyboardShow && (data.multipleAnswer.length > 0 || data.text.length > 0)) {
+      if (!isKeyboardShow && isFormSubmitted) {
         if (isCorrect) {
           onCorrectAnswer(step);
         } else {
@@ -77,6 +78,7 @@ const QuestionContainer: FunctionComponent<IQuestionContainerProps> = forwardRef
           : data.text.toLowerCase() === (question.answer as string).toLowerCase();
 
       if (isKeyboardShow) {
+        setFormSubmitted(true);
         setCorrect(isValid);
         Keyboard.dismiss();
       } else if (isValid) {
@@ -109,6 +111,7 @@ const QuestionContainer: FunctionComponent<IQuestionContainerProps> = forwardRef
                 orderedAnswer: data.orderedAnswer,
                 setAnswer: (text: string) => {
                   setCorrect(false);
+                  setFormSubmitted(false);
                   setData({
                     ...data,
                     text
