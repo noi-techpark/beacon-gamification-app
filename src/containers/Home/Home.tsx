@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { FlatList, StatusBar, StyleSheet, Text, View } from 'react-native';
 import { material } from 'react-native-typography';
 import { NavigationParams, NavigationRoute, NavigationScreenProp } from 'react-navigation';
-import { useFocusState, useNavigation, useNavigationParam } from 'react-navigation-hooks';
+import { useFocusState, useNavigation, useNavigationEvents, useNavigationParam } from 'react-navigation-hooks';
 import { getAuthToken, getUserDetail } from '../../api/auth';
 import { getQuests } from '../../api/quests';
 import { PointsRecap } from '../../components/PointsRecap';
@@ -22,6 +22,13 @@ const Home = () => {
   const [token, setToken] = useState('');
   const [quests, setQuests] = useState([]);
   const focusState = useFocusState();
+
+  useNavigationEvents(evt => {
+    if (evt.type === 'willFocus') {
+      StatusBar.setBackgroundColor(Colors.GRAY_200, false);
+      StatusBar.setBarStyle('dark-content', true);
+    }
+  });
 
   useEffect(() => {
     const fetchQuests = async () => {
@@ -42,13 +49,6 @@ const Home = () => {
 
     fetchQuests();
   }, []);
-
-  useEffect(() => {
-    if (focusState.isFocusing) {
-      StatusBar.setBackgroundColor(Colors.GRAY_200, false);
-      StatusBar.setBarStyle('dark-content', true);
-    }
-  }, [focusState]);
 
   return (
     <View style={styles.root}>

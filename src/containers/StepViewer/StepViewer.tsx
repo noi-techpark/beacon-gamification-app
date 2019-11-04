@@ -23,6 +23,7 @@ import { Quest, QuestionMetadata, QuestStep } from '../../models/quest';
 import { ScreenKeys } from '../../screens';
 import { Colors } from '../../styles/colors';
 import { getLetterFromAlphabetByIndex, isQuestionWithTextInput } from '../../utils/uiobjects';
+import { MAX_RETRY } from '../quest/AnswerOutcome/AnswerOutcome';
 
 interface IStepViewerProps {}
 
@@ -199,6 +200,7 @@ const StepViewer = () => {
   async function onStepCompleted(step: QuestStep, isCorrectAnswer: boolean) {
     if (isMultiQuestionForStep && questIndex < JSON.parse(step.properties).length - 1) {
       setQuestIndex(questIndex + 1);
+      setRetryTimes(0);
       navigation.navigate(ScreenKeys.StepViewer, {
         quest,
         stepId: step.quest_index,
@@ -259,7 +261,7 @@ const StepViewer = () => {
     } else {
       setQuestIndex(0);
       setRetryTimes(0);
-      
+
       setTimeout(() => {
         navigation.navigate(ScreenKeys.QuestCompleted, { quest, points: currentPoints });
       }, 500);
@@ -281,7 +283,9 @@ const StepViewer = () => {
   }
 
   async function onWrongAnswer(step: QuestStep) {
-    setStepCompleted(true);
+    if (retryTimes === MAX_RETRY) {
+      setStepCompleted(true);
+    }
 
     navigation.navigate(ScreenKeys.AnswerOutcome, {
       step,
@@ -434,12 +438,17 @@ const StepViewer = () => {
               </PlatformTouchable>
             </Animated.View>
           )}
-
-          <PlatformTouchable onPress={onHelpPressed} style={styles.helpButtonContainer}>
-            <View style={styles.helpButton}>
-              <LottieView source={require('../../animations/help.json')} progress={helpAnimation} resizeMode="cover" />
-            </View>
-          </PlatformTouchable>
+          {!!question.help && (
+            <PlatformTouchable onPress={onHelpPressed} style={styles.helpButtonContainer}>
+              <View style={styles.helpButton}>
+                <LottieView
+                  source={require('../../animations/help.json')}
+                  progress={helpAnimation}
+                  resizeMode="cover"
+                />
+              </View>
+            </PlatformTouchable>
+          )}
         </Animated.View>
       </View>
     </>

@@ -57,7 +57,7 @@ const QuestionContainer: FunctionComponent<IQuestionContainerProps> = forwardRef
     const [height, setDescriptionHeight] = useState(0);
 
     useNavigationEvents(evt => {
-      if (evt.type === 'didBlur') {
+      if (evt.type === 'didBlur' && isFormSubmitted) {
         clearState();
       }
     });

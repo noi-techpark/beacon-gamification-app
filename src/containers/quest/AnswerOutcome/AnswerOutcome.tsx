@@ -10,7 +10,7 @@ import { QuestionMetadata, QuestStep } from '../../../models/quest';
 import { Colors } from '../../../styles/colors';
 import { showValuePointsSigned } from '../../../utils/uiobjects';
 
-const MAX_RETRY = 1;
+export const MAX_RETRY = 1;
 
 const AnswerOutcome = () => {
   const navigation = useNavigation();
@@ -125,21 +125,23 @@ const AnswerOutcome = () => {
             </View>
           )}
           <Button onPress={onCloseOutcomePressed} mode="contained" dark={true} style={{ marginTop: 48 }}>
-            {translate(retryTimes === MAX_RETRY ? 'proceed' : 'retry')}
+            {translate(isCorrect || retryTimes === MAX_RETRY ? 'proceed' : 'retry')}
           </Button>
-          <Button
-            onPress={onSkipPressed}
-            mode="text"
-            dark={true}
-            theme={{
-              colors: {
-                primary: Colors.BLACK
-              }
-            }}
-            style={{ marginTop: 12 }}
-          >
-            {translate('skip_question')}
-          </Button>
+          {retryTimes < MAX_RETRY && (
+            <Button
+              onPress={onSkipPressed}
+              mode="text"
+              dark={true}
+              theme={{
+                colors: {
+                  primary: Colors.BLACK
+                }
+              }}
+              style={{ marginTop: 12 }}
+            >
+              {translate('skip_question')}
+            </Button>
+          )}
         </View>
       </Animated.View>
     </>
