@@ -1,7 +1,7 @@
 import isEqual from 'lodash.isequal';
 import sortBy from 'lodash.sortby';
 import React, { forwardRef, FunctionComponent, RefObject, useEffect, useState } from 'react';
-import { Dimensions, Keyboard, ScrollView, StatusBar, StyleSheet, Text, TextInput as TextInputStatic, View } from 'react-native';
+import { Keyboard, ScrollView, StatusBar, StyleSheet, Text, TextInput as TextInputStatic, View } from 'react-native';
 import { useKeyboard } from 'react-native-hooks';
 import { Button } from 'react-native-paper';
 import { material } from 'react-native-typography';
@@ -31,6 +31,8 @@ type QuestionContext = {
   setOrderedAnswer?: (orderedAnswers: string[]) => void;
 };
 
+export const CONTAINER_MARGIN_TOP = 120;
+
 export const QuestContext = React.createContext<QuestionContext>({
   answer: '',
   multipleAnswer: [],
@@ -52,6 +54,7 @@ const QuestionContainer: FunctionComponent<IQuestionContainerProps> = forwardRef
 
     const [isCorrect, setCorrect] = useState(false);
     const [isFormSubmitted, setFormSubmitted] = useState(false);
+    const [height, setDescriptionHeight] = useState(0);
 
     useNavigationEvents(evt => {
       if (evt.type === 'didBlur') {
@@ -100,10 +103,54 @@ const QuestionContainer: FunctionComponent<IQuestionContainerProps> = forwardRef
       });
     };
 
+    const renderButtonArea = () => {
+      return (
+        <>
+          <Button onPress={onAnswerPressed} mode="contained" dark={true}>
+            {translate('answer')}
+          </Button>
+          <Button
+            onPress={onSkipPressed}
+            mode="text"
+            dark={true}
+            theme={{
+              colors: {
+                primary: Colors.WHITE
+              }
+            }}
+            style={{ marginTop: 12 }}
+          >
+            {translate('skip_question')}
+          </Button>
+        </>
+      );
+    };
+
+    const renderQuestionArea = () => {
+      return isQuestionWithTextInput(question) ? (
+        <>
+          <Text style={styles.question}>{`${questEnumeration}. ${question.question}`}</Text>
+          <QuestionRenderer ref={ref} question={question} />
+        </>
+      ) : (
+        <View style={{ flexGrow: 1 }}>
+          <Text
+            onLayout={e => {
+              console.log(e.nativeEvent);
+
+              setDescriptionHeight(e.nativeEvent.layout.height);
+            }}
+            style={styles.question}
+          >{`${questEnumeration}. ${question.question}`}</Text>
+          <QuestionRenderer ref={ref} question={question} descriptionHeight={height} />
+        </View>
+      );
+    };
+
     const renderContent = () => {
       return (
         <>
-          <View style={{ flex: 1, width: Dimensions.get('window').width - 32, justifyContent: 'space-between' }}>
+          <View style={{ flex: 1, justifyContent: isQuestionWithTextInput(question) ? 'flex-start' : 'space-between' }}>
             <QuestContext.Provider
               value={{
                 answer: data.text,
@@ -131,36 +178,22 @@ const QuestionContainer: FunctionComponent<IQuestionContainerProps> = forwardRef
                 }
               }}
             >
-              <View style={{ flexGrow: 1 }}>
-                <Text style={styles.question}>{`${questEnumeration}. ${question.question}`}</Text>
-                <QuestionRenderer ref={ref} question={question} />
-              </View>
+              {renderQuestionArea()}
             </QuestContext.Provider>
-            <View>
-              <Button onPress={onAnswerPressed} mode="contained" dark={true}>
-                {translate('answer')}
-              </Button>
-              <Button
-                onPress={onSkipPressed}
-                mode="text"
-                dark={true}
-                theme={{
-                  colors: {
-                    primary: Colors.WHITE
-                  }
-                }}
-                style={{ marginTop: 12 }}
-              >
-                {translate('skip_question')}
-              </Button>
-            </View>
+          </View>
+          <View style={isQuestionWithTextInput(question) && { flex: 1, justifyContent: 'flex-end' }}>
+            {renderButtonArea()}
           </View>
         </>
       );
     };
 
     return isQuestionWithTextInput(question) ? (
-      <ScrollView contentContainerStyle={styles.questionContainer} keyboardShouldPersistTaps="handled">
+      <ScrollView
+        style={{ paddingHorizontal: 16 }}
+        contentContainerStyle={styles.questionScrollableContainer}
+        keyboardShouldPersistTaps="handled"
+      >
         {renderContent()}
       </ScrollView>
     ) : (
@@ -174,10 +207,16 @@ const styles = StyleSheet.create({
     ...material.titleObject,
     color: Colors.WHITE
   },
+  questionScrollableContainer: {
+    flexGrow: 1,
+    paddingTop: CONTAINER_MARGIN_TOP + StatusBar.currentHeight,
+    paddingBottom: 16,
+    justifyContent: 'space-between'
+  },
   questionContainer: {
     flex: 1,
     paddingHorizontal: 16,
-    marginTop: 120 + StatusBar.currentHeight,
+    marginTop: CONTAINER_MARGIN_TOP + StatusBar.currentHeight,
     marginBottom: 16
   },
   answerInput: {

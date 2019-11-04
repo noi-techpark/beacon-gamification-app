@@ -10,6 +10,7 @@ export interface IPlatformTouchableProps {
   onLongPress?: (event: GestureResponderEvent | number) => void;
   style?: StyleProp<ViewStyle>;
   disabled?: boolean;
+  noBackground?: boolean;
 }
 
 const PlatformTouchable = (props: IPlatformTouchableProps): JSX.Element => {
@@ -20,7 +21,8 @@ const PlatformTouchable = (props: IPlatformTouchableProps): JSX.Element => {
     onLongPress,
     children,
     style,
-    disabled
+    disabled,
+    noBackground
   } = props;
 
   // All Android Buttons should have the ripple effect
@@ -32,7 +34,7 @@ const PlatformTouchable = (props: IPlatformTouchableProps): JSX.Element => {
         onPressOut={onPressOut}
         onLongPress={onLongPress}
         useForeground={TouchableNativeFeedback.canUseNativeForeground()}
-        background={TouchableNativeFeedback.Ripple(Colors.BLACK_032, true)}
+        background={!noBackground ? TouchableNativeFeedback.Ripple(Colors.BLACK_032, true) : undefined}
         disabled={disabled}
       >
         <View style={style}>{children}</View>
