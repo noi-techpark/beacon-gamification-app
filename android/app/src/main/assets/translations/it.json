@@ -27,5 +27,6 @@
   "restart": "Ricomincia",
   "exit_from_game": "Esci dal gioco",
   "help": "Aiuto",
-  "close": "Chiudi"
+  "close": "Chiudi",
+  "retry": "Riprova"
 }

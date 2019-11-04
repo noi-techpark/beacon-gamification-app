@@ -56,6 +56,8 @@ const StepViewer = () => {
   const [isHeaderFullVisible, setHeaderFullVisible] = useState<boolean>(false);
 
   const [questIndex, setQuestIndex] = useState<number>(0);
+  const [retryTimes, setRetryTimes] = useState<number>(0);
+
   const question: QuestionMetadata = isMultiQuestionForStep
     ? JSON.parse(step.properties)[questIndex]
     : JSON.parse(step.properties);
@@ -207,6 +209,8 @@ const StepViewer = () => {
     }
 
     if (step.quest_index < quest.steps.length) {
+      setQuestIndex(0);
+      setRetryTimes(0);
       setStepCompleted(false);
       setShowQuestion(false);
       setHeaderFullVisible(false);
@@ -219,6 +223,9 @@ const StepViewer = () => {
         points: isCorrectAnswer ? currentPoints + step.value_points : currentPoints - step.value_points
       });
     } else {
+      setQuestIndex(0);
+      setRetryTimes(0);
+
       setTimeout(() => {
         navigation.navigate(ScreenKeys.QuestCompleted, {
           quest,
@@ -228,12 +235,21 @@ const StepViewer = () => {
     }
   }
 
+  async function onRetryStepPressed() {
+    setRetryTimes(1);
+  }
+
   const onSkipStepPressed = (step: QuestStep) => {
+    // TODO: Api call to remove points!
+    // const [e, response] = await to(postAddPoints(token, step.value_points));
+
     if (step.quest_index < quest.steps.length) {
       if (isQuestionWithTextInput(question)) {
         textInputRef.current.blur();
       }
       setShowQuestion(false);
+      setQuestIndex(0);
+      setRetryTimes(0);
 
       navigation.navigate(ScreenKeys.StepViewer, {
         quest,
@@ -241,6 +257,9 @@ const StepViewer = () => {
         token
       });
     } else {
+      setQuestIndex(0);
+      setRetryTimes(0);
+      
       setTimeout(() => {
         navigation.navigate(ScreenKeys.QuestCompleted, { quest, points: currentPoints });
       }, 500);
@@ -252,16 +271,27 @@ const StepViewer = () => {
 
     setStepCompleted(true);
 
-    navigation.navigate(ScreenKeys.AnswerOutcome, { step, question, onStepCompleted, isCorrect: true });
+    navigation.navigate(ScreenKeys.AnswerOutcome, {
+      step,
+      question,
+      onStepCompleted,
+      onSkipStepPressed,
+      isCorrect: true
+    });
   }
 
   async function onWrongAnswer(step: QuestStep) {
-    // TODO: Api call to remove points!
-    // const [e, response] = await to(postAddPoints(token, step.value_points));
-
     setStepCompleted(true);
 
-    navigation.navigate(ScreenKeys.AnswerOutcome, { step, question, onStepCompleted, isCorrect: false });
+    navigation.navigate(ScreenKeys.AnswerOutcome, {
+      step,
+      question,
+      onRetryStepPressed,
+      onStepCompleted,
+      onSkipStepPressed,
+      isCorrect: false,
+      retryTimes
+    });
   }
 
   function onOpenQuestionPressed() {
