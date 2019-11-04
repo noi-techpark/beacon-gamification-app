@@ -9,11 +9,12 @@ import { PlatformTouchable } from '../../../common/PlatformTouchable';
 import { translate } from '../../../localization/locale';
 import { QuestionMetadata } from '../../../models/quest';
 import { Colors } from '../../../styles/colors';
-import { QuestContext } from '../../QuestionContainer/QuestionContainer';
+import { CONTAINER_MARGIN_TOP, QuestContext } from '../../QuestionContainer/QuestionContainer';
 
 interface IQuestionRendererProps {
-  question: QuestionMetadata;
   ref?: RefObject<TextInputStatic>;
+  question: QuestionMetadata;
+  descriptionHeight?: number;
 }
 
 const TEXT_INPUT_THEME = {
@@ -30,7 +31,7 @@ const TEXT_INPUT_THEME = {
 
 const QuestionRenderer: FunctionComponent<IQuestionRendererProps> = forwardRef(
   (props: IQuestionRendererProps, ref: RefObject<TextInputStatic>) => {
-    const { question } = props;
+    const { question, descriptionHeight } = props;
 
     switch (question.kind) {
       case 'text':
@@ -126,7 +127,7 @@ const QuestionRenderer: FunctionComponent<IQuestionRendererProps> = forwardRef(
                   data={context.orderedAnswer.length > 0 ? context.orderedAnswer : question.options}
                   renderItem={renderOrderOption}
                   onDragEnd={({ data }) => context.setOrderedAnswer(data)}
-                  fixedOffset={ITEM_HEIGHT * question.options.length}
+                  fixedOffset={(descriptionHeight || 0) + CONTAINER_MARGIN_TOP}
                 />
               </View>
             )}
@@ -158,7 +159,7 @@ const QuestionRenderer: FunctionComponent<IQuestionRendererProps> = forwardRef(
       isActive: boolean;
     }) {
       return (
-        <PlatformTouchable onLongPress={params.drag} style={{ height: ITEM_HEIGHT }}>
+        <PlatformTouchable onLongPress={params.drag} style={{ height: ITEM_HEIGHT }} noBackground={true}>
           <>
             <View
               style={[styles.row, { height: ITEM_HEIGHT }, params.isActive && { backgroundColor: Colors.WHITE_024 }]}

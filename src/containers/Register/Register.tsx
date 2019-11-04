@@ -59,7 +59,7 @@ const Register = () => {
   return (
     <ScrollView contentContainerStyle={styles.root} keyboardShouldPersistTaps="handled">
       <View style={styles.formContainer}>
-        <Image source={require('../../images/logo.png')} />
+        <Image source={require('../../images/beacon_logo.png')} />
         <Text style={styles.emailTitle}>{translate('insert_username')}</Text>
         <TextInput
           value={username}
