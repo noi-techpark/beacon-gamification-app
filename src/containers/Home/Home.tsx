@@ -6,6 +6,7 @@ import { NavigationParams, NavigationRoute, NavigationScreenProp } from 'react-n
 import { useFocusState, useNavigation, useNavigationEvents, useNavigationParam } from 'react-navigation-hooks';
 import { getAuthToken, getUserDetail } from '../../api/auth';
 import { getQuests } from '../../api/quests';
+import { PointsPlaceholder } from '../../components/PointsPlaceholder';
 import { PointsRecap } from '../../components/PointsRecap';
 import { QuestCardItem } from '../../components/QuestCardItem';
 import { translate } from '../../localization/locale';
@@ -52,7 +53,7 @@ const Home = () => {
 
   return (
     <View style={styles.root}>
-      <PointsRecap points={user.points} />
+      {user.points > 0 ? <PointsRecap points={user.points} /> : <PointsPlaceholder />}
       <FlatList<Quest>
         data={quests}
         keyExtractor={item => String(item.id)}

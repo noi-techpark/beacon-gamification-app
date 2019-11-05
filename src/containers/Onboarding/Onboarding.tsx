@@ -22,9 +22,14 @@ const Onboarding = () => {
   return (
     <PatternBackground>
       <View style={styles.root}>
-        <Image
+        {/* <Image
           source={require('../../images/sudtirol_logo.png')}
           style={{ alignSelf: 'center', marginTop: -10 }}
+          resizeMode="center"
+        /> */}
+        <Image
+          source={require('../../images/beacon_logo.png')}
+          style={{ alignSelf: 'center', marginTop: 32 }}
           resizeMode="center"
         />
         <View style={{ padding: 16 }}>
