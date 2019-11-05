@@ -2,10 +2,11 @@
 export type Quest = {
     id: number;
     name: string;
-    description: string;
-    epilogue: string;
-    instructions: string;
+    description?: string;
+    epilogue?: string;
+    instructions?: string;
     position: string; //format: latitude,longitude
+    image?: string;
     steps: QuestStep[];
 }
 
