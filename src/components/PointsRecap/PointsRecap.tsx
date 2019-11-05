@@ -10,11 +10,6 @@ interface IPointsRecapProps {
 
 const PointsRecap: React.FunctionComponent<IPointsRecapProps> = ({ points }) => (
   <View style={{ height: 204 }}>
-    {/* <PatternBackground
-      pattern={require('../../images/points_pattern.png')}
-      colors={[Colors.WHITE, Colors.WHITE_000]}
-      locations={[0.34, 0.52]}
-    > */}
     <View style={styles.root}>
       <Text style={{ ...material.captionObject, color: Colors.SUDTIROL_DARK_GREY }}>
         {translate('current_points').toUpperCase()}
@@ -24,7 +19,6 @@ const PointsRecap: React.FunctionComponent<IPointsRecapProps> = ({ points }) => 
         <Text style={styles.pointsText}>{points || 0}</Text>
       </View>
     </View>
-    {/* </PatternBackground> */}
   </View>
 );
 
