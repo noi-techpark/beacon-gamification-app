@@ -36,3 +36,7 @@ export function showValuePointsSigned(step: QuestStep, isCorrect: boolean): stri
 export function isUndefined(obj?: unknown): boolean {
     return obj === undefined;
 }
+
+export function isNull(obj?: unknown): boolean {
+    return obj === null;
+}

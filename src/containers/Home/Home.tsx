@@ -7,7 +7,6 @@ import { NavigationParams, NavigationRoute, NavigationScreenProp } from 'react-n
 import { useNavigation, useNavigationEvents, useNavigationParam } from 'react-navigation-hooks';
 import { getAuthToken, getUserDetail } from '../../api/auth';
 import { getQuests } from '../../api/quests';
-import { PointsPlaceholder } from '../../components/PointsPlaceholder';
 import { PointsRecap } from '../../components/PointsRecap';
 import { QuestCardItem } from '../../components/QuestCardItem';
 import { translate } from '../../localization/locale';
@@ -16,7 +15,6 @@ import { UserDetail } from '../../models/user';
 import { ScreenKeys } from '../../screens';
 import { Colors } from '../../styles/colors';
 import { hashCode } from '../../utils/stringUtils';
-import { isUndefined } from '../../utils/uiobjects';
 
 const Home = () => {
   const navigation = useNavigation();
@@ -63,15 +61,7 @@ const Home = () => {
         alwaysShowTitle={false}
         extraScrollHeight={20}
         renderNavBar={() => <View style={{ backgroundColor: 'transparent', flex: 1 }} />}
-        title={
-          isUndefined(user.points) ? (
-            <View />
-          ) : user.points > 0 ? (
-            <PointsRecap points={user.points} />
-          ) : (
-            <PointsPlaceholder />
-          )
-        }
+        title={<PointsRecap points={user.points} />}
         contentContainerStyle={{ flexGrow: 1, backgroundColor: Colors.GRAY_200, paddingHorizontal: 16 }}
         renderContent={() => (
           <>
