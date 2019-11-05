@@ -87,7 +87,7 @@ export async function postRemovePoints(token: string, userId: number, points: nu
             },
             body: JSON.stringify({
                 pk_user: userId,
-                points: -points
+                points
             })
         })
     );

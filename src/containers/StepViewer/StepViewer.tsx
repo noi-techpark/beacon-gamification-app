@@ -166,7 +166,7 @@ const StepViewer = () => {
     if (targetBeacon) {
       const beacon = find(discoveredBeacons, b => b.id === targetBeacon.beacon_id);
 
-      if (beacon) {
+      if (beacon && (beacon.range === 'near' || beacon.range === 'immediate')) {
         // if (step.type === 'info') {
         //   // navigation.navigate(ScreenKeys.QuestStepCompleted, { step, onStepCompleted });
         // } else {
@@ -186,7 +186,7 @@ const StepViewer = () => {
         setTargetBeacon(targetBeacon);
 
         const alreadyFound = discoveredBeacons.find(b => b.id === targetBeacon.beacon_id);
-        if (alreadyFound) {
+        if (alreadyFound && (alreadyFound.range === 'near' || alreadyFound.range === 'immediate')) {
           // if (step.type === 'info') {
           //   // navigation.navigate(ScreenKeys.QuestStepCompleted, { step, onStepCompleted });
           // } else {
@@ -207,7 +207,7 @@ const StepViewer = () => {
         quest,
         stepId: step.quest_index,
         token,
-        points: isCorrectAnswer ? currentPoints + step.value_points : currentPoints - step.value_points_error
+        points: isCorrectAnswer ? currentPoints + step.value_points : currentPoints + step.value_points_error
       });
       return;
     }
@@ -224,7 +224,7 @@ const StepViewer = () => {
         quest,
         stepId: step.quest_index + 1,
         token,
-        points: isCorrectAnswer ? currentPoints + step.value_points : currentPoints - step.value_points_error
+        points: isCorrectAnswer ? currentPoints + step.value_points : currentPoints + step.value_points_error
       });
     } else {
       setQuestIndex(0);
@@ -233,7 +233,7 @@ const StepViewer = () => {
       setTimeout(() => {
         navigation.navigate(ScreenKeys.QuestCompleted, {
           quest,
-          points: isCorrectAnswer ? currentPoints + step.value_points : currentPoints - step.value_points_error
+          points: isCorrectAnswer ? currentPoints + step.value_points : currentPoints + step.value_points_error
         });
       }, 500);
     }
