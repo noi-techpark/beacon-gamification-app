@@ -32,3 +32,7 @@ export function getLetterFromAlphabetByIndex(index: number): string {
 export function showValuePointsSigned(step: QuestStep, isCorrect: boolean): string {
     return isCorrect ? String(step.value_points) : `-${String(step.value_points)}`
 }
+
+export function isUndefined(obj?: unknown): boolean {
+    return obj === undefined;
+}
