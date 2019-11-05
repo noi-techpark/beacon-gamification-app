@@ -9,7 +9,7 @@ import { material } from 'react-native-typography';
 import { StackActions } from 'react-navigation';
 import { useNavigation, useNavigationParam } from 'react-navigation-hooks';
 import { getBeaconMetadataById } from '../../api/beacons';
-import { postAddPoints } from '../../api/quests';
+import { postAddPoints, postRemovePoints } from '../../api/quests';
 import { AnimatedLinearGradient } from '../../common/AnimatedLinearGradient';
 import PlatformTouchable from '../../common/PlatformTouchable/PlatformTouchable';
 import BeaconLocalizer from '../../components/BeaconLocalizer/BeaconLocalizer';
@@ -42,6 +42,7 @@ const StepViewer = () => {
   const quest: Quest = useNavigationParam('quest');
   const stepId: number = useNavigationParam('stepId');
   const token: string = useNavigationParam('token');
+  const userId: number = useNavigationParam('userId');
   const currentPoints: number = useNavigationParam('points') || 0;
   const discoveredBeacons = useDiscoveredBeacons();
   const step = quest.steps.find(s => s.quest_index === stepId);
@@ -100,6 +101,7 @@ const StepViewer = () => {
       }
     }
   });
+
   const fadeFooter = useAnimation({
     doAnimation: showQuestion,
     delay: !showQuestion ? SLIDE_IN_ANIMATION_DURATION + 200 : 0
@@ -164,7 +166,7 @@ const StepViewer = () => {
     if (targetBeacon) {
       const beacon = find(discoveredBeacons, b => b.id === targetBeacon.beacon_id);
 
-      if (beacon) {
+      if (beacon && (beacon.range === 'near' || beacon.range === 'immediate')) {
         // if (step.type === 'info') {
         //   // navigation.navigate(ScreenKeys.QuestStepCompleted, { step, onStepCompleted });
         // } else {
@@ -184,7 +186,7 @@ const StepViewer = () => {
         setTargetBeacon(targetBeacon);
 
         const alreadyFound = discoveredBeacons.find(b => b.id === targetBeacon.beacon_id);
-        if (alreadyFound) {
+        if (alreadyFound && (alreadyFound.range === 'near' || alreadyFound.range === 'immediate')) {
           // if (step.type === 'info') {
           //   // navigation.navigate(ScreenKeys.QuestStepCompleted, { step, onStepCompleted });
           // } else {
@@ -205,7 +207,7 @@ const StepViewer = () => {
         quest,
         stepId: step.quest_index,
         token,
-        points: isCorrectAnswer ? currentPoints + step.value_points : currentPoints - step.value_points
+        points: isCorrectAnswer ? currentPoints + step.value_points : currentPoints + step.value_points_error
       });
       return;
     }
@@ -222,7 +224,7 @@ const StepViewer = () => {
         quest,
         stepId: step.quest_index + 1,
         token,
-        points: isCorrectAnswer ? currentPoints + step.value_points : currentPoints - step.value_points
+        points: isCorrectAnswer ? currentPoints + step.value_points : currentPoints + step.value_points_error
       });
     } else {
       setQuestIndex(0);
@@ -231,7 +233,7 @@ const StepViewer = () => {
       setTimeout(() => {
         navigation.navigate(ScreenKeys.QuestCompleted, {
           quest,
-          points: isCorrectAnswer ? currentPoints + step.value_points : currentPoints - step.value_points
+          points: isCorrectAnswer ? currentPoints + step.value_points : currentPoints + step.value_points_error
         });
       }, 500);
     }
@@ -242,9 +244,6 @@ const StepViewer = () => {
   }
 
   const onSkipStepPressed = (step: QuestStep) => {
-    // TODO: Api call to remove points!
-    // const [e, response] = await to(postAddPoints(token, step.value_points));
-
     if (step.quest_index < quest.steps.length) {
       if (isQuestionWithTextInput(question)) {
         textInputRef.current.blur();
@@ -269,7 +268,9 @@ const StepViewer = () => {
   };
 
   async function onCorrectAnswer(step: QuestStep) {
-    const [e, response] = await to(postAddPoints(token, step.value_points));
+    if (userId) {
+      const [e, response] = await to(postAddPoints(token, userId, step.value_points));
+    }
 
     setStepCompleted(true);
 
@@ -284,6 +285,10 @@ const StepViewer = () => {
 
   async function onWrongAnswer(step: QuestStep) {
     if (retryTimes === MAX_RETRY) {
+      if (userId) {
+        const [e, response] = await to(postRemovePoints(token, userId, step.value_points_error));
+      }
+
       setStepCompleted(true);
     }
 

@@ -42,7 +42,7 @@ const Home = () => {
         const user = await getUserDetail(token, id);
         const [e, quests] = await to(getQuests(token));
 
-        setUser(user);
+        setUser({ ...user, id });
         setQuests(quests);
       }
     };
@@ -66,7 +66,7 @@ const Home = () => {
         renderContent={() => (
           <>
             <Text style={styles.questListHeader}>{translate('discover_adventures').toUpperCase()}</Text>
-            {quests.map(q => renderItem(q, token, navigation))}
+            {quests.map(q => renderItem(q, token, user.id || 0, navigation))}
           </>
         )}
       />
@@ -77,6 +77,7 @@ const Home = () => {
 const renderItem = (
   quest: Quest,
   token: string,
+  userId: number,
   navigation: NavigationScreenProp<NavigationRoute<NavigationParams>, NavigationParams>
 ) => {
   async function onOpenQuestPressed() {
@@ -84,11 +85,10 @@ const renderItem = (
 
     navigation.navigate(ScreenKeys.QuestPreview, {
       quest,
-      token
+      token,
+      userId
     });
   }
-
-  console.log(quest);
 
   return <QuestCardItem key={quest.id} quest={quest} onOpenQuestPressed={onOpenQuestPressed} />;
 };

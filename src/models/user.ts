@@ -5,6 +5,7 @@ export type User = {
 }
 
 export type UserDetail = {
+    id?: number;
     username: string;
     points?: number;
 }
