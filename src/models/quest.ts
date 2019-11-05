@@ -21,6 +21,7 @@ export type QuestStep = {
     type: 'question' | 'multi';
     value_points: number;
     value_points_error: number;
+    image?: string;
 }
 
 export type QuestFinder = {

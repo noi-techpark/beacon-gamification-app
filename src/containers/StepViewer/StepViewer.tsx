@@ -14,6 +14,7 @@ import { AnimatedLinearGradient } from '../../common/AnimatedLinearGradient';
 import PlatformTouchable from '../../common/PlatformTouchable/PlatformTouchable';
 import BeaconLocalizer from '../../components/BeaconLocalizer/BeaconLocalizer';
 import { QuestionContainer } from '../../components/QuestionContainer';
+import { DEFAULT_QUEST_IMAGE_URL } from '../../config';
 import { useAnimation } from '../../hooks/useAnimation';
 import { useContentChangeAnimation } from '../../hooks/useContentChangeAnimation';
 import { useDiscoveredBeacons } from '../../hooks/useDiscoveredBeacons';
@@ -324,18 +325,9 @@ const StepViewer = () => {
   return (
     <>
       <Image
-        source={
-          // quest.id === 1
-          //   ?
-          {
-            uri:
-              'https://scontent-mxp1-1.xx.fbcdn.net/v/t1.0-9/60362028_10158533718775550_8803879888109961216_o.jpg?_nc_cat=104&_nc_oc=AQmQMfZctOTQtPwGgxzvFlkHScDy1Mm99JorANofezjCo3MOQwMURwXdBpSHB94ukCg&_nc_ht=scontent-mxp1-1.xx&oh=8eb016ce727d45adb0131a08ca6b06cc&oe=5E230089'
-          }
-          // : {
-          //     uri:
-          //       'https://static.wixstatic.com/media/9508b7_6810120813944ffb801e83ce6e4cca2a~mv2.jpg/v1/fill/w_3360,h_840,al_c,q_90,usm_0.66_1.00_0.01/9508b7_6810120813944ffb801e83ce6e4cca2a~mv2.jpg'
-          //   }
-        }
+        source={{
+          uri: step.image || DEFAULT_QUEST_IMAGE_URL
+        }}
         style={[styles.absoluteFill, { height: Dimensions.get('window').height + StatusBar.currentHeight }]}
         resizeMode="cover"
       />

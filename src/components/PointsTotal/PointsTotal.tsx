@@ -7,7 +7,7 @@ import { Colors } from '../../styles/colors';
 interface IPointsTotalProps {
   points: number;
   hideTitle?: boolean;
-  contentContainerStyle: StyleProp<ViewStyle>;
+  contentContainerStyle?: StyleProp<ViewStyle>;
 }
 
 const PointsTotal: React.FunctionComponent<IPointsTotalProps> = ({ points, hideTitle, contentContainerStyle }) => (
