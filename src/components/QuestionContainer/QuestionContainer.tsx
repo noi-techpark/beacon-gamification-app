@@ -73,6 +73,8 @@ const QuestionContainer: FunctionComponent<IQuestionContainerProps> = forwardRef
     }, [isKeyboardShow]);
 
     const onAnswerPressed = () => {
+      setFormSubmitted(true);
+      
       const isValid =
         question.kind === 'multiple'
           ? isEqual(sortBy(data.multipleAnswer), sortBy(question.answer))
@@ -81,7 +83,6 @@ const QuestionContainer: FunctionComponent<IQuestionContainerProps> = forwardRef
           : data.text.toLowerCase() === (question.answer as string).toLowerCase();
 
       if (isKeyboardShow) {
-        setFormSubmitted(true);
         setCorrect(isValid);
         Keyboard.dismiss();
       } else if (isValid) {
