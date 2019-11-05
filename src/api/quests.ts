@@ -55,7 +55,7 @@ export async function getQuestFinder(token: string, beaconId: string): Promise<a
     return response;
 }
 
-export async function postAddPoints(token: string, points: number): Promise<any> {
+export async function postAddPoints(token: string, userId: number, points: number): Promise<any> {
     const [error, response] = await to(
         fetchBeaconsApi(`${API_SERVER_URL}/users/add-points/`, {
             method: 'POST',
@@ -64,8 +64,30 @@ export async function postAddPoints(token: string, points: number): Promise<any>
                 Authorization: `Token ${token}`
             },
             body: JSON.stringify({
-                pk_user: 28,
+                pk_user: userId,
                 points
+            })
+        })
+    );
+
+    if (!response) {
+        throw error;
+    }
+
+    return response;
+}
+
+export async function postRemovePoints(token: string, userId: number, points: number): Promise<any> {
+    const [error, response] = await to(
+        fetchBeaconsApi(`${API_SERVER_URL}/users/add-points/`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization: `Token ${token}`
+            },
+            body: JSON.stringify({
+                pk_user: userId,
+                points: -points
             })
         })
     );

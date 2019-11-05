@@ -20,6 +20,7 @@ export type QuestStep = {
     quest_index: number;
     type: 'question' | 'multi';
     value_points: number;
+    value_points_error: number;
 }
 
 export type QuestFinder = {

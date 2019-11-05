@@ -31,6 +31,7 @@ const HEADER_SCROLL_DISTANCE = HEADER_MAX_HEIGHT - HEADER_MIN_HEIGHT;
 const QuestPreview: NavigationScreenComponent<NavigationStackOptions, Props> = () => {
   const navigation = useNavigation();
   const quest: Quest = useNavigationParam('quest');
+  const userId: number = useNavigationParam('userId');
   const token = useNavigationParam('token');
   const [isTransitionCompleted, setCompleted] = useState(false);
   const scrollY = new Animated.Value(0);
@@ -77,8 +78,6 @@ const QuestPreview: NavigationScreenComponent<NavigationStackOptions, Props> = (
   });
 
   const onStartQuestPressed = () => {
-    // navigation.navigate(ScreenKeys.QuestCompleted, { quest, points: 1500 });
-
     NearbyBeacons.configureScanMode(2);
     NearbyBeacons.setDeviceUpdateCallbackInterval(2);
 
@@ -89,7 +88,8 @@ const QuestPreview: NavigationScreenComponent<NavigationStackOptions, Props> = (
     navigation.navigate(ScreenKeys.StepViewer, {
       quest,
       stepId: 1,
-      token
+      token,
+      userId
     });
   };
 
