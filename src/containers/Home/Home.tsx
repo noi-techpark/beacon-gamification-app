@@ -1,9 +1,10 @@
 import to from 'await-to-js';
 import React, { useEffect, useState } from 'react';
-import { FlatList, StatusBar, StyleSheet, Text, View } from 'react-native';
+import { StatusBar, StyleSheet, Text, View } from 'react-native';
+import ReactNativeParallaxHeader from 'react-native-parallax-header';
 import { material } from 'react-native-typography';
 import { NavigationParams, NavigationRoute, NavigationScreenProp } from 'react-navigation';
-import { useFocusState, useNavigation, useNavigationEvents, useNavigationParam } from 'react-navigation-hooks';
+import { useNavigation, useNavigationEvents, useNavigationParam } from 'react-navigation-hooks';
 import { getAuthToken, getUserDetail } from '../../api/auth';
 import { getQuests } from '../../api/quests';
 import { PointsPlaceholder } from '../../components/PointsPlaceholder';
@@ -15,6 +16,7 @@ import { UserDetail } from '../../models/user';
 import { ScreenKeys } from '../../screens';
 import { Colors } from '../../styles/colors';
 import { hashCode } from '../../utils/stringUtils';
+import { isUndefined } from '../../utils/uiobjects';
 
 const Home = () => {
   const navigation = useNavigation();
@@ -22,7 +24,6 @@ const Home = () => {
   const [user, setUser] = useState<UserDetail>({ username });
   const [token, setToken] = useState('');
   const [quests, setQuests] = useState([]);
-  const focusState = useFocusState();
 
   useNavigationEvents(evt => {
     if (evt.type === 'willFocus') {
@@ -53,15 +54,31 @@ const Home = () => {
 
   return (
     <View style={styles.root}>
-      {user.points > 0 ? <PointsRecap points={user.points} /> : <PointsPlaceholder />}
-      <FlatList<Quest>
-        data={quests}
-        keyExtractor={item => String(item.id)}
-        contentContainerStyle={{ flexGrow: 1, backgroundColor: Colors.GRAY_200, paddingHorizontal: 16 }}
-        ListHeaderComponent={
-          <Text style={styles.questListHeader}>{translate('discover_adventures').toUpperCase()}</Text>
+      <ReactNativeParallaxHeader
+        backgroundImage={require('../../images/points_pattern_with_gradient.png')}
+        backgroundImageScale={1}
+        navbarColor={Colors.WHITE}
+        headerMinHeight={56 + StatusBar.currentHeight}
+        headerMaxHeight={204}
+        alwaysShowTitle={false}
+        extraScrollHeight={20}
+        renderNavBar={() => <View style={{ backgroundColor: 'transparent', flex: 1 }} />}
+        title={
+          isUndefined(user.points) ? (
+            <View />
+          ) : user.points > 0 ? (
+            <PointsRecap points={user.points} />
+          ) : (
+            <PointsPlaceholder />
+          )
         }
-        renderItem={({ item }) => renderItem(item, token, navigation)}
+        contentContainerStyle={{ flexGrow: 1, backgroundColor: Colors.GRAY_200, paddingHorizontal: 16 }}
+        renderContent={() => (
+          <>
+            <Text style={styles.questListHeader}>{translate('discover_adventures').toUpperCase()}</Text>
+            {quests.map(q => renderItem(q, token, navigation))}
+          </>
+        )}
       />
     </View>
   );

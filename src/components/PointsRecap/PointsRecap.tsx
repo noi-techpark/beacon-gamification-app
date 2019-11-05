@@ -1,7 +1,6 @@
 import React from 'react';
 import { Image, StyleSheet, Text, View } from 'react-native';
 import { material } from 'react-native-typography';
-import { PatternBackground } from '../../common/PatternBackground';
 import { translate } from '../../localization/locale';
 import { Colors } from '../../styles/colors';
 
@@ -11,21 +10,21 @@ interface IPointsRecapProps {
 
 const PointsRecap: React.FunctionComponent<IPointsRecapProps> = ({ points }) => (
   <View style={{ height: 204 }}>
-    <PatternBackground
+    {/* <PatternBackground
       pattern={require('../../images/points_pattern.png')}
       colors={[Colors.WHITE, Colors.WHITE_000]}
       locations={[0.34, 0.52]}
-    >
-      <View style={styles.root}>
-        <Text style={{ ...material.captionObject, color: Colors.SUDTIROL_DARK_GREEN }}>
-          {translate('current_points').toUpperCase()}
-        </Text>
-        <View style={styles.pointsContainer}>
-          <Image source={require('../../images/star.png')} />
-          <Text style={styles.pointsText}>{points || 0}</Text>
-        </View>
+    > */}
+    <View style={styles.root}>
+      <Text style={{ ...material.captionObject, color: Colors.SUDTIROL_DARK_GREY }}>
+        {translate('current_points').toUpperCase()}
+      </Text>
+      <View style={styles.pointsContainer}>
+        <Image source={require('../../images/star.png')} />
+        <Text style={styles.pointsText}>{points || 0}</Text>
       </View>
-    </PatternBackground>
+    </View>
+    {/* </PatternBackground> */}
   </View>
 );
 
