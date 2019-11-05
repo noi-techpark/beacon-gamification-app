@@ -10,6 +10,7 @@ import { NavigationScreenComponent, NavigationScreenProps } from 'react-navigati
 import { useNavigation, useNavigationEvents, useNavigationParam } from 'react-navigation-hooks';
 import { SharedElement } from 'react-navigation-shared-element';
 import { NavigationStackOptions } from 'react-navigation-stack';
+import { DEFAULT_QUEST_IMAGE_URL } from '../../../config';
 import { translate } from '../../../localization/locale';
 import { Quest } from '../../../models/quest';
 import { ScreenKeys } from '../../../screens';
@@ -105,9 +106,7 @@ const QuestPreview: NavigationScreenComponent<NavigationStackOptions, Props> = (
       <SharedElement id={`image_${quest.id}`} style={styles.fill}>
         <Image
           source={{
-            uri: !!quest.image
-              ? quest.image.substring(0, quest.image.indexOf('?'))
-              : 'https://static.wixstatic.com/media/9508b7_6810120813944ffb801e83ce6e4cca2a~mv2.jpg/v1/fill/w_3360,h_840,al_c,q_90,usm_0.66_1.00_0.01/9508b7_6810120813944ffb801e83ce6e4cca2a~mv2.jpg'
+            uri: quest.image || DEFAULT_QUEST_IMAGE_URL
           }}
           style={styles.absoluteFill}
           resizeMode="cover"

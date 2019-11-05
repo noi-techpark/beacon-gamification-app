@@ -3,6 +3,7 @@ import { StyleSheet, Text, View } from 'react-native';
 import { Button, Card } from 'react-native-paper';
 import { material, materialColors } from 'react-native-typography';
 import { SharedElement } from 'react-navigation-shared-element';
+import { DEFAULT_QUEST_IMAGE_URL } from '../../config';
 import { translate } from '../../localization/locale';
 import { Quest } from '../../models/quest';
 import { Colors } from '../../styles/colors';
@@ -21,9 +22,7 @@ const QuestCardItem: React.FunctionComponent<QuestCardItemProps> = ({ quest, onO
       <SharedElement id={`image_${quest.id}`}>
         <Card.Cover
           source={{
-            uri: !!quest.image
-              ? quest.image.substring(0, quest.image.indexOf('?'))
-              : 'https://static.wixstatic.com/media/9508b7_6810120813944ffb801e83ce6e4cca2a~mv2.jpg/v1/fill/w_3360,h_840,al_c,q_90,usm_0.66_1.00_0.01/9508b7_6810120813944ffb801e83ce6e4cca2a~mv2.jpg'
+            uri: quest.image || DEFAULT_QUEST_IMAGE_URL
           }}
           style={{ borderTopLeftRadius: 8, borderTopRightRadius: 8, height: 164 }}
           resizeMode="cover"

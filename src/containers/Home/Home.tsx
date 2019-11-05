@@ -98,7 +98,9 @@ const renderItem = (
     });
   }
 
-  return <QuestCardItem quest={quest} onOpenQuestPressed={onOpenQuestPressed} />;
+  console.log(quest);
+
+  return <QuestCardItem key={quest.id} quest={quest} onOpenQuestPressed={onOpenQuestPressed} />;
 };
 
 const styles = StyleSheet.create({
