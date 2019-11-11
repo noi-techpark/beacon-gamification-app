@@ -57,7 +57,9 @@ const QuestionContainer: FunctionComponent<IQuestionContainerProps> = forwardRef
     const [height, setDescriptionHeight] = useState(0);
 
     useNavigationEvents(evt => {
-      if (evt.type === 'didBlur' && isFormSubmitted) {
+      if (evt.type === 'willFocus') {
+        setFormSubmitted(false);
+      } else if (evt.type === 'didBlur' && isFormSubmitted) {
         clearState();
       }
     });
@@ -74,7 +76,7 @@ const QuestionContainer: FunctionComponent<IQuestionContainerProps> = forwardRef
 
     const onAnswerPressed = () => {
       setFormSubmitted(true);
-      
+
       const isValid =
         question.kind === 'multiple'
           ? isEqual(sortBy(data.multipleAnswer), sortBy(question.answer))
