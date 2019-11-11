@@ -218,13 +218,13 @@ const styles = StyleSheet.create({
   },
   questTitle: {
     ...material.display1Object,
-    fontFamily: 'SuedtirolPro-Regular',
+    // fontFamily: 'SuedtirolPro-Regular',
     color: Colors.WHITE,
     marginBottom: PADDING_BOTTOM_FIX
   },
   howToPlayTitle: {
     ...material.display1Object,
-    fontFamily: 'SuedtirolPro-Regular',
+    // fontFamily: 'SuedtirolPro-Regular',
     color: Colors.WHITE,
     marginTop: 32,
     marginBottom: PADDING_BOTTOM_FIX
