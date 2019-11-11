@@ -115,7 +115,7 @@ const styles = StyleSheet.create({
   },
   title: {
     ...material.headlineObject,
-    fontFamily: 'SuedtirolPro-Regular',
+    // fontFamily: 'SuedtirolPro-Regular',
     paddingHorizontal: 24,
     marginTop: BACKGROUND_IMAGE_HEIGHT - GRADIENT_PADDING_TOP + 18,
     marginBottom: 72,

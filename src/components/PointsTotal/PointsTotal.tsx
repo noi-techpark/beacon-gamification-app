@@ -41,7 +41,7 @@ const styles = StyleSheet.create({
     ...material.display1WhiteObject,
     paddingStart: 4,
     color: Colors.SUDTIROL_DARK_ORANGE,
-    fontFamily: 'SuedtirolPro-Regular'
+    // fontFamily: 'SuedtirolPro-Regular'
   }
 });
 

@@ -466,7 +466,7 @@ const styles = StyleSheet.create({
   },
   stepTitle: {
     ...material.display1Object,
-    fontFamily: 'SuedtirolPro-Regular',
+    // fontFamily: 'SuedtirolPro-Regular',
     color: Colors.WHITE,
     marginBottom: PADDING_BOTTOM_FIX
   },

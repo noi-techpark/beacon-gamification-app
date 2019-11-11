@@ -52,7 +52,9 @@ const styles = StyleSheet.create({
     marginVertical: 8,
     height: 304
   },
-  questTitle: { ...material.headlineObject, fontFamily: 'SuedtirolPro-Regular' },
+  questTitle: { ...material.headlineObject, 
+    // fontFamily: 'SuedtirolPro-Regular' 
+  },
   questDescription: { ...material.body1Object, color: materialColors.blackSecondary, height: 40 }
 });
 
