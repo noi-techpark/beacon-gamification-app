@@ -15,11 +15,13 @@ export enum Colors {
     BLACK_008 = 'rgba(0,0,0,0.08)',
     BLACK_032 = 'rgba(0,0,0,0.32)',
     BLACK_040 = 'rgba(0,0,0,0.4)',
+    BLACK_054 = 'rgba(0,0,0,0.54)',
     TOTAL_BLACK = '#000000',
 
     GRAY_200 = '#F2F2F2',
     GRAY_400 = '#E5E5E5',
     GRAY_500 = '#DADADA',
+    GRAY_800 = '#DADADA',
 
     SUDTIROL_GREEN = '#A9BF00',
     SUDTIROL_DARK_GREY = '#758592',
