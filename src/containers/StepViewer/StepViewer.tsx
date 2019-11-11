@@ -23,8 +23,7 @@ import { Beacon, BeaconMedata } from '../../models/beacon';
 import { Quest, QuestionMetadata, QuestStep } from '../../models/quest';
 import { ScreenKeys } from '../../screens';
 import { Colors } from '../../styles/colors';
-import { getLetterFromAlphabetByIndex, isQuestionWithTextInput } from '../../utils/uiobjects';
-import { MAX_RETRY } from '../quest/AnswerOutcome/AnswerOutcome';
+import { getLetterFromAlphabetByIndex, isMaxRetryReached, isQuestionWithTextInput } from '../../utils/uiobjects';
 
 interface IStepViewerProps {}
 
@@ -241,7 +240,7 @@ const StepViewer = () => {
   }
 
   async function onRetryStepPressed() {
-    setRetryTimes(1);
+    setRetryTimes(retryTimes + 1);
   }
 
   const onSkipStepPressed = (step: QuestStep) => {
@@ -285,7 +284,7 @@ const StepViewer = () => {
   }
 
   async function onWrongAnswer(step: QuestStep) {
-    if (retryTimes === MAX_RETRY) {
+    if (isMaxRetryReached(retryTimes, question)) {
       if (userId) {
         const [e, response] = await to(postRemovePoints(token, userId, step.value_points_error));
       }
