@@ -27,6 +27,16 @@ const Home = () => {
     if (evt.type === 'willFocus') {
       StatusBar.setBackgroundColor(Colors.GRAY_200, false);
       StatusBar.setBarStyle('dark-content', true);
+
+      if (token && user) {
+        const updatePoints = async () => {
+          const updatedUser = await getUserDetail(token, user.id);
+          
+          setUser({ ...updatedUser, id: user.id });
+        };
+
+        updatePoints();
+      }
     }
   });
 
