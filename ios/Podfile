@@ -1,8 +1,8 @@
 platform :ios, '9.0'
 require_relative '../node_modules/@react-native-community/cli-platform-ios/native_modules'
 
-target 'BeaconAdventure' do
-  # Pods for BeaconAdventure
+target 'BeaconSuedtirolAltoAdigeAdventure' do
+  # Pods for BeaconSuedtirolAltoAdigeAdventure
   pod 'React', :path => '../node_modules/react-native/'
   pod 'React-Core', :path => '../node_modules/react-native/React'
   pod 'React-DevSupport', :path => '../node_modules/react-native/React'
@@ -27,7 +27,7 @@ target 'BeaconAdventure' do
   pod 'glog', :podspec => '../node_modules/react-native/third-party-podspecs/glog.podspec'
   pod 'Folly', :podspec => '../node_modules/react-native/third-party-podspecs/Folly.podspec'
 
-  target 'BeaconAdventureTests' do
+  target 'BeaconSuedtirolAltoAdigeAdventureTests' do
     inherit! :search_paths
     # Pods for testing
   end
@@ -35,10 +35,10 @@ target 'BeaconAdventure' do
   use_native_modules!
 end
 
-target 'BeaconAdventure-tvOS' do
-  # Pods for BeaconAdventure-tvOS
+target 'BeaconSuedtirolAltoAdigeAdventure-tvOS' do
+  # Pods for BeaconSuedtirolAltoAdigeAdventure-tvOS
 
-  target 'BeaconAdventure-tvOSTests' do
+  target 'BeaconSuedtirolAltoAdigeAdventure-tvOSTests' do
     inherit! :search_paths
     # Pods for testing
   end
