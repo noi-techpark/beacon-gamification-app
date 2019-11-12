@@ -1,4 +1,4 @@
-package com.belkadigital.beaconadventure;
+package it.bz.beacon.beaconsuedtiroladventure;
 
 import android.Manifest;
 import android.content.pm.PackageManager;
@@ -23,7 +23,7 @@ public class MainActivity extends ReactActivity {
      */
     @Override
     protected String getMainComponentName() {
-        return "BeaconAdventure";
+        return "BeaconSuedtirolAltoAdigeAdventure";
     }
 
     @Override

@@ -5,15 +5,17 @@ import React, { useEffect, useRef, useState } from 'react';
 import { Animated, Dimensions, Image, ScrollView, StatusBar, StyleSheet, Text, TextInput, View } from 'react-native';
 import { useBackHandler } from 'react-native-hooks';
 import LinearGradient from 'react-native-linear-gradient';
+import { Button } from 'react-native-paper';
 import { material } from 'react-native-typography';
 import { StackActions } from 'react-navigation';
 import { useNavigation, useNavigationParam } from 'react-navigation-hooks';
 import { getBeaconMetadataById } from '../../api/beacons';
-import { postAddPoints } from '../../api/quests';
+import { postAddPoints, postRemovePoints } from '../../api/quests';
 import { AnimatedLinearGradient } from '../../common/AnimatedLinearGradient';
 import PlatformTouchable from '../../common/PlatformTouchable/PlatformTouchable';
 import BeaconLocalizer from '../../components/BeaconLocalizer/BeaconLocalizer';
 import { QuestionContainer } from '../../components/QuestionContainer';
+import { DEFAULT_QUEST_IMAGE_URL } from '../../config';
 import { useAnimation } from '../../hooks/useAnimation';
 import { useContentChangeAnimation } from '../../hooks/useContentChangeAnimation';
 import { useDiscoveredBeacons } from '../../hooks/useDiscoveredBeacons';
@@ -22,15 +24,14 @@ import { Beacon, BeaconMedata } from '../../models/beacon';
 import { Quest, QuestionMetadata, QuestStep } from '../../models/quest';
 import { ScreenKeys } from '../../screens';
 import { Colors } from '../../styles/colors';
-import { getLetterFromAlphabetByIndex, isQuestionWithTextInput } from '../../utils/uiobjects';
-import { MAX_RETRY } from '../quest/AnswerOutcome/AnswerOutcome';
+import { getLetterFromAlphabetByIndex, isMaxRetryReached, isQuestionWithTextInput } from '../../utils/uiobjects';
 
 interface IStepViewerProps {}
 
 const PADDING_BOTTOM_FIX = 4;
 const DESIRED_DISTANCE = 350;
 const FOOTER_SHADOW_DISTANCE = 35;
-const FOOTER_HEIGHT = 92;
+const FOOTER_HEIGHT = 92 + 48; // 48 is skip button margin + height
 const HEADER_MAX_HEIGHT = DESIRED_DISTANCE + 56 + PADDING_BOTTOM_FIX + StatusBar.currentHeight - 12; // DO NOT ASK PLS
 const HEADER_MIN_HEIGHT = 56 + StatusBar.currentHeight;
 const HEADER_SCROLL_DISTANCE = HEADER_MAX_HEIGHT - HEADER_MIN_HEIGHT;
@@ -42,6 +43,7 @@ const StepViewer = () => {
   const quest: Quest = useNavigationParam('quest');
   const stepId: number = useNavigationParam('stepId');
   const token: string = useNavigationParam('token');
+  const userId: number = useNavigationParam('userId');
   const currentPoints: number = useNavigationParam('points') || 0;
   const discoveredBeacons = useDiscoveredBeacons();
   const step = quest.steps.find(s => s.quest_index === stepId);
@@ -100,6 +102,7 @@ const StepViewer = () => {
       }
     }
   });
+
   const fadeFooter = useAnimation({
     doAnimation: showQuestion,
     delay: !showQuestion ? SLIDE_IN_ANIMATION_DURATION + 200 : 0
@@ -164,7 +167,7 @@ const StepViewer = () => {
     if (targetBeacon) {
       const beacon = find(discoveredBeacons, b => b.id === targetBeacon.beacon_id);
 
-      if (beacon) {
+      if (beacon && (beacon.range === 'near' || beacon.range === 'immediate')) {
         // if (step.type === 'info') {
         //   // navigation.navigate(ScreenKeys.QuestStepCompleted, { step, onStepCompleted });
         // } else {
@@ -184,7 +187,7 @@ const StepViewer = () => {
         setTargetBeacon(targetBeacon);
 
         const alreadyFound = discoveredBeacons.find(b => b.id === targetBeacon.beacon_id);
-        if (alreadyFound) {
+        if (alreadyFound && (alreadyFound.range === 'near' || alreadyFound.range === 'immediate')) {
           // if (step.type === 'info') {
           //   // navigation.navigate(ScreenKeys.QuestStepCompleted, { step, onStepCompleted });
           // } else {
@@ -205,7 +208,7 @@ const StepViewer = () => {
         quest,
         stepId: step.quest_index,
         token,
-        points: isCorrectAnswer ? currentPoints + step.value_points : currentPoints - step.value_points
+        points: isCorrectAnswer ? currentPoints + step.value_points : currentPoints + step.value_points_error
       });
       return;
     }
@@ -222,7 +225,7 @@ const StepViewer = () => {
         quest,
         stepId: step.quest_index + 1,
         token,
-        points: isCorrectAnswer ? currentPoints + step.value_points : currentPoints - step.value_points
+        points: isCorrectAnswer ? currentPoints + step.value_points : currentPoints + step.value_points_error
       });
     } else {
       setQuestIndex(0);
@@ -231,20 +234,17 @@ const StepViewer = () => {
       setTimeout(() => {
         navigation.navigate(ScreenKeys.QuestCompleted, {
           quest,
-          points: isCorrectAnswer ? currentPoints + step.value_points : currentPoints - step.value_points
+          points: isCorrectAnswer ? currentPoints + step.value_points : currentPoints + step.value_points_error
         });
       }, 500);
     }
   }
 
   async function onRetryStepPressed() {
-    setRetryTimes(1);
+    setRetryTimes(retryTimes + 1);
   }
 
   const onSkipStepPressed = (step: QuestStep) => {
-    // TODO: Api call to remove points!
-    // const [e, response] = await to(postAddPoints(token, step.value_points));
-
     if (step.quest_index < quest.steps.length) {
       if (isQuestionWithTextInput(question)) {
         textInputRef.current.blur();
@@ -269,7 +269,9 @@ const StepViewer = () => {
   };
 
   async function onCorrectAnswer(step: QuestStep) {
-    const [e, response] = await to(postAddPoints(token, step.value_points));
+    if (userId) {
+      const [e, response] = await to(postAddPoints(token, userId, step.value_points));
+    }
 
     setStepCompleted(true);
 
@@ -283,7 +285,11 @@ const StepViewer = () => {
   }
 
   async function onWrongAnswer(step: QuestStep) {
-    if (retryTimes === MAX_RETRY) {
+    if (isMaxRetryReached(retryTimes, question)) {
+      if (userId) {
+        const [e, response] = await to(postRemovePoints(token, userId, step.value_points_error));
+      }
+
       setStepCompleted(true);
     }
 
@@ -319,18 +325,9 @@ const StepViewer = () => {
   return (
     <>
       <Image
-        source={
-          // quest.id === 1
-          //   ?
-          {
-            uri:
-              'https://scontent-mxp1-1.xx.fbcdn.net/v/t1.0-9/60362028_10158533718775550_8803879888109961216_o.jpg?_nc_cat=104&_nc_oc=AQmQMfZctOTQtPwGgxzvFlkHScDy1Mm99JorANofezjCo3MOQwMURwXdBpSHB94ukCg&_nc_ht=scontent-mxp1-1.xx&oh=8eb016ce727d45adb0131a08ca6b06cc&oe=5E230089'
-          }
-          // : {
-          //     uri:
-          //       'https://static.wixstatic.com/media/9508b7_6810120813944ffb801e83ce6e4cca2a~mv2.jpg/v1/fill/w_3360,h_840,al_c,q_90,usm_0.66_1.00_0.01/9508b7_6810120813944ffb801e83ce6e4cca2a~mv2.jpg'
-          //   }
-        }
+        source={{
+          uri: step.image || DEFAULT_QUEST_IMAGE_URL
+        }}
         style={[styles.absoluteFill, { height: Dimensions.get('window').height + StatusBar.currentHeight }]}
         resizeMode="cover"
       />
@@ -376,7 +373,24 @@ const StepViewer = () => {
         >
           <LinearGradient colors={['rgba(51,51,51,0)', Colors.BLACK]} locations={[0, 0.3]} style={styles.fill}>
             <View style={styles.footer}>
-              <BeaconLocalizer beaconFound={beaconFound} onOpenQuestionPressed={onOpenQuestionPressed} />
+              <BeaconLocalizer
+                beaconFound={beaconFound}
+                onOpenQuestionPressed={onOpenQuestionPressed}
+                label={question.finder}
+              />
+              <Button
+                onPress={() => onSkipStepPressed(step)}
+                mode="text"
+                dark={true}
+                theme={{
+                  colors: {
+                    primary: Colors.WHITE
+                  }
+                }}
+                style={{ marginTop: 16 }}
+              >
+                {translate('skip_question')}
+              </Button>
             </View>
           </LinearGradient>
         </Animated.View>
@@ -470,7 +484,7 @@ const styles = StyleSheet.create({
   },
   stepTitle: {
     ...material.display1Object,
-    fontFamily: 'SuedtirolPro-Regular',
+    // fontFamily: 'SuedtirolPro-Regular',
     color: Colors.WHITE,
     marginBottom: PADDING_BOTTOM_FIX
   },

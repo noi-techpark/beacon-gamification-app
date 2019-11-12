@@ -52,7 +52,7 @@ const styles = StyleSheet.create({
   },
   title: {
     ...material.display2Object,
-    fontFamily: 'SuedtirolPro-Regular',
+    // fontFamily: 'SuedtirolPro-Regular',
     color: materialColors.blackSecondary
   }
 });

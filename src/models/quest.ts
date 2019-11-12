@@ -20,6 +20,8 @@ export type QuestStep = {
     quest_index: number;
     type: 'question' | 'multi';
     value_points: number;
+    value_points_error: number;
+    image?: string;
 }
 
 export type QuestFinder = {
@@ -39,4 +41,5 @@ export type QuestionMetadata = {
     wrongAnswerMessage: string;
     options: string[];
     help: string;
+    finder?: string;
 }

@@ -21,6 +21,7 @@ import { QuestCompleted } from './src/containers/quest/QuestCompleted';
 import { QuestPause } from './src/containers/quest/QuestPause';
 import { QuestPreview } from './src/containers/quest/QuestPreview';
 import { Register } from './src/containers/Register';
+import { SplashScreen } from './src/containers/SplashScreen';
 import { StepViewer } from './src/containers/StepViewer';
 import { setupI18nConfig } from './src/localization/locale';
 import { ScreenKeys } from './src/screens';
@@ -34,6 +35,9 @@ StatusBar.setBackgroundColor(Colors.GRAY_200);
 const AppNavigator = createSharedElementStackNavigator(
   createStackNavigator,
   {
+    [ScreenKeys.SplashScreen]: {
+      screen: SplashScreen
+    },
     [ScreenKeys.Onboarding]: {
       screen: Onboarding
     },
@@ -54,7 +58,7 @@ const AppNavigator = createSharedElementStackNavigator(
     }
   },
   {
-    initialRouteName: ScreenKeys.Onboarding,
+    initialRouteName: ScreenKeys.SplashScreen,
     defaultNavigationOptions: {
       headerStyle: {
         elevation: 0,

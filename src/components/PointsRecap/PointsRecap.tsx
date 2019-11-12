@@ -1,45 +1,50 @@
 import React from 'react';
-import { Image, StyleSheet, Text, View } from 'react-native';
+import { Dimensions, StatusBar, StyleSheet, Text, View } from 'react-native';
 import { material } from 'react-native-typography';
 import { translate } from '../../localization/locale';
 import { Colors } from '../../styles/colors';
+import { isNull, isUndefined } from '../../utils/uiobjects';
+import { PointsTotal } from '../PointsTotal';
 
 interface IPointsRecapProps {
-  points: number;
+  points?: number;
 }
 
 const PointsRecap: React.FunctionComponent<IPointsRecapProps> = ({ points }) => (
-  <View style={{ height: 204 }}>
+  <View style={{ height: 204, width: '100%' }}>
     <View style={styles.root}>
-      <Text style={{ ...material.captionObject, color: Colors.SUDTIROL_DARK_GREY }}>
-        {translate('current_points').toUpperCase()}
-      </Text>
-      <View style={styles.pointsContainer}>
-        <Image source={require('../../images/star.png')} />
-        <Text style={styles.pointsText}>{points || 0}</Text>
-      </View>
+      {isUndefined(points) ? (
+        <View />
+      ) : isNull(points) ? (
+        <Text
+          style={{
+            ...material.body1Object,
+            color: Colors.BLACK,
+            width: Dimensions.get('window').width - 116 - 50,
+            flexWrap: 'wrap'
+          }}
+        >
+          {translate('points_placeholder')}
+        </Text>
+      ) : (
+        <PointsTotal
+          points={points}
+          hideTitle={true}
+          contentContainerStyle={{ backgroundColor: 'transparent', justifyContent: 'center', alignItems: 'flex-start' }}
+        />
+      )}
     </View>
   </View>
 );
 
 const styles = StyleSheet.create({
-  root: { marginTop: 108, backgroundColor: 'transparent', alignItems: 'center' },
-  pointsContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+  root: {
+    height: '100%',
+    width: '100%',
+    marginTop: StatusBar.currentHeight,
     paddingHorizontal: 16,
-    alignItems: 'center',
-    width: 155,
-    marginTop: 4,
-    backgroundColor: Colors.SUDTIROL_DARK_ORANGE,
-    borderRadius: 8,
-    borderWidth: 4,
-    borderColor: 'rgba(222, 112, 0, 0.24)'
-  },
-  pointsText: {
-    ...material.display1WhiteObject,
-    color: Colors.WHITE,
-    fontFamily: 'SuedtirolPro-Regular'
+    justifyContent: 'center',
+    backgroundColor: 'transparent'
   }
 });
 
