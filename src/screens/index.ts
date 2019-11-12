@@ -1,5 +1,6 @@
 export enum ScreenKeys {
     Home = 'beacon.adventure.home',
+    SplashScreen = 'beacon.adventure.splashScreen',
     Onboarding = 'beacon.adventure.onboarding',
     Register = 'beacon.adventure.register',
     QuestPreview = 'beacon.adventure.questPreview',
