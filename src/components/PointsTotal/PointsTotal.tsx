@@ -1,18 +1,22 @@
 import React from 'react';
-import { Image, StyleSheet, Text, View } from 'react-native';
+import { Image, StyleProp, StyleSheet, Text, View, ViewStyle } from 'react-native';
 import { material } from 'react-native-typography';
 import { translate } from '../../localization/locale';
 import { Colors } from '../../styles/colors';
 
 interface IPointsTotalProps {
   points: number;
+  hideTitle?: boolean;
+  contentContainerStyle?: StyleProp<ViewStyle>;
 }
 
-const PointsTotal: React.FunctionComponent<IPointsTotalProps> = ({ points }) => (
-  <View style={styles.root}>
-    <Text style={{ ...material.captionObject, color: Colors.SUDTIROL_DARK_GREY }}>
-      {translate('scored_points').toUpperCase()}
-    </Text>
+const PointsTotal: React.FunctionComponent<IPointsTotalProps> = ({ points, hideTitle, contentContainerStyle }) => (
+  <View style={contentContainerStyle || styles.root}>
+    {!hideTitle && (
+      <Text style={{ ...material.captionObject, color: Colors.SUDTIROL_DARK_GREY }}>
+        {translate('scored_points').toUpperCase()}
+      </Text>
+    )}
     <View style={styles.pointsContainer}>
       <Image source={require('../../images/star_gradient.png')} />
       <Text style={styles.pointsText}>{points || 0}</Text>
@@ -27,7 +31,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     paddingHorizontal: 12,
     alignItems: 'center',
-    width: 137,
+    minWidth: 137,
     height: 48,
     marginTop: 8,
     backgroundColor: 'rgba(222, 112, 0, 0.08)',
@@ -35,8 +39,9 @@ const styles = StyleSheet.create({
   },
   pointsText: {
     ...material.display1WhiteObject,
+    paddingStart: 4,
     color: Colors.SUDTIROL_DARK_ORANGE,
-    fontFamily: 'SuedtirolPro-Regular'
+    // fontFamily: 'SuedtirolPro-Regular'
   }
 });
 

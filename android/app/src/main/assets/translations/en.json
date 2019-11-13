@@ -30,5 +30,8 @@
   "close": "Close",
   "retry": "Retry",
   "how_to_play": "How to play",
-  "points_placeholder": "Earn your first points by completing our adventures!"
+  "points_placeholder": "Earn your first points by completing our adventures!",
+  "accept": "Accept ",
+  "tos": "terms and conditions of service",
+  "finder": "Go to the entrance of the room and start the challenge!"
 }

@@ -9,6 +9,7 @@ import { NavigationScreenComponent, NavigationScreenProps } from 'react-navigati
 import { useNavigation, useNavigationEvents, useNavigationParam } from 'react-navigation-hooks';
 import { NavigationStackOptions } from 'react-navigation-stack';
 import { PointsTotal } from '../../../components/PointsTotal';
+import { DEFAULT_QUEST_IMAGE_URL } from '../../../config';
 import { useAnimation } from '../../../hooks/useAnimation';
 import { translate } from '../../../localization/locale';
 import { Quest } from '../../../models/quest';
@@ -63,17 +64,9 @@ const QuestCompleted: NavigationScreenComponent<NavigationStackOptions, IQuestCo
   return (
     <>
       <Animated.Image
-        source={
-          quest.id === 1
-            ? {
-                uri:
-                  'https://scontent-mxp1-1.xx.fbcdn.net/v/t1.0-9/60362028_10158533718775550_8803879888109961216_o.jpg?_nc_cat=104&_nc_oc=AQmQMfZctOTQtPwGgxzvFlkHScDy1Mm99JorANofezjCo3MOQwMURwXdBpSHB94ukCg&_nc_ht=scontent-mxp1-1.xx&oh=8eb016ce727d45adb0131a08ca6b06cc&oe=5E230089'
-              }
-            : {
-                uri:
-                  'https://static.wixstatic.com/media/9508b7_6810120813944ffb801e83ce6e4cca2a~mv2.jpg/v1/fill/w_3360,h_840,al_c,q_90,usm_0.66_1.00_0.01/9508b7_6810120813944ffb801e83ce6e4cca2a~mv2.jpg'
-              }
-        }
+        source={{
+          uri: quest.image || DEFAULT_QUEST_IMAGE_URL
+        }}
         resizeMode="cover"
         style={[styles.absoluteFill, { height: BACKGROUND_IMAGE_HEIGHT, opacity }]}
       />
@@ -122,7 +115,7 @@ const styles = StyleSheet.create({
   },
   title: {
     ...material.headlineObject,
-    fontFamily: 'SuedtirolPro-Regular',
+    // fontFamily: 'SuedtirolPro-Regular',
     paddingHorizontal: 24,
     marginTop: BACKGROUND_IMAGE_HEIGHT - GRADIENT_PADDING_TOP + 18,
     marginBottom: 72,

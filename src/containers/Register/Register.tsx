@@ -1,7 +1,8 @@
 import to from 'await-to-js';
 import React, { useState } from 'react';
-import { Image, Keyboard, ScrollView, StatusBar, StyleSheet, Text, View } from 'react-native';
-import { Button, HelperText, TextInput } from 'react-native-paper';
+import { Image, Keyboard, Linking, ScrollView, StatusBar, StyleSheet, Text, View } from 'react-native';
+import { TouchableWithoutFeedback } from 'react-native-gesture-handler';
+import { Button, Checkbox, HelperText, TextInput } from 'react-native-paper';
 import { material } from 'react-native-typography';
 import { useNavigation } from 'react-navigation-hooks';
 import * as yup from 'yup';
@@ -16,6 +17,7 @@ const Register = () => {
   const navigation = useNavigation();
   const [username, setUsername] = useState('');
   const [isValid, setValid] = useState(true);
+  const [areTOSAccepted, setTOSAccepted] = useState(false);
 
   const schema = yup.object().shape({
     username: yup
@@ -69,17 +71,32 @@ const Register = () => {
           }}
           mode="outlined"
           autoCapitalize="none"
+          autoCorrect={false}
           keyboardType="email-address"
           style={styles.usernameInput}
           autoFocus={true}
           error={!isValid}
           label="email"
         />
-        <HelperText type="error" visible={!isValid}>
-          {translate('email_invalid')}
-        </HelperText>
+        {!isValid && (
+          <HelperText type="error" visible={!isValid}>
+            {translate('email_invalid')}
+          </HelperText>
+        )}
+        <View style={styles.row}>
+          <Checkbox
+            status={areTOSAccepted ? 'checked' : 'unchecked'}
+            uncheckedColor={Colors.BLACK_054}
+            onPress={() => setTOSAccepted(!areTOSAccepted)}
+            color={Colors.SUDTIROL_GREEN}
+          />
+          <Text style={[material.body1]}>{translate('accept')}</Text>
+          <TouchableWithoutFeedback onPress={() => Linking.openURL('https://noi.bz.it/privacy-cookie-policy')}>
+            <Text style={[material.body1, { color: Colors.SUDTIROL_GREEN }]}>{translate('tos')}</Text>
+          </TouchableWithoutFeedback>
+        </View>
       </View>
-      <Button onPress={onSignInPressed} mode="contained" dark={true}>
+      <Button onPress={onSignInPressed} mode="contained" dark={true} disabled={!areTOSAccepted}>
         {translate('signin')}
       </Button>
     </ScrollView>
@@ -98,6 +115,11 @@ const styles = StyleSheet.create({
   formContainer: { flexGrow: 1 },
   usernameInput: {
     width: '100%'
+  },
+  row: {
+    flexDirection: 'row',
+    marginTop: 8,
+    alignItems: 'center'
   }
 });
 

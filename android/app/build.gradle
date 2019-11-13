@@ -128,11 +128,11 @@ android {
     }
 
     defaultConfig {
-        applicationId "com.belkadigital.beaconadventure"
+        applicationId "it.bz.beacon.beaconsuedtiroladventure"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 22
-        versionName "0.4.3"
+        versionCode 28
+        versionName "0.6.1"
     }
     splits {
         abi {

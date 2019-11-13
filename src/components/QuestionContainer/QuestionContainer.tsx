@@ -57,7 +57,9 @@ const QuestionContainer: FunctionComponent<IQuestionContainerProps> = forwardRef
     const [height, setDescriptionHeight] = useState(0);
 
     useNavigationEvents(evt => {
-      if (evt.type === 'didBlur' && isFormSubmitted) {
+      if (evt.type === 'willFocus') {
+        setFormSubmitted(false);
+      } else if (evt.type === 'didBlur' && isFormSubmitted) {
         clearState();
       }
     });
@@ -73,6 +75,8 @@ const QuestionContainer: FunctionComponent<IQuestionContainerProps> = forwardRef
     }, [isKeyboardShow]);
 
     const onAnswerPressed = () => {
+      setFormSubmitted(true);
+
       const isValid =
         question.kind === 'multiple'
           ? isEqual(sortBy(data.multipleAnswer), sortBy(question.answer))
@@ -81,7 +85,6 @@ const QuestionContainer: FunctionComponent<IQuestionContainerProps> = forwardRef
           : data.text.toLowerCase() === (question.answer as string).toLowerCase();
 
       if (isKeyboardShow) {
-        setFormSubmitted(true);
         setCorrect(isValid);
         Keyboard.dismiss();
       } else if (isValid) {
