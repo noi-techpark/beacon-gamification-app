@@ -1,12 +1,5 @@
 # beacon-gamification-app
 
-### Dependencies
-
-* [react-native-google-signin] - To match your photos with ours
-* [react-native-navigation] - awesome native-based library for navigation
-* [lottie-react-native] - for some fancy animations
-* [open-data-hub-APIS] - from Sudtirol with ❤️
-
 ### Installation
 
 I assume that enviroment on your machine is already setted up to develop Android applications
@@ -22,12 +15,25 @@ $ npx jetify
 
 ```gradle
 ...
+signingConfigs {
+    debug {
+        storeFile file('debug.keystore')
+        storePassword 'android'
+        keyAlias 'androiddebugkey'
+        keyPassword 'android'
+    }
+    release {
+        ...
+        // insert here keystore informations
+        ...
+    }
+}
 buildTypes {
         debug {
             signingConfig signingConfigs.debug
         }
         release {
-            signingConfig signingConfigs.debug // change the line HERE after you have configured the keytore
+            signingConfig signingConfigs.release // change the line HERE after you have configured the keytore
             minifyEnabled enableProguardInReleaseBuilds
             proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
         }
