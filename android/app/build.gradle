@@ -150,7 +150,12 @@ android {
             keyPassword 'android'
         }
         release {
-        
+            if (project.hasProperty('GAMIFICATION_UPLOAD_STORE_FILE')) {
+                storeFile file(GAMIFICATION_UPLOAD_STORE_FILE)
+                storePassword GAMIFICATION_UPLOAD_STORE_PASSWORD
+                keyAlias GAMIFICATION_UPLOAD_KEY_ALIAS
+                keyPassword GAMIFICATION_UPLOAD_KEY_PASSWORD
+            }
         }
     }
     buildTypes {
