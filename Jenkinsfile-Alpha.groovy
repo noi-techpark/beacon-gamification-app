@@ -10,7 +10,7 @@ pipeline {
     }
 
     environment {
-        UPLOAD_STORE_PATH = "app/upload.keystore"
+        UPLOAD_STORE_PATH = "${WORKSPACE}/app/upload.keystore"
         UPLOAD_STORE_FILE = credentials('beacon-gamification-app-upload-store-file')
         UPLOAD_STORE_PASSWORD = credentials('beacon-gamification-app-upload-store-password')
         UPLOAD_KEY_ALIAS = credentials('beacon-gamification-app-upload-key-alias')
@@ -21,7 +21,7 @@ pipeline {
         stage('Configure') {
             steps {
                 ansiColor('xterm') {
-                    sh 'cd android && cat "${UPLOAD_STORE_FILE}" > ${UPLOAD_STORE_PATH}'
+                    sh 'cat "${UPLOAD_STORE_FILE}" > ${UPLOAD_STORE_PATH}'
                 }
             }
         }
