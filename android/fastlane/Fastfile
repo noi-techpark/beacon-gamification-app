@@ -34,7 +34,7 @@ platform :android do
     
     supply(
         track: "alpha",
-        apk: "android/app/build/outputs/apk/release/app-release.apk"
+        apk: "app/build/outputs/apk/release/app-release.apk"
     )
   end
 end
