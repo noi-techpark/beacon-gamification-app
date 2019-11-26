@@ -25,10 +25,10 @@ platform :android do
         build_type: "Release",
         print_command: false,
         properties: {
-          "android.injected.signing.store.file" => ENV["UPLOAD_STORE_PATH"],
-          "android.injected.signing.store.password" => ENV["UPLOAD_STORE_PASSWORD"],
-          "android.injected.signing.key.alias" => ENV["UPLOAD_KEY_ALIAS"],
-          "android.injected.signing.key.password" => ENV["UPLOAD_KEY_PASSWORD"],
+          "android.buildTypes.release.storeFile" => ENV["UPLOAD_STORE_PATH"],
+          "android.buildTypes.release.storePassword" => ENV["UPLOAD_STORE_PASSWORD"],
+          "android.buildTypes.release.keyAlias" => ENV["UPLOAD_KEY_ALIAS"],
+          "android.buildTypes.release.keyPassword" => ENV["UPLOAD_KEY_PASSWORD"],
         }
     )
     

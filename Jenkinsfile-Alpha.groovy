@@ -10,7 +10,7 @@ pipeline {
     }
 
     environment {
-        UPLOAD_STORE_PATH = "${WORKSPACE}/app/upload.keystore"
+        UPLOAD_STORE_PATH = "${WORKSPACE}/android/app/upload.keystore"
         UPLOAD_STORE_FILE = credentials('beacon-gamification-app-upload-store-file')
         UPLOAD_STORE_PASSWORD = credentials('beacon-gamification-app-upload-store-password')
         UPLOAD_KEY_ALIAS = credentials('beacon-gamification-app-upload-key-alias')
