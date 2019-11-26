@@ -15,6 +15,7 @@ pipeline {
         UPLOAD_STORE_PASSWORD = credentials('beacon-gamification-app-upload-store-password')
         UPLOAD_KEY_ALIAS = credentials('beacon-gamification-app-upload-key-alias')
         UPLOAD_KEY_PASSWORD = credentials('beacon-gamification-app-upload-key-password')
+        SUPPLY_JSON_KEY = credentials('beacon-admin-android-fastlane-google-play-api-key')
     }
 
     stages {
