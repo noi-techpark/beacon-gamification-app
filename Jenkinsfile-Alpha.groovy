@@ -56,7 +56,7 @@ pipeline {
                         sh 'git remote set-url origin git@github.com:noi-techpark/beacon-gamification-app.git'
                         sh 'git add android/app/build.gradle'
                         sh 'git commit -m "Version increment"'
-                        sh 'git push origin HEAD:master'
+                        sh 'git push origin HEAD:development'
                     }
                 }
             }
