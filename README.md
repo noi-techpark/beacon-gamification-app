@@ -29,7 +29,7 @@ App is following classic react-native structure, in containers folder you'll fin
 
 We're also using https://github.com/IjzerenHein/react-native-shared-element for some transitions between screens. Other libraries are pretty common for react-native enviroment, we have lottie for some animation (you can find jsons inside animation folder), some lodash for utilities and others.
 
-All code is written using functional component and hooks, new feature release in React 16.9!
+All code is written using functional component and hooks, new feature released in React 16.9! We're also using patch-package to manage some fixes to open source libraries. There is postinstall command already configured, so you'll use it when you do yarn install.
 
 ### Release
 
@@ -62,6 +62,10 @@ buildTypes {
 ```
 
 After this you can use `./gradlew assembleRelease` command like every Android app to assemble your APK
+
+### CI
+
+If you want to setup CI for your version of the application, you just need to execute the scripts in Installation section (after you've of course set up your CI machine with RN and Android SDK) and then run the command posted in Release section
 
 License
 ----
