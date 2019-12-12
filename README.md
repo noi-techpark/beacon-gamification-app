@@ -1,5 +1,9 @@
 # beacon-gamification-app
 
+### Setup
+
+Beacon Adventure is a React Native application! I assume that you've already setup your machine with a proper enviroment 
+
 ### Installation
 
 I assume that enviroment on your machine is already setted up to develop Android applications
