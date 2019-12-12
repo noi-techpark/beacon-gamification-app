@@ -1,5 +1,9 @@
 # beacon-gamification-app
 
+### Setup
+
+Beacon Adventure is a React Native application! I assume that you've already setup your machine with a proper enviroment 
+
 ### Dependencies
 
 * [react-native-google-signin] - To match your photos with ours
@@ -36,6 +40,10 @@ buildTypes {
 ```
 
 After this you can use `./gradlew assembleRelease` command like every Android app to assemble your APK
+
+### TODO
+
+iOS Support
 
 License
 ----
