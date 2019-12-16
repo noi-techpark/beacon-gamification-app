@@ -43,6 +43,10 @@ buildTypes {
 
 After this you can use `./gradlew assembleRelease` command like every Android app to assemble your APK
 
+### TODO
+
+iOS Support
+
 License
 ----
 
