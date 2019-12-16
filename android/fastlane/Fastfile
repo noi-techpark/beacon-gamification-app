@@ -1,42 +1,40 @@
-# This file contains the fastlane.tools configuration
-# You can find the documentation at https://docs.fastlane.tools
-#
-# For a list of all available actions, check out
-#
-#     https://docs.fastlane.tools/actions
-#
-# For a list of all available plugins, check out
-#
-#     https://docs.fastlane.tools/plugins/available-plugins
-#
-
-# Uncomment the line if you want fastlane to automatically update itself
-# update_fastlane
-
 default_platform(:android)
 
 platform :android do
   desc "Runs all the tests"
   lane :test do
+    gradle(task: "clean")
     gradle(task: "test")
   end
 
-  desc "Submit a new Beta Build to Appcenter Beta"
-  lane :beta do
-    sh("cd ../..; npx jetify")
-    gradle(task: "clean assembleRelease")
-    appcenter_upload(
-      api_token: "d690c220ad318f9adab2bb83b227d25c61d8ebef",
-      owner_name: "Belkalab",
-      app_name: "Beacon-Adventure",
-      destinations: "Internal",
-      notify_testers: true # Set to false if you don't want to notify testers of your new release (default: `false`)
+  desc "Submit a new Build to Crashlytics Alpha Channel"
+  lane :alpha do
+    android_set_version_name(
+      version_name: ENV["VERSION_NAME"],
+      gradle_file: "app/build.gradle"
     )
-  end
 
-  desc "Deploy a new version to the Google Play"
-  lane :deploy do
-    gradle(task: "clean assembleRelease")
-    upload_to_play_store
+    increment_version_code(
+        gradle_file_path: "app/build.gradle"
+    )
+
+    gradle(task: "clean")
+
+    gradle(
+        task: "assemble",
+        build_type: "Release",
+        print_command: false,
+        properties: {
+          "android.injected.signing.store.file" => ENV["UPLOAD_STORE_PATH"],
+          "android.injected.signing.store.password" => ENV["UPLOAD_STORE_PASSWORD"],
+          "android.injected.signing.key.alias" => ENV["UPLOAD_KEY_ALIAS"],
+          "android.injected.signing.key.password" => ENV["UPLOAD_KEY_PASSWORD"],
+        }
+    )
+    
+    supply(
+        track: "alpha",
+        apk: "app/build/outputs/apk/release/app-release.apk"
+    )
   end
 end
