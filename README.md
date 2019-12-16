@@ -67,6 +67,7 @@ After this you can use `./gradlew assembleRelease` command like every Android ap
 
 If you want to setup CI for your version of the application, you just need to execute the scripts in Installation section (after you've of course set up your CI machine with RN and Android SDK) and then run the command posted in Release section
 
+
 License
 ----
 
