@@ -31,6 +31,15 @@ We're also using https://github.com/IjzerenHein/react-native-shared-element for 
 
 All code is written using functional component and hooks, new feature released in React 16.9! We're also using patch-package to manage some fixes to open source libraries. There is postinstall command already configured, so you'll use it when you do yarn install.
 
+
+### API Url
+
+If you want to change the URL of the server with a custom one, you can change it inside the file _apiFetcher.ts_
+
+```typescript
+export const API_SERVER_URL = "YOUR_URL_HERE";
+```
+
 ### Release
 
 ```gradle
