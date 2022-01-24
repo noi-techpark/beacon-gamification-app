@@ -8,6 +8,8 @@ Beacon Adventure is a React Native application! I assume that you've already set
 
 You can find more details on react native site: https://facebook.github.io/react-native/
 
+[![CI](https://github.com/noi-techpark/beacon-gamification-app/actions/workflows/ci.yml/badge.svg)](https://github.com/noi-techpark/beacon-gamification-app/actions/workflows/ci.yml)
+
 ### Application constraints
 
 Minimun SDK version for Android: 5.0 (level 21)
