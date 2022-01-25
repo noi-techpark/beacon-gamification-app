@@ -17,7 +17,7 @@ jobs:
           node-version: '16.x'
           cache: 'npm'
       - name: install
-        run: npm ci
+        run: npm install
 
       - uses: ruby/setup-ruby@v1
         with:
